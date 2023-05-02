@@ -1,0 +1,230 @@
+﻿<div ng-app="trilhasapp" ng-controller="CursistasController as vm">
+
+    <div id="tb-relatorio">
+        <table>
+            <tr id="l_1">
+                <td id="c1_1" rowspan="2"><img id="LogoES" src="/images/logoES.png" alt="Brasão do Espirito Santo"></td>
+                <td><strong>GOVERNO DO ESTADO DO ESPIRITO SANTO </strong></td>
+                <td id="c1_3" rowspan="2"><strong>Emissão: {{vm.dataAtual | date: 'dd/MM/yyyy HH:mm'}}</strong></td>
+            </tr>
+
+            <tr id="l_2">
+                <td><strong>ESCOLA DE SERVIÇO PUBLICO DO ESPIRITO SANTO </strong></td>
+            </tr>
+
+            <tr id="l_3">
+                <td colspan="3">Relatório de Cursistas</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="content-header">
+        <h5 id="aparece">Cursistas</h5>
+        <div id="aparece" class="line"></div>
+    </div>
+
+    <form name="form">
+        <fieldset class="query-form">
+            <div class="row">
+                <!--PESSOA(CPF)-->
+                <div class="form-group col-md-4">
+                    <div class="input-group">
+                        <input type="text" id="cpf" name="cpf" class="form-control" placeholder="Cursista" readonly
+                               autocomplete="off" value="{{vm.cursistaNome}}" />
+
+                        <div class="input-group-append">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#cursistaModalBuscarPessoa"
+                                    title="Buscar Pessoa">
+                                <em class="fa fa-search"></em>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-primary" title="Limpar Filtro"
+                                    ng-click="vm.cursistaNome = ''; vm.query.cursista = null">
+                                <em class="fa fa-eraser"></em>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--CURSO-->
+                <div class="form-group col-md-4">
+                    <div class="input-group">
+                        <input type="text" id="curso" name="curso" class="form-control" autocomplete="off" readonly placeholder="Curso"
+                               value="{{vm.cursoTitulo}}" />
+                        <div class="input-group-append">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#modalCursistaBuscarCurso"
+                                    title="Buscar Curso">
+                                <em class="fa fa-search"></em>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-primary" title="Limpar Filtro"
+                                    ng-click="vm.cursoTitulo = ''; vm.query.curso = null">
+                                <em class="fa fa-eraser"></em>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--MODALIDADE-->
+                <div class="form-group col-md-4">
+                    <select id="modalidade"
+                            name="modalidade"
+                            class="form-control"
+                            ng-model="vm.query.modalidade"
+                            ng-options="modalidade.codigo as modalidade.nome for modalidade in vm.modalidades">
+                        <option value=""> -- Modalidade -- </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <!--ENTIDADE-->
+                <div class="form-group col-md-4 col-sm-12">
+                    <div class="input-group">
+                        <input type="text" id="entidade" name="entidade" class="form-control" autocomplete="off" readonly placeholder="Entidade"
+                               value="{{vm.entidadeNome}}" />
+                        <div class="input-group-append">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#modalCursistaBuscarEntidade">
+                                <em class="fa fa-search"></em>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-primary" title="Limpar Filtro"
+                                    ng-click="vm.entidadeNome = ''; vm.query.entidade = null">
+                                <em class="fa fa-eraser"></em>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--UF-->
+                <div class="form-group col-md-4">
+                    <div class="input-group">
+                        <select id="uf"
+                                name="uf"
+                                class="form-control"
+                                ng-options="uf for uf in vm.ufs"
+                                ng-change="vm.carregarMunicipios()"
+                                ng-model="vm.query.uf">
+                            <option value=""> -- UF -- </option>
+                        </select>
+                    </div>
+                </div>
+                <!--MUNICIPIO-->
+                <div class="form-group col-md-4">
+                    <div class="input-group">
+                        <select id="cidade"
+                                name="cidade"
+                                class="form-control text-center"
+                                ng-options="municipio.id as municipio.nomeMunicipio for municipio in vm.municipios"
+                                ng-model="vm.query.municipio"
+                                ng-disabled="!vm.query.uf">
+                            <option value=""> -- Selecione uma Cidade -- </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!--DATA INICIO-->
+                <div class="form-group col-md-4">
+                    <input type="date" id="dataInicio" name="dataInicio" class="form-control formatarPlaceholderData" required autocomplete="off" placeholder="Data Início do Curso"
+                           ng-model="vm.query.dataInicio" max="9999-12-31" />
+                </div>
+
+                <!--DATA FIM-->
+                <div class="form-group col-md-4">
+                    <input type="date" id="dataFim" name="dataFim" class="form-control formatarPlaceholderData" required autocomplete="off" placeholder="Data Fim do Curso"
+                           ng-model="vm.query.dataFim" max="9999-12-31" />
+                </div>
+
+                <!--DESISTENTES-->
+                <div class="form-group col-md-3">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="desistentes" ng-model="vm.query.desistentes" />
+                        <label class="custom-control-label" for="desistentes">Exibir Desistentes</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!--FILTRO-->
+                <div class="form-group col-md-2">
+                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrar()"><em class="fas fa-filter"></em> Filtrar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <div class="row" ng-if="vm.cursistas">
+        <div class="col-12">
+            <table class="table table-striped-custom table-hover">
+                <caption ng-if="vm.pager.totalItems > 0">
+                    <nav aria-label="Page navigation">
+                        <div class="row col-12 text-center pr-1">
+                            <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vm.pager.pages.length">
+                                <li class="page-item" ng-class="{disabled:vm.pager.currentPage == 1}">
+                                    <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage - 1)"><<</a>
+                                </li>
+                                <li class="page-item" ng-repeat="page in vm.pager.pages" ng-class="{active:vm.pager.currentPage == page}">
+                                    <a class="page-link" ng-click="vm.filtrar(page)">{{page}}</a>
+                                </li>
+                                <li class="page-item" ng-class="{disabled:vm.pager.currentPage == vm.pager.totalPages}">
+                                    <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage + 1)">>></a>
+                                </li>
+                                <li class="page-item" style="padding-left: 15px;">
+                                    <select ng-model="vm.pageSize" class="page-link" ng-change="vm.filtrar(page)"
+                                            ng-options="size.qtd as size.desc for size in vm.listPageSize"></select>
+                                </li>
+                            </ul>
+                            <div class="offset-2 col-3 text-right pr-0">Exibindo: <strong>{{vm.pager.startIndex + 1}} - {{vm.pager.endIndex + 1}}</strong> de <strong>{{vm.pager.totalItems}}</strong> registro(s)</div>
+                        </div>
+                    </nav>
+                </caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <!--<th style="width: 7%">ID</th>-->
+                        <th>Nome</th>
+                        <th style="width:12%">CPF</th>
+                        <th style="width:15%">Entidade</th>
+                        <th style="width:20%">E-mail</th>
+                        <th style="width:10%" class="d-none d-md-table-cell">Município</th>
+                        <th style="width:10%" class="d-none d-md-table-cell text-right">Eventos</th>
+                        <th style="width:10%" class="d-none d-md-table-cell text-right"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="cursista in vm.cursistas">
+                        <td>
+                            {{cursista.nome}} <a ui-sref="pessoas-edicao({'id': {{cursista.id}}})" title="Editar Pessoa"><em class="fa fa-pencil-alt float-right"></em></a>
+                        </td>
+                        <td>{{cursista.cpf}}</td>
+                        <td>{{cursista.entidade}}</td>
+                        <td>{{cursista.email}}</td>
+                        <td class="d-none d-md-table-cell">{{cursista.municipio}}</td>
+                        <td class="d-none d-md-table-cell text-right">
+                            {{cursista.quantidadeEvento}} <a ui-sref="eventos({'cursistaId': {{cursista.id}}})" title="Exibir Eventos"><em class="far fa-calendar-alt"></em></a>
+                        </td>
+                        <td class="table-actions">
+                            <a href="/relatorios/relatorioHistoricoCursista?cursistaId={{cursista.id}}" title="Histórico do Cursista" target="_blank"><em class="fas fa-book"></em></a>
+                        </td>
+                    </tr>
+                    <tr ng-if="vm.cursistas.length == 0">
+                        <td colspan="6">Nenhum registro encontrado.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--MODAL-->
+    <ng-include src="'/js/cadastros/cursista/modal/cursista-modal-entidade.html'"></ng-include>
+    <ng-include src="'/js/cadastros/cursista/modal/cursista-modal-pessoa.html'"></ng-include>
+    <ng-include src="'/js/cadastros/cursista/modal/cursista-modal-curso.html'"></ng-include>
+
+</div>

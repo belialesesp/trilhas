@@ -1,0 +1,42 @@
+﻿/* Styles go here */
+
+.leave-confirmation {
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+.view-change-loader {
+    position: fixed;
+    left: 0;
+    top: 0;
+    color: white;
+    font-size: 28px;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.8);
+    text-align: center;
+    padding-top: 25px;
+}
+
+
+    .view-change-loader.ng-enter,
+    .view-change-loader.ng-leave {
+        transition: opacity 0.5s;
+        -webkit-transition: opacity 0.5s;
+    }
+
+    .view-change-loader.ng-enter,
+    .view-change-loader.ng-leave-active {
+        opacity: 0;
+    }
+
+    .view-change-loader.ng-enter-active {
+        opacity: 1;
+    }
+}

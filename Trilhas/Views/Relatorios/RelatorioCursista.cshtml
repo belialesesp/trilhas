@@ -1,0 +1,84 @@
+﻿@model Trilhas.Models.Relatorio.RelatorioCursistaViewModel
+
+@{ Layout = "_LayoutRelatorio";}
+
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Relatório de Inscritos</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
+    <link rel="stylesheet" href="~/css/relatorio.css">
+
+    <script type="text/javascript">
+        window.onload = function () {
+            window.print();
+        }
+    </script>
+</head>
+
+<body>
+	<div id="divCabecalho">
+        <table id="cabecalho_2">
+            <tr>
+                <td colspan="3">
+                    <strong>Curso: </strong>@Model.Nome
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <strong>Entidade Demandante: </strong>@Model.Entidade
+                </td>
+            </tr>
+            <tr>
+                <td style=" width: 55%;">
+                    <strong>Local: </strong>@Model.Local
+                </td>
+                <td>
+                    <strong>Período: </strong>@Model.Periodo
+                </td>
+                <td>
+                    <strong>Horário: </strong>@Model.Horario
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="div-tabela">
+        <table id="listaCursista">
+            <thead>
+                <tr>
+                    <th style="width: 10%; padding-right: 5px;">NFUNC</th>
+                    <th style="width: 30%; padding-right: 5px;">Nome</th>
+                    <th style="width: 10%; padding-right: 5px;">CPF</th>
+                    <th style="width: 15%; padding-right: 5px;">Email</th>
+                    <th style="width: 15%; padding-right: 5px;">Município</th>
+                    <th style="width: 15%; padding-right: 5px;">Telefone</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.ListaInscritos.Count > 0)
+                {
+                    @foreach (var inscrito in Model.ListaInscritos)
+                    {
+                        <tr>
+                            <td class="linha">@inscrito.NumeroFuncional</td>
+                            <td class="linha">@inscrito.Nome</td>
+                            <td class="linha">@inscrito.Cpf</td>
+                            <td class="linha">@inscrito.Email</td>
+                            <td class="linha">@inscrito.Endereco</td>
+                            <td class="linha">@inscrito.Telefone</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">Nenhum Cursista Inscrito.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

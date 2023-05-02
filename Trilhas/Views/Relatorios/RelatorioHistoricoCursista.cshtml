@@ -1,0 +1,86 @@
+﻿@model Trilhas.Models.Relatorio.RelatorioHistoricoCursistaViewModel
+
+@{ Layout = "_LayoutRelatorio";}
+
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Relatório de Histórico do Cursista</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/relatorio.css">
+
+    <style type="text/css">
+        @@page {
+            size: landscape
+        }
+    </style>
+
+    <script type="text/javascript">
+        window.onload = function () {
+            window.print();
+        }
+    </script>
+</head>
+
+<body>
+    <div id="divCabecalho">
+        <table id="cabecalho_2">
+            <tr>
+                <td>
+                    <strong>Cursista: </strong>@Model.Nome
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>Entidade: </strong>@Model.Entidade
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 60%;">
+                    <strong>Endereço: </strong>@Model.Endereco
+                </td>
+                <td>
+                    <strong>Contato: </strong>@Model.Telefone
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="div-tabela">
+        <table id="listaCursista">
+            <thead>
+                <tr>
+                    <th style="width: 20%">Curso</th>
+                    <th style="width: 20%">Entidade</th>
+                    <th style="width: 20%">Docente</th>
+                    <th style="width: 15%">Período</th>
+                    <th style="width: 10%">Frequência</th>
+                    <th style="width: 15%">Resultado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.ListaEventos.Count > 0)
+                {
+                    @foreach (var evento in Model.ListaEventos)
+                    {
+                        <tr>
+                            <td class="linha">@evento.Nome</td>
+                            <td class="linha">@evento.Entidade</td>
+                            <td class="linha">@evento.Docente</td>
+                            <td class="linha">@evento.Periodo</td>
+                            <td class="linha text-center">@evento.Frequencia</td>
+                            <td class="linha">@evento.Resultado</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">Nenhum Evento Finalizado.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

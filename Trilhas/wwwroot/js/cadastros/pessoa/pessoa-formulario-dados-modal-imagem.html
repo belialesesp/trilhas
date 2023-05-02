@@ -1,0 +1,26 @@
+﻿<div id="modal-crop2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDialogs" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Formatar imagem</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-8 col-sm-12">
+                    <div class="cropArea">
+                        <img-crop image="vm.imageToCrop" result-image="vm.croppedImage" area-type="square" result-image-size="80" area-min-size="80"></img-crop>
+                    </div>
+                </div>
+                <div class="col-md-4 d-none d-md-block">
+                    Pré-visualização:<br />
+                    <img ng-src="{{vm.croppedImage}}" width="80" height="80" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" ng-click="vm.concluirCrop()">Concluir</button>
+            </div>
+        </div>
+    </div>
+</div>

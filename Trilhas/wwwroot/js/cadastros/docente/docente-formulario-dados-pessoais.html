@@ -1,0 +1,130 @@
+﻿<div class="row">
+    <!--PESSOA(CPF)-->
+    <div class="form-group col-md-3">
+        <label for="cpf"><span class="asterisco">*</span>Pessoa (CPF):</label>
+        <div class="input-group">
+            <input type="text" id="cpf" required name="cpf" class="form-control"
+                   ng-class="{'is-invalid': form.cpf.$invalid && (form.cpf.$dirty || form.$submitted ) }" ui-br-cpf-mask cpf-valido
+                   autocomplete="off" ng-model="vm.docente.cpf" ng-blur="vm.carregarPessoa($event)" ng-enter="vm.carregarPessoa($event)" />
+            <div class="input-group-append">
+                <button type="button"
+                        class="btn btn-primary"
+                        data-toggle="modal"
+                        data-target="#docenteModalBuscarPessoa"
+                        title="Buscar Pessoa">
+                    <em class="fa fa-search"></em>
+                </button>
+            </div>
+        </div>
+        <div ng-messages="form.cpf.$error" role="alert" ng-if="(form.cpf.$dirty || form.$submitted ) ">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-show="form.cpf.$error.cpf" class="invalid-feedback d-block">CPF Inválido</div>
+        </div>
+    </div>
+
+    <!--NOME-->
+    <div class="form-group col-md-9">
+        <label for="nome">Nome:</label>
+        <div class="input-group">
+            <input type="text" id="nome" name="nome" class="form-control" autocomplete="off" required
+                   ng-class="{'is-invalid': form.nome.$invalid && (form.nome.$dirty || form.$submitted)}" ng-model="vm.docente.nome" ng-disabled="true" />
+
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-primary" ui-sref="pessoas-edicao({'id': vm.docente.pessoaId})" title="Editar Pessoa">
+                    <em class="fa fa-pencil-alt"></em>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!--PIS-->
+    <div class="form-group col-md-3">
+        <label for="pis"><span class="asterisco">*</span>PIS/PASEP:</label>
+        <input type="text" id="pis" name="pis" class="form-control" required autocomplete="off" pis-pasep-valido ui-mask="99999999999" ui-mask-placeholder-char="space"
+               ng-class="{'is-invalid': form.pis.$invalid && (form.pis.$dirty || form.$submitted)}" ng-model="vm.docente.pis" />
+        <div ng-messages="form.pis.$error" role="alert" ng-if="form.pis.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+            <span ng-show="form.pis.$error.pisPasepValido" class="invalid-feedback d-block">PIS/PASEP Inválido</span>
+        </div>
+    </div>
+
+    <!--TITULO-->
+    <div class="form-group col-md-3">
+        <label for="titulo"><span class="asterisco">*</span>Título Eleitor:</label>
+        <input type="text" id="titulo" name="titulo" class="form-control" required autocomplete="off" ui-mask="9999 9999 9999" ui-mask-placeholder-char="space"
+               ng-class="{'is-invalid': form.titulo.$invalid && (form.titulo.$dirty || form.$submitted)}" ng-model="vm.docente.titulo" ui-options="{clearOnBlur: false}" />
+        <div ng-messages="form.titulo.$error" role="alert" ng-if="form.titulo.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!--BANCO-->
+    <div class="form-group col-md-3">
+        <label for="banco"><span class="asterisco">*</span>Banco:</label>
+        <input type="text" id="banco" name="banco" class="form-control" autocomplete="off" maxlength="20"
+               ng-class="{'is-invalid' : (vm.bancoRequired && vm.submitedDadosBancario && !vm.dadosBancario.banco)}" ng-model="vm.dadosBancario.banco" capitalize />
+        <div role="alert" ng-if="(vm.bancoRequired && vm.submitedDadosBancario && !vm.dadosBancario.banco)">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--AGÊNCIA-->
+    <div class="form-group col-md-3">
+        <label for="agencia"><span class="asterisco">*</span>Agência:</label>
+        <input type="text" id="agencia" name="agencia" class="form-control" autocomplete="off" maxlength="10"
+               ng-class="{'is-invalid' : (vm.agenciaRequired && vm.submitedDadosBancario && !vm.dadosBancario.agencia)}" ng-model="vm.dadosBancario.agencia" />
+        <div role="alert" ng-if="(vm.agenciaRequired && vm.submitedDadosBancario && !vm.dadosBancario.agencia )">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--CONTA-->
+    <div class="form-group col-md-3">
+        <label for="numeroConta"><span class="asterisco">*</span>Número da Conta:</label>
+        <input type="text" id="numeroConta" name="numeroConta" class="form-control" autocomplete="off" maxlength="15"
+               ng-class="{'is-invalid' : (vm.numeroContaRequired && !vm.dadosBancario.contaCorrente && vm.submitedDadosBancario)}" 
+               ng-model="vm.dadosBancario.contaCorrente" ng-enter="vm.adicionarDadosBancarios($event)" />
+        <div role="alert" ng-if="(vm.numeroContaRequired && !vm.dadosBancario.contaCorrente && vm.submitedDadosBancario)">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--BOTÃO ADICIONAR CONTA -->
+    <div class="form-group col-md-2">
+        <label class="">&nbsp;</label>
+        <button class="btn btn-success btn-sm btn-block" type="button" ng-click="vm.adicionarDadosBancarios($event) "><em class="fas fa-plus-circle"></em> Incluir</button>
+    </div>
+</div>
+
+<!--TABELA DE CONTAS-->
+<table class="table table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Banco</th>
+            <th>Agência</th>
+            <th>Número da Conta</th>
+            <th style="width:9%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="dadosBancario in vm.docente.dadosBancarios track by $index">
+            <td>{{dadosBancario.banco}}</td>
+            <td>{{dadosBancario.agencia}}</td>
+            <td>{{dadosBancario.contaCorrente}}</td>
+            <td class="text-center">
+                <a href="" class="text-danger" ng-click="vm.excluirDadosBancario($index)" title="Remover Conta"><em class="fa fa-window-close"></em></a>
+            </td>
+        </tr>
+
+        <tr ng-if="(!vm.docente.dadosBancarios || vm.docente.dadosBancarios.length == 0) ">
+            <td colspan="5" ng-class="{'td-invalid' : form.$submitted}">
+                Nenhuma conta cadastrada.
+                <div role="alert" ng-if="form.$submitted">
+                    <div class="invalid-feedback d-block">Cadastre pelo menos uma conta</div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

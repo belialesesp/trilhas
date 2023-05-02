@@ -1,0 +1,57 @@
+﻿<div class="row">
+    <!--CURSO-->
+    <div class="form-group col-md-10">
+        <label for="solucao"><!--<span class="asterisco">*</span>-->Curso:</label>
+        <div class="input-group">
+            <input type="text" id="solucao" name="solucao" class="form-control" autocomplete="off" readonly
+                   value="{{vm.habilitacao.curso.titulo}}" ng-enter="vm.adicionarHabilitacao($event)"
+                   ng-class="{'is-invalid' : (!vm.habilitacao.curso.titulo && vm.submitedHabilitacao)}" />
+            <div class="input-group-append">
+                <button type="button"
+                        class="btn btn-primary"
+                        data-toggle="modal"
+                        data-target="#modalDocenteBuscarSolucao"
+                        title="Adicionar Solucao">
+                    <em class="fa fa-search"></em>
+                </button>
+                <button type="button" class="btn btn-outline-primary" ui-sref="solucoes-cadastro" title="Adicionar Solução" ng-if="!vm.solucao.id"><em class="fa fa-plus-circle"></em></button>
+                <button type="button" class="btn btn-outline-primary" ui-sref="solucoes-edicao({'id': vm.solucao.id})" title="Editar Recurso" ng-if="vm.solucao.id"><em class="fa fa-pencil-alt"></em></button>
+            </div>
+        </div>
+        <div role="alert" ng-if="(!vm.habilitacao.curso.titulo && vm.submitedHabilitacao)">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+    <!--BOTÃO ADICIONAR HABILITACAO -->
+    <div class="form-group col-md-2">
+        <label class="">&nbsp;</label>
+        <button class="btn btn-success btn-sm btn-block" type="button" ng-click="vm.adicionarHabilitacao($event)"><em class="fas fa-plus-circle"></em> Incluir</button>
+    </div>
+
+    <!--TABELA DE HABILITACAO-->
+    <div class="col-12">
+        <table class="table table-hover" ng-if="vm.docente.habilitacao && vm.docente.habilitacao.length > 0">
+            <thead class="thead-dark">
+                <tr>
+                    <th style="width: 45%">Decrição</th>
+                    <th style="width: 30%">Modalidade</th>
+                    <th class="text-center" style="width: 15%">Carga Horária</th>
+                    <th style="width: 10%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="habilitacao in vm.docente.habilitacao ">
+                    <td>{{habilitacao.curso.titulo}}</td>
+                    <td>{{habilitacao.curso.modalidade}}</td>
+                    <td class="text-center">{{habilitacao.curso.cargaHoraria}}</td>
+                    <td class="text-center">
+                        <a href="" class="text-danger" ng-click="vm.excluirHabilitacao($index)" title="Remover Curso"><em class="fa fa-window-close"></em></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!--Modal-->
+    <ng-include src="'/js/cadastros/docente/modal/docente-modal-curso.html'"></ng-include>
+</div>

@@ -1,0 +1,145 @@
+﻿<div ng-controller="EntidadeFormularioController as vm">
+
+    <div class="content-header">
+        <h5>Cadastros <em class="fa fa-angle-right"></em> Entidades <em class="fa fa-angle-right"></em> Formulário <small class="badge badge-secondary">{{vm.entidade.id ? vm.entidade.id : 'novo'}}</small></h5>
+        <div class="line"></div>
+    </div>
+
+    <form dirty-tracking name="form" novalidate ng-submit="vm.salvar(form)" ng-init="vm.setForm(this)">
+
+        <div id="server-errors" class="alert alert-danger" ng-if="form.serverErrors && formEntidade.$submitted">
+            <ul>
+                <li ng-repeat="serverError in formEntidade.serverErrors">
+                    <strong>{{serverError.key}}:</strong> {{serverError.message}}
+                </li>
+            </ul>
+        </div>
+
+        <fieldset class="edit-form">
+            <div class="row">
+                <!--SIGLA-->
+                <div class="form-group col-md-3">
+                    <label for="sigla"><span class="asterisco">*</span>Sigla:</label>
+                    <input id="sigla" name="sigla" class="form-control" ng-model="vm.entidade.sigla" required capitalize
+                           ng-class="{'is-invalid': form.sigla.$invalid && (form.sigla.$dirty || form.$submitted)}" />
+                    <div ng-messages="form.sigla.$error" role="alert" ng-if="form.sigla.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+
+                <!--NOME-->
+                <div class="form-group col-md-9">
+                    <label for="nome"><span class="asterisco">*</span>Nome:</label>
+                    <input type="text" id="nome" name="nome" class="form-control" required autocomplete="off" autofocus capitalize
+                           ng-class="{'is-invalid': form.nome.$invalid && (form.nome.$dirty || form.$submitted)}" ng-model="vm.entidade.nome" />
+                    <div ng-messages="form.nome.$error" role="alert" ng-if="form.nome.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+
+                <!--TIPO ENTIDADE -->
+                <div class="form-group col-md-5">
+                    <label for="tipo"><span class="asterisco">*</span>Tipo:</label>
+                    <div class="input-group">
+                        <select id="tipo"
+                                name="tipo"
+                                class="form-control"
+                                ng-class="{'is-invalid': form.tipo.$invalid && (form.tipo.$dirty || form.$submitted)}"
+                                required ng-options="tipo.id as tipo.descricao for tipo in vm.tipos"
+                                ng-model="vm.entidade.tipoEntidadeId">
+                            <option value=""> -- Selecione um Tipo -- </option>
+                        </select>
+                    </div>
+                    <div ng-messages="form.tipo.$error" role="alert" ng-if="form.tipo.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+
+                <!--UF-->
+                <div class="form-group col-md-2">
+                    <label for="uf"><span class="asterisco">*</span>UF:</label>
+                    <div class="input-group">
+                        <select id="uf"
+                                name="uf"
+                                class="form-control"
+                                ng-class="{'is-invalid': form.uf.$invalid && (form.uf.$dirty || form.$submitted)}"
+                                ng-options="uf for uf in vm.ufs"
+                                ng-change="vm.carregarMunicipios(vm.entidade.uf)"
+                                ng-model="vm.entidade.uf"
+                                required>
+                            <option value=""> -- UF -- </option>
+                        </select>
+                    </div>
+                    <div ng-messages="form.uf.$error" role="alert" ng-if="form.uf.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+
+                <!--MUNICIPIO-->
+                <div class="form-group col-md-5">
+                    <label for="municipio"><span class="asterisco">*</span>Município:</label>
+
+                    <div class="input-group">
+                        <select id="municipio"
+                                name="municipio"
+                                class="form-control"
+                                ng-class="{'is-invalid': form.municipio.$invalid && (form.municipio.$dirty || form.$submitted)}"
+                                ng-options="municipio.id as municipio.nomeMunicipio for municipio in vm.municipios"
+                                ng-model="vm.entidade.municipioId"
+                                ng-disabled="!vm.entidade.uf"
+                                required>
+                            <option value=""> -- Selecione um Município -- </option>
+                        </select>
+                    </div>
+                    <div ng-messages="form.municipio.$error" role="alert" ng-if="form.municipio.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#modalBuscarGestor"><em class="fa fa-plus-circle"></em> Adicionar Gestor</button>
+                </div>
+            </div>
+
+            <table class="table table-condensed table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Número Funcional</th>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="gestor in vm.gestores">
+                        <td style="width:15%">{{gestor.numeroFuncional}}</td>
+                        <td>{{gestor.nome}}</td>
+                        <td style="width:15%">{{gestor.cpf}}</td>
+                        <td style="width:8%" class="text-center">
+                            <a href="" class="text-danger" ng-click="vm.excluirGestor(gestor.id)" title="Remover Gestor"><em class="fa fa-window-close"></em></a>
+                        </td>
+                    </tr>
+                    <tr ng-if="!vm.gestores || vm.gestores.length == 0">
+                        <td colspan="4">Nenhum Gestor cadastrado.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+
+        <fieldset class="actions-form">
+            <div class="row">
+                <div class="left-buttons col-md-6 col-sm-12">
+                    <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+                </div>
+                <div class="right-buttons col-md-6 col-sm-12">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirm-dialog" ng-if="vm.entidade.id"><em class="fa fa-trash"></em> Excluir</button>
+                    <button type="submit" class="btn btn-primary" ng-click="vm.salvarVoltar()"><em class="fa fa-save"></em> Salvar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <ng-include src="'/js/cadastros/entidade/modal/entidade-modal-gestor.html'"></ng-include>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+</div>

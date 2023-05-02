@@ -1,0 +1,98 @@
+﻿@model Trilhas.Models.Evento.Relatorios.RelatorioListaPresencaViewModel
+
+@{ Layout = null; }
+
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Lista De Presença Manual</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
+    <link rel="stylesheet" href="~/css/relatorio.css">
+
+    <script type="text/javascript">
+        window.onload = function () {
+            window.print();
+        }
+    </script>
+</head>
+
+<body>
+	@for(int i = 0; i < Model.Datas.Count; i++)
+	{
+		<div id="tb-relatorio">
+			<table>
+				<tr id="l_1">
+					<td id="c1_1" rowspan="2"><img id="LogoES" src="/images/logoES.png" alt="Brasão do Espirito Santo"></td>
+					<td><strong>GOVERNO DO ESTADO DO ESPÍRITO SANTO </strong></td>
+					<td id="c1_3" rowspan="2"><strong>Emissão: </strong>@Model.DataAtual.ToString(" dd/MM/yyyy HH:mm")</td>
+				</tr>
+
+				<tr id="l_2">
+					<td><strong>ESCOLA DE SERVIÇO PÚBLICO DO ESPÍRITO SANTO </strong></td>
+				</tr>
+
+				<tr id="l_3"><td colspan="3">RELATÓRIO DE CREDENCIAMENTO</td></tr>
+
+			</table>
+		</div>
+
+		<div id="divCabecalho">
+			<table id="cabecalho_2">
+				<tr>
+					<td>
+						<strong>Curso: </strong>@Model.Evento.EventoNome
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<strong>Entidade Demandante: </strong>@Model.Evento.EntidadeNome
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 65%;">
+						<strong>Local: </strong>@Model.Evento.LocalNome
+					</td>
+					<td>
+						<strong>Data: </strong>@Model.Datas[i].Data.ToString("dd/MM/yyyy")
+						<strong>&emsp;Hora: </strong>@Model.Datas[i].HoraInicio.ToString("HH:mm") às @Model.Datas[i].HoraFim.ToString("HH:mm")
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="div-tabela">
+			<table id="listaCursista">
+				<thead>
+					<tr>
+						<th style="width: 10%;  padding-right: 5px;">NFUNC</th>
+						<th style="width: 35%;  padding-right: 5px;">Nome</th>
+						<th style="width: 10%;  padding-right: 5px;">CPF</th>
+						<th style="width: 15%;  padding-right: 5px;">Entidade</th>
+						<th style="width: 30%;  padding-right: 5px;">Assinatura</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach(var inscrito in Model.ListaInscritos)
+					{
+					<tr>
+						<td class="linha">@inscrito.NumeroFuncional</td>
+						<td class="linha">@inscrito.CursistaNome</td>
+						<td class="linha">@inscrito.CursistaCPF</td>
+						<td class="linha">@inscrito.EntidadeSigla</td>
+						<td class="aling linha">_______________________________________________________________________</td>
+					</tr>
+						@if(Model.ListaInscritos.Count == 0)
+						{
+							<tr>
+								<td colspan="5">Nenhum Cursista Inscrito.</td>
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
+		</div>
+		<footer></footer>
+	}
+</body>
+</html>

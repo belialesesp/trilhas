@@ -1,0 +1,114 @@
+﻿<div class="row">
+    <!--CURSO-->
+    <div class="form-group col-md-6">
+        <label for="cursoFormacao"><span class="asterisco">*</span>Curso:</label>
+        <input type="text" id="cursoFormacao" name="cursoFormacao" class="form-control" autocomplete="off" capitalize
+               ng-class="{'is-invalid': (vm.cursoFormacaoRequired && vm.submitedFormacao && !vm.formacao.curso)}"
+               ng-model="vm.formacao.curso" />
+        <div role="alert" ng-if="(vm.cursoFormacaoRequired && vm.submitedFormacao && !vm.formacao.curso)">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--TITULACAO-->
+    <div class="form-group col-md-3">
+        <label for="titulacao"><span class="asterisco">*</span>Titulação:</label>
+        <input type="text" id="titulacao" name="titulacao" class="form-control" autocomplete="off" capitalize
+               ng-class="{'is-invalid': (vm.titulacaoRequired && vm.submitedFormacao && !vm.formacao.titulacao)}" ng-model="vm.formacao.titulacao" />
+        <div role="alert" ng-if="(vm.titulacaoRequired && vm.submitedFormacao && !vm.formacao.titulacao)">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--INTITUICAO-->
+    <div class="form-group col-md-3">
+        <label for="instituicao"><span class="asterisco">*</span>Instituição:</label>
+        <input type="text" id="instituicao" name="instituicao" class="form-control" autocomplete="off" capitalize
+               ng-class="{'is-invalid': (vm.instituicaoRequired && vm.submitedFormacao && !vm.formacao.instituicao)}" ng-model="vm.formacao.instituicao" />
+        <div role="alert" ng-if="(vm.instituicaoRequired && vm.submitedFormacao && !vm.formacao.instituicao)">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--CARGA HORARIA-->
+    <div class="form-group col-md-3">
+        <label for="cargaHoraria"><span class="asterisco">*</span>Carga Horária:</label>
+        <input type="text" id="cargaHoraria" name="cargaHoraria" class="form-control" autocomplete="off" ui-number-mask="0" ui-hide-group-sep min="0" max="99999" maxlength="5"
+               ng-class="{'is-invalid':(vm.cargaHorariaRequired && vm.submitedFormacao && !vm.formacao.cargaHoraria)}"
+               ng-model="vm.formacao.cargaHoraria" />
+        <div role="alert" ng-if="(vm.cargaHorariaRequired && vm.submitedFormacao && !vm.formacao.cargaHoraria)">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--DATA INICIO-->
+    <div class="form-group col-md-3">
+        <label for="dataInicioFormacao"><span class="asterisco">*</span>Data Início:</label>
+        <input type="date" id="dataInicioFormacao" name="dataInicioFormacao" class="form-control" autocomplete="off"
+               ng-class="{'is-invalid': (vm.dataInicioRequired && vm.submitedFormacao && !vm.formacao.dataInicio)}"
+               ng-model="vm.formacao.dataInicio"
+               ng-blur="vm.validaDataFormacao()" 
+               max="9999-12-31"/>
+        <div role="alert" ng-if="(vm.dataInicioRequired && vm.submitedFormacao && !vm.formacao.dataInicio)">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--DATA TÉRMINO-->
+    <div class="form-group col-md-3">
+        <label for="dataFimFormacao"><span class="asterisco">*</span>Data Término:</label>
+        <input type="date" id="dataFimFormacao" name="dataFimFormacao" class="form-control" autocomplete="off"
+               ng-class="{'is-invalid': (vm.dataFimRequired && vm.submitedFormacao && !vm.formacao.dataFim) || !vm.isDataFormacao }"
+               ng-model="vm.formacao.dataFim"
+               ng-enter="vm.adicionarFormacao($event)"
+               ng-change="vm.validaDataFormacao()" 
+               max="9999-12-31"/>
+        <div role="alert" ng-if="(vm.dataFimRequired && vm.submitedFormacao && !vm.formacao.dataFim) || !vm.isDataFormacao">
+            <div ng-if="vm.isDataFormacao" class="invalid-feedback d-block">Campo obrigatório</div>
+            <span ng-if="!vm.isDataFormacao" class="invalid-feedback d-block">Data Inválida</span>
+        </div>
+    </div>
+
+    <!--BOTÃO ADICIONAR FORMACAO -->
+    <div class="form-group col-md-2">
+        <label class="">&nbsp;</label>
+        <button class="btn btn-success btn-sm btn-block" type="button" ng-click="vm.adicionarFormacao($event)"><em class="fas fa-plus-circle"></em> Incluir</button>
+    </div>
+
+    <!--TABELA DE CURSOS/FORMAÇÃO-->
+    <div class="col-12">
+        <table class="table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Curso</th>
+                    <th>Titulação</th>
+                    <th>Instituição</th>
+                    <th class="text-center">Carga Horária</th>
+                    <th class="text-center">Período</th>
+                    <th style="width:10%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="formacao in vm.docente.formacao">
+                    <td>{{formacao.curso}}</td>
+                    <td>{{formacao.titulacao}}</td>
+                    <td>{{formacao.instituicao}}</td>
+                    <td class="text-center">{{formacao.cargaHoraria}} horas</td>
+                    <td class="text-center">{{formacao.dataInicio | date : 'dd/MM/yyyy'}} - {{formacao.dataFim | date : "dd/MM/yyyy"}}</td>
+                    <td class="text-center">
+                        <a href="" class="text-danger" ng-click="vm.excluirFormacao($index)" title="Remover Formação"><em class="fa fa-window-close"></em></a>
+                    </td>
+                </tr>
+
+                <tr ng-if="(!vm.docente.formacao || vm.docente.formacao == 0) ">
+                    <td colspan="6" ng-class="{'td-invalid' : form.$submitted}">
+                        Nenhuma Formação Cadastrada.
+                        <div role="alert" ng-if="form.$submitted">
+                            <div class="invalid-feedback d-block">Cadastre pelo menos uma Formação</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

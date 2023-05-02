@@ -1,0 +1,106 @@
+﻿<div id="modalBuscarCursista"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Pesquisar Cursista</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <fieldset class="query-form">
+                    <div class="row">
+
+                        <!--NOME-->
+                        <div class="form-group col-md-4 col-sm-12">
+                            <input class="form-control w-100" id="nomeCursista" type="text" placeholder="Nome" ng-model="vm.queryCursista.nome" autocomplete="off" capitalize />
+                        </div>
+
+                        <!--UF-->
+                        <div class="form-group col-md-3">
+                            <div class="input-group">
+                                <select id="uf"
+                                        name="uf"
+                                        class="form-control"
+                                        ng-options="uf for uf in vm.ufs"
+                                        ng-change="vm.carregarMunicipios()"
+                                        ng-model="vm.queryCursista.uf">
+                                    <option value=""> - UF - </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!--MUNICIPIO-->
+                        <div class="form-group col-md-3">
+                            <div class="input-group">
+                                <select id="cidade"
+                                        name="cidade"
+                                        class="form-control text-center"
+                                        ng-options="municipio.id as municipio.nomeMunicipio for municipio in vm.municipios"
+                                        ng-model="vm.queryCursista.municipioId"
+                                        ng-disabled="!vm.queryCursista.uf">
+                                    <option value=""> - Cidade - </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!--FILTRO-->
+                        <div class="form-group col-md-2 col-sm-12">
+                            <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrarCursista()"><em class="fas fa-filter"></em> Filtrar</button>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="row" ng-if="vm.cursistas">
+                    <div class="col-12">
+                        <table class="table table-sm table-striped-custom table-hover">
+                            <caption>
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-sm justify-content-center" ng-if="vm.pager.pages.length">
+                                        <li class="page-item" ng-class="{disabled:vm.pager.currentPage == 1}">
+                                            <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage - 1)"><<</a>
+                                        </li>
+                                        <li class="page-item" ng-repeat="page in vm.pager.pages" ng-class="{active:vm.pager.currentPage == page}">
+                                            <a class="page-link" ng-click="vm.filtrar(page)">{{page}}</a>
+                                        </li>
+                                        <li class="page-item" ng-class="{disabled:vm.pager.currentPage == vm.pager.totalPages}">
+                                            <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage + 1)">>></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </caption>
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th style="width: 7%">ID</th>
+                                    <th>Número Funcional</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Município</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="cursista in vm.cursistas" ng-click="vm.selecionaCursista(cursista)" data-dismiss="modal">
+                                    <td ng-class="{strike: cursista.excluido}">{{cursista.id}}</td>
+                                    <td ng-class="{strike: cursista.excluido}">{{cursista.numeroFuncional}}</td>
+                                    <td ng-class="{strike: cursista.excluido}">{{cursista.nome}}</td>
+                                    <td ng-class="{strike: cursista.excluido}">{{cursista.email}}</td>
+                                    <td ng-class="{strike: cursista.excluido}">{{cursista.endereco}}</td>
+                                </tr>
+                                <tr ng-if="vm.cursistas.length == 0">
+                                    <td colspan="5">Nenhum registro encontrado.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

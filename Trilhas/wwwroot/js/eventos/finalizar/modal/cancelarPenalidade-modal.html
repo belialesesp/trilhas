@@ -1,0 +1,54 @@
+﻿<div id="modalCancelarPenalidade" ng-controller="CancelarPenalidadeModalController as vmx"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Penalidade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <fieldset>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <strong>Início da Penalidade:</strong> {{vmx.penalidade.dataInicio | date:'dd/MM/yyyy'}}
+                        </div>
+                        <div class="form-group col-md-8">
+                            <strong>Fim da Penalidade:</strong> {{vmx.penalidade.dataFim | date:'dd/MM/yyyy'}}
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="form-check form-check-inline">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="cancelarPenalidade" ng-model="vmx.penalidade.cancelada" />
+                                    <label class="custom-control-label" for="cancelarPenalidade"> Cancelar Penalidade</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12" ng-if="vmx.penalidade.cancelada">
+                            <label for="justificativaCancelamento"><span class="asterisco">*</span>Justificativa do Cancelamento:</label>
+                            <textarea class="form-control" id="justificativa" name="justificativa" rows="4" autocomplete="off" capitalize ng-model="vmx.penalidade.justificativa"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer" ng-if="vmx.penalidade.cancelada">
+                <div class="row">
+                    <div class="right-buttons col-md-12">
+                        <button type="button" ng-click="vmx.salvar()" class="btn btn-primary"
+                                ng-disabled="!vmx.penalidade.justificativa"
+                                data-dismiss="modal">
+                            <em class="fas fa-check"></em>Salvar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,153 @@
+﻿/*Programação de evento*/
+table {
+	width: 100%;
+	border-collapse: collapse;
+	border: 1px solid black;
+}
+
+	table th {
+		border: 1px solid;
+		padding: 8px;
+		/*background-color: #c3c0c0;*/
+		font-size: 12px;
+	}
+
+	/*table tr:nth-child(even) {
+	background-color: #c3c0c0;
+}*/
+
+	table td {
+		font-size: 10px;
+		padding: 10px;
+		border: 1px solid black;
+		text-align: center;
+	}
+
+	table caption {
+		font-size: 20px;
+		margin-top: 10px;
+	}
+
+#rodape {
+	border: 1px solid;
+	display: inline-block;
+	padding: 5px 43px 5px 26px;
+	font-size: 12px;
+}
+
+#prog-evento-info {
+	display: contents;
+	margin: 10px 0px 0px 10px;
+}
+
+	#prog-evento-info > div {
+		font-size: 23px;
+		text-align: center;
+		color: #3a3a3a;
+	}
+
+	#prog-evento-info > table {
+		width: 80%;
+		margin: auto;
+		border: 0px solid black;
+	}
+
+		#prog-evento-info > table td {
+			padding: 10px;
+			border: 0px;
+		}
+
+	#prog-evento-info div > strong {
+		text-align: center;
+	}
+
+#logoESESP {
+	float: left;
+	width: 75px;
+	height: 80px;
+	margin: 0px 40px 0px 10px;
+}
+
+#titulo {
+	font-size: 35px;
+	font-weight: bold;
+}
+
+#sub-titulo {
+	font-size: 24px;
+	color: #605959;
+	padding: 2px 0px 0px 24px;
+}
+
+#sigla {
+	text-align: right;
+}
+
+#cabecalho {
+	display: flex;
+	width: 80%;
+	margin: auto
+}
+
+#cabecaolho > div:first-child {
+	border: 1px solid;
+}
+
+.c_1 {
+	font-size: 25px;
+	text-align: right;
+	width: 30%;
+}
+
+.c_2 {
+	text-align: left;
+	font-size: 20px;
+}
+
+#p-inscricao {
+	padding-top: 30px;
+	padding-bottom: 50px;
+}
+
+
+@media print {
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		border: 1px solid black;
+	}
+
+		table th {
+			border: 1px solid;
+			padding: 8px;
+			background-color: #c3c0c0;
+			font-size: 12px;
+		}
+
+		table tr:nth-child(even) {
+			background-color: #c3c0c0;
+		}
+
+		table td {
+			padding: 10px;
+			font-size: 8px;
+			border: 1px solid black;
+			text-align: center;
+		}
+
+		table caption {
+			font-size: 20px;
+			margin-top: 10px;
+		}
+
+	#rodape {
+		border: 1px solid;
+		display: inline-block;
+		padding: 5px 15px 5px 16px;
+		font-size: 8px;
+	}
+}
+
+@page {
+	size: landscape
+}

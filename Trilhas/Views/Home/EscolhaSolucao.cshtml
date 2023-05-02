@@ -1,0 +1,174 @@
+﻿@model Trilhas.Models.Usuario.EstacaoSolucoesViewModel
+@{
+	Layout = "_LayoutUsuario";
+}
+
+<section class="section-breadcrumbs">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<p class="open-sans mb-0 w-400 color-azul-2 p-breadcrumbs">
+					@Model.EixoNome <i class="fas fa-arrow-right color-laranja-1"></i> @Model.EstacaoNome
+				</p>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="section-oferta-estacao-solucoes suporte-claro">
+	<div class="container">
+		<div class="row row-solucao">
+			<div class="col-md-12">
+                <div class="eixo-title">
+                    @if (!string.IsNullOrEmpty(Model.EixoImagem))
+                    {
+                        <img class="eixo-icon" src="data:image/jpeg;base64,@Model.EixoImagem" />
+                    }
+                    else
+                    {
+                        <img class="eixo-icon" src="data:image/jpeg;base64,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" />
+                    }
+                    <div class="desc">
+                        <h5 class="color-laranja-1 w-600 mb-2">@Model.EixoNome</h5>
+                        <h3 class="hover-tr text-uppercase mb-4">@Model.EstacaoNome</h3>
+                        <p></p>
+                    </div>
+                </div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-10 offset-md-1">
+				<div class="solucoes-content" style="z-index: 9999 !important;">
+					<div class="LISTA-SOLUCOES" id="LISTA-SOLUCOES">
+						<div class="card mt-2">
+							@foreach(var solucao in Model.Solucoes)
+							{
+								if(solucao.TipoDeSolucao == "curso")
+								{
+									<div>
+										<div>
+											<div aria-expanded="false" class="card-header collapsed" data-parent="#LISTA-SOLUCOES" data-toggle="collapse" href="#@solucao.Id">
+												<a class="card-title">
+													<i class="fas fa-chalkboard-teacher fa-icone-tipo-de-solucao"></i> Curso - 
+													<small>@solucao.Titulo</small>
+												</a>
+												@if(solucao.Selecionado)
+												{
+													<i class="fas fa-check-circle"></i>
+												}
+											</div>
+											<div class="in collapse" data-parent="#LISTA-SOLUCOES" id="@solucao.Id">
+												<div class="card-body">
+													<h6>Título:</h6><p>@solucao.Titulo</p>
+													<h6>Ementa:</h6><p>@solucao.ConteudoProgramatico</p>
+													<h6>Carga horária:</h6><p>@solucao.CargaHorariaTotal</p>
+													<h6>Modalidade:</h6><p>@solucao.Modalidade</p>
+													<h6>Habilidades:</h6>
+													<ol>
+														@foreach(var habilidade in solucao.Habilidades)
+														{
+															<li>@habilidade</li>
+														}
+													</ol>
+													<h6>Público alvo:</h6><p>@solucao.PublicoAlvo</p>
+													@if(!solucao.Selecionado)
+													{
+														<a class="btn btn-3 btn-sm mt-2 mb-2 w-600"
+														   asp-action="AdicionarTrilha"
+														   asp-route-solucaoId="@solucao.Id">
+															<i class="fas fa-plus-circle"></i>Adicionar à minha trilha
+														</a>
+													}
+												</div>
+											</div>
+										</div>
+									</div>
+
+								} else if(solucao.TipoDeSolucao == "livro")
+								{
+									<div>
+										<div>
+											<div aria-expanded="false" class="card-header collapsed" data-parent="#LISTA-SOLUCOES" data-toggle="collapse" href="#@solucao.Id">
+                                                <a class="card-title">
+                                                    <i class="fas fa-book-open fa-icone-tipo-de-solucao"></i> Livro/Artigo - 
+                                                    <small>@solucao.Titulo</small>
+                                                </a>
+												@if(solucao.Selecionado)
+												{
+													<i class="fas fa-check-circle"></i>
+												}
+											</div>
+											<div class="in collapse" data-parent="#LISTA-SOLUCOES" id="@solucao.Id">
+												<div class="card-body">
+													<h6>Título:</h6><p>@solucao.Titulo</p>
+													<h6>Autor:</h6><p>@solucao.Autor</p>
+													<h6>Ano:</h6><p>@solucao.DataPublicacao</p>
+													<h6>Url:</h6><p><a href="@solucao.Url" target="_blank">@solucao.Url</a></p>
+													@if(!solucao.Selecionado)
+													{
+														<a class="btn btn-3 btn-sm mt-2 mb-2 w-600"
+														   asp-action="AdicionarTrilha"
+														   asp-route-solucaoId="@solucao.Id">
+															<i class="fas fa-plus-circle"></i>Adicionar à minha trilha
+														</a>
+													}
+												</div>
+											</div>
+										</div>
+									</div>
+
+								} else if(solucao.TipoDeSolucao == "video")
+								{
+									<div>
+										<div>
+											<div aria-expanded="false" class="card-header collapsed" data-parent="#LISTA-SOLUCOES" data-toggle="collapse" href="#@solucao.Id">
+                                                <a class="card-title">
+                                                    <i class="fas fa-video fa-icone-tipo-de-solucao"></i> Vídeo - 
+                                                    <small>@solucao.Titulo</small>
+                                                </a>
+												@if(solucao.Selecionado)
+												{
+													<i class="fas fa-check-circle"></i>
+												}
+											</div>
+											<div class="in collapse" data-parent="#LISTA-SOLUCOES" id="@solucao.Id">
+												<div class="card-body">
+													<h6>Título:</h6><p>@solucao.Titulo</p>
+													<h6>Autor:</h6><p>@solucao.Responsavel</p>
+													<h6>Palestrante:</h6><p>@solucao.Responsavel</p>
+													<h6>Duração:</h6><p>@solucao.Duracao</p>
+													<h6>Data Produção:</h6><p>@solucao.DataProducao</p>
+													<h6>Url:</h6><p><a href="@solucao.Url" target="_blank">@solucao.Url</a></p>
+													@if(!solucao.Selecionado)
+													{
+														<a class="btn btn-3 btn-sm mt-2 mb-2 w-600"
+														   asp-action="AdicionarTrilha"
+														   asp-route-solucaoId="@solucao.Id">
+															<i class="fas fa-plus-circle"></i> Adicionar à minha trilha
+														</a>
+													}
+												</div>
+											</div>
+										</div>
+									</div>
+								}
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row mb-6">
+			<div class="col-md-12 text-center">
+				<a class="btn btn-1 btn-lg mt-5 text-uppercase" asp-controller="home" asp-action="index"
+				   routerlinkactive="router-link-active"
+				   tabindex="0">
+					<span class="small">
+						<b>
+							<i class="fas fa-arrow-left mr-2"></i> voltar
+						</b>
+					</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</section>

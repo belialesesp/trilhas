@@ -1,0 +1,178 @@
+﻿<div class="row">
+
+    <!--DOCENTE-->
+    <div class="form-group col-md-6">
+        <label for="docente"><span class="asterisco">*</span>Docente:</label>
+        <div class="input-group">
+            <input type="text" id="docente" name="docente" class="form-control" autocomplete="off" readonly value="{{vm.horario.docente.nome}}"
+                   ng-class="{'is-invalid': (!vm.horario.docente.id && vm.submitedHorario)}" placeholder="Selecione um Docente" />
+            <div class="input-group-append">
+                <button type="button"
+                        class="btn btn-primary"
+                        data-toggle="modal"
+                        data-target="#modalBuscarDocente">
+                    <em class="fa fa-search"></em>
+                </button>
+                <button type="button" class="btn btn-outline-primary"
+                        ui-sref="docentes-cadastro" title="Adicionar Docente"
+                        ng-if="!vm.horario.docente.id">
+                    <em class="fa fa-plus-circle"></em>
+                </button>
+                <button type="button" class="btn btn-outline-primary"
+                        ui-sref="docentes-edicao({'id': vm.horario.docente.id})" title="Editar Docente"
+                        ng-if="vm.horario.docente.id">
+                    <em class="fa fa-pencil-alt"></em>
+                </button>
+            </div>
+        </div>
+        <div role="alert" ng-if="!vm.horario.docente.id && vm.submitedHorario">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--FUNÇÃO DOCENTE-->
+    <div class="form-group col-md-6">
+        <label for="funcaoDocente"><span class="asterisco">*</span>Função Docente:</label>
+        <select id="funcaoDocente" name="funcaoDocente" class="form-control w-100" ng-model="vm.horario.funcaoDocenteId"
+                ng-options="funcao.id as funcao.nome for funcao in vm.funcoesDocente"
+                ng-class="{'is-invalid' : (!vm.horario.funcaoDocenteId && vm.submitedHorario)}">
+            <option value="">-- Função --</option>
+        </select>
+        <div role="alert" ng-if="!vm.horario.funcaoDocenteId && vm.submitedHorario">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--DATA INICIO-->
+    <div class="form-group col-md-3">
+        <label for="dataInicioModulo"><span class="asterisco">*</span>Data Início:</label>
+        <input type="date" id="dataInicioModulo" name="dataInicioModulo" class="form-control" autocomplete="off"
+               ng-class="{'is-invalid': (form.dataInicioModulo.$invalid || (!vm.horario.dataInicio && vm.submitedHorario))}"
+               ng-model="vm.horario.dataInicio"
+               ng-blur="vm.validarDataModulo(form)" max="9999-12-31" />
+        <div ng-messages="form.dataInicioModulo.$error" role="alert" ng-if="form.dataInicioModulo.$invalid || (!vm.horario.dataInicio && vm.submitedHorario)">
+            <div ng-if="!vm.horario.dataInicio" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-if="vm.horario.dataInicio" ng-message="invalid" class="invalid-feedback d-block">Maior que a Data/Hora Fim</div>
+            <div ng-if="vm.horario.dataInicio" ng-message="invalid-inscricao" class="invalid-feedback d-block">Anterior a Data/Hora de Inscrição</div>
+        </div>
+    </div>
+
+    <!--DATA FIM-->
+    <div class="form-group col-md-3">
+        <label for="dataFimModulo"><span class="asterisco">*</span>Data Fim:</label>
+        <input type="date" id="dataFimModulo" name="dataFimModulo" class="form-control" autocomplete="off"
+               ng-class="{'is-invalid': (form.dataFimModulo.$invalid || (!vm.horario.dataFim && vm.submitedHorario))}"
+               ng-model="vm.horario.dataFim"
+               ng-blur="vm.validarDataModulo(form)" max="9999-12-31" />
+        <div ng-messages="form.dataFimModulo.$error" role="alert" ng-if="form.dataFimModulo.$invalid || (!vm.horario.dataFim && vm.submitedHorario)">
+            <div ng-if="!vm.horario.dataFim" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-if="vm.horario.dataFim" ng-message="invalid" class="invalid-feedback d-block">Menor que a Data/Hora Início</div>
+        </div>
+    </div>
+
+    <!--HORARIO INICIO-->
+    <div class="form-group col-md-3">
+        <label for="horarioInicioModulo"><span class="asterisco">*</span>Horário Início:</label>
+        <input type="time" id="horarioInicioModulo" name="horarioInicioModulo" class="form-control" autocomplete="off"
+               ng-class="{'is-invalid': (form.horarioInicioModulo.$invalid || (!vm.horario.horaInicio && vm.submitedHorario))}"
+               ng-model="vm.horario.horaInicio"
+               ng-blur="vm.horarioInicioModulo(form)" />
+        <div role="alert" ng-if="form.horarioInicioModulo.$dirty && vm.submitedHorario">
+            <div ng-if="!vm.horario.horaInicio" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-if="vm.horario.horaInicio" ng-message="invalid" class="invalid-feedback d-block">Maior que a Data/Hora Fim</div>
+            <div ng-if="vm.horario.horaInicio" ng-message="invalid-inscricao" class="invalid-feedback d-block">Anterior a Data/Hora de Inscrição</div>
+        </div>
+    </div>
+
+    <!--HORARIO TÉRMINO-->
+    <div class="form-group col-md-3">
+        <label for="horarioFimModulo"><span class="asterisco">*</span>Horário Fim:</label>
+        <input type="time" id="horarioFimModulo" name="horarioFimModulo" class="form-control" autocomplete="off"
+               ng-class="{'is-invalid': (form.horarioFimModulo.$invalid || (!vm.horario.horaFim && vm.submitedHorario))}"
+               ng-model="vm.horario.horaFim"
+               ng-blur="vm.validarDataModulo(form)" />
+        <div ng-messages="form.horarioFimModulo.$error" role="alert" ng-if="form.horarioFimModulo.$dirty && vm.submitedHorario">
+            <div ng-if="!vm.horario.horaFim" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-if="vm.horario.horaFim" ng-message="invalid" class="invalid-feedback d-block">Menor que a Data/Hora Início</div>
+        </div>
+    </div>
+
+    <!--MÓDULO-->
+    <div class="form-group col-md-6">
+        <label for="modulo"><span class="asterisco">*</span>Módulo:</label>
+        <span class="float-right" ng-class="{'text-danger' : vm.horasRestantes > 0}" ng-if="vm.horario.moduloId">(Faltando: {{vm.horasRestantes}} horas)</span>
+        <select id="modulo" name="modulo" class="form-control w-100" ng-model="vm.horario.moduloId"
+                ng-options="modulo.id as (modulo.nome + ' | ' + modulo.cargaHoraria + ' horas') for modulo in vm.evento.curso.modulos"
+                ng-class="{'is-invalid' : (!vm.horario.moduloId && vm.submitedHorario)}"
+                ng-change="vm.calcularHorasRestantes()"
+                ng-disabled="!vm.evento.curso">
+            <option value="">-- Módulo --</option>
+        </select>
+        <div ng-if="!vm.horario.moduloId && vm.submitedHorario" role="alert">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--SALA-->
+    <div class="form-group col-md-3">
+        <label for="sala"><span class="asterisco">*</span>Sala:</label>
+        <select id="sala" name="sala" class="form-control w-100" ng-model="vm.horario.salaId" ng-disabled="vm.flagEad || !vm.evento.local"
+                ng-options="sala.id as (sala.sigla + '-' + sala.numero + ' | Capacidade: ' + sala.capacidade) for sala in vm.salas"
+                ng-class="{'is-invalid' : (!vm.flagEad && !vm.horario.salaId && vm.submitedHorario)}">
+            <option value="">-- Sala --</option>
+        </select>
+        <div ng-if="!vm.flagEad && !vm.horario.salaId && vm.submitedHorario" role="alert">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--BOTÃO ADICIONAR HORA MÓDULO-->
+    <div class="form-group col-md-2">
+        <label class="">&nbsp;</label>
+        <button class="btn btn-sm btn-block" ng-class="{'btn-success' : vm.horarioEdicao === null, 'btn-warning' : vm.horarioEdicao !== null}" type="button" ng-click="vm.adicionarHorario($event, form) ">
+            <em ng-class="{'fas fa-plus-circle' : vm.horarioEdicao === null, 'fas fa-edit' : vm.horarioEdicao !== null}"></em> {{vm.horarioEdicao !== null ? 'Alterar' : 'Incluir'}}
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped-custom table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Horário</th>
+                    <th>Módulo</th>
+                    <th>Docente</th>
+                    <th>Função</th>
+                    <th ng-show="!vm.flagEad">Sala</th>
+                    <th style="width:8%"></th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td colspan="6"><strong>Total de horas:</strong> {{vm.totalDeHoras}}</td>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr ng-repeat="horario in vm.evento.horarios track by $index" class="{{vm.horarioEdicao === $index ? 'active' : ''}}" style="cursor:pointer">
+                    <td ng-click="vm.selecionarHorario($index)">{{horario.dataInicio | date : 'dd/MM/yyyy' }} - {{horario.horaInicio | date : 'HH:mm' }} às {{horario.horaFim | date : 'HH:mm' }}</td>
+                    <td ng-click="vm.selecionarHorario($index)">{{horario.moduloNome}}</td>
+                    <td ng-click="vm.selecionarHorario($index)">{{horario.docenteNome}}</td>
+                    <td ng-click="vm.selecionarHorario($index)">{{horario.funcaoDocenteNome}}</td>
+                    <td ng-click="vm.selecionarHorario($index)" ng-show="!vm.flagEad">{{horario.sala.sigla}}-{{horario.sala.numero}}</td>
+                    <td class="text-center">
+                        <a href="" class="text-danger" ng-click="vm.excluirHorario($event, form, $index)" title="Remover Horário"><em class="fa fa-window-close"></em></a>
+                    </td>
+                </tr>
+                <tr ng-if="(!vm.evento.horarios || vm.evento.horarios.length == 0) ">
+                    <td colspan="6" ng-class="{'td-invalid' : form.$submitted}">
+                        Nenhum horário cadastrado.
+                        <div role="alert" ng-if="form.$submitted">
+                            <div class="invalid-feedback d-block">Cadastre pelo menos um horário.</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

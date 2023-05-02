@@ -1,0 +1,79 @@
+﻿<div class="row">
+    <!--EMAIL-->
+    <div class="form-group col-md-12">
+        <label for="email"><span class="asterisco">*</span>E-mail:</label>
+        <input type="email" id="email" name="email" class="form-control" required autocomplete="off" capitalize
+               ng-class="{'is-invalid': form.email.$invalid && (form.email.$dirty || form.$submitted)}" ng-model="vm.pessoa.email" />
+        <div ng-messages="form.email.$error" role="alert" ng-if="form.email.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--TIPO CONTATO -->
+    <div class="form-group col-md-5">
+        <label for="tipoContato">Tipo Contato:</label>
+        <div class="input-group">
+            <select id="tipoContato"
+                    name="tipoContato"
+                    class="form-control"
+                    ng-options="tipo as tipo.nome for tipo in vm.tiposContato"
+                    ng-model="vm.contato.tipo"
+                    ng-class="{'is-invalid': !vm.contato.tipo && vm.submitedFormContato}">
+                <option value=""> -- Selecione um Tipo -- </option>
+            </select>
+        </div>
+        <div role="alert" ng-if="vm.submitedFormContato && !vm.contato.tipo">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--NUMERO CONTATO-->
+    <div class="form-group col-md-5">
+        <label for="numeroContato">Número:</label>
+        <input type="text" min="0" id="numeroContato" name="numeroContato" class="form-control" autocomplete="off"
+               ng-class="{'is-invalid': !vm.contato.numero && vm.submitedFormContato}"
+               ng-enter="vm.adicionarContato($event)"
+               ng-model="vm.contato.numero" ui-mask="(99) 9?99999999" />
+        <div role="alert" ng-if="vm.submitedFormContato && !vm.contato.numero">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--BOTÃO ADICIONAR CONTATO-->
+    <div class="form-group col-md-2">
+        <label class="">&nbsp;</label>
+        <button class="btn btn-success btn-sm btn-block" type="button" ng-click="vm.adicionarContato($event) "><em class="fas fa-plus-circle"></em> Incluir</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-md-12  is-invalid">
+        <!--TABELA DE CONTATO-->
+        <table class="table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th style="width:35%">Tipo</th>
+                    <th>Número</th>
+                    <th style="width:10%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="contato in vm.pessoa.contatos track by $index">
+                    <td>{{contato.tipo.nome}}</td>
+                    <td>{{contato.numero}}</td>
+                    <td class="text-center">
+                        <a href="" class="text-danger" ng-click="vm.excluirContato($index)" title="Remover Contato"><em class="fa fa-window-close"></em></a>
+                    </td>
+                </tr>
+                <tr ng-if="!vm.pessoa.contatos || vm.pessoa.contatos.length == 0">
+                    <td colspan="3" ng-class="{'td-invalid': form.$submitted}">
+                        Nenhum contato cadastrado.
+                        <div ng-if="form.$submitted" role="alert">
+                            <div class="invalid-feedback d-block">Cadastre pelo menos um contato.</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

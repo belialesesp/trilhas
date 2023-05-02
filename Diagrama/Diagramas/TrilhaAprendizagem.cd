@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Trilhas.Data.Model.Curso">
+    <Position X="0.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="NivelDoCurso" />
+      <Property Name="TipoDoCurso" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.Deficiencia" Collapsed="true">
+    <Position X="12" Y="12.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.Eixo" Collapsed="true">
+    <Position X="0.5" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.Entidade">
+    <Position X="14" Y="9.25" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Tipo" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.Escolaridade" Collapsed="true">
+    <Position X="12" Y="8.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.Estacao">
+    <Position X="3.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Eixo" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.Habilidade">
+    <Position X="0.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="SolucaoEducacional" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.ItemDaTrilha">
+    <Position X="6" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="SolucaoEducacional" />
+      <Property Name="Trilha" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.Livro">
+    <Position X="3" Y="5.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.Local">
+    <Position X="17.25" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.LocalContato">
+    <Position X="14.5" Y="7" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="TipoContato" />
+      <Property Name="Local" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.LocalRecurso">
+    <Position X="14.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Local" />
+      <Property Name="Recurso" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.LocalSala">
+    <Position X="18.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Local" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.Modulo">
+    <Position X="7.25" Y="4" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="SolucaoEducacional" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.Municipio" Collapsed="true">
+    <Position X="11.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.NivelDeCurso" Collapsed="true">
+    <Position X="3.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.OrgaoExpedidor" Collapsed="true">
+    <Position X="12" Y="11.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.Pessoa">
+    <Position X="7.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="OrgaoExpedidorIdentidade" />
+      <Property Name="Entidade" />
+      <Property Name="Escolaridade" />
+      <Property Name="Sexo" />
+      <Property Name="Deficiencia" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.PessoaContato">
+    <Position X="11.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Pessoa" />
+      <Property Name="TipoContato" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.Recurso" Collapsed="true">
+    <Position X="14.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.Sexo" Collapsed="true">
+    <Position X="12" Y="10.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.SolucaoEducacional">
+    <Position X="3" Y="3.25" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Estacao" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Trilhas.Data.Model.TipoDeCurso" Collapsed="true">
+    <Position X="1.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.TipoLocalContato">
+    <Position X="13.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.TipoPessoaContato" Collapsed="true">
+    <Position X="9" Y="5.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.TiposDeEntidade" Collapsed="true">
+    <Position X="16.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.TrilhaDoUsuario">
+    <Position X="8.75" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Trilhas.Data.Model.Video">
+    <Position X="5.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,113 @@
+﻿<div ng-app="trilhasapp" ng-controller="LocaisController as vm">
+
+    <div class="content-header">
+        <h5>Cadastros <em class="fa fa-angle-right"></em> Locais</h5>
+        <div class="line"></div>
+    </div>
+
+    <a ui-sref="locais-cadastro" id="btn-form" class="btn btn-primary"><em class="fas fa-plus-circle"></em> Adicionar</a>
+
+    <form name="form">
+        <fieldset class="query-form">
+            <div class="row">
+                <!--NOME-->
+                <div class="form-group col-md-8 col-sm-12">
+                    <input class="form-control w-100" id="nome" type="text" placeholder="Nome" ng-model="vm.query.nome" autocomplete="off" capitalize />
+                </div>
+
+                <!--CAPACIDADE-->
+                <div class="form-group col-md-4 col-sm-12">
+                    <input class="form-control w-100" id="capacidade" type="number" placeholder="Capacidade" ng-model="vm.query.capacidade" autocomplete="off" />
+                </div>
+
+                <!--ENDEREÇO-->
+                <div class="form-group col-md-8 col-sm-12">
+                    <input class="form-control w-100" id="endereco" type="text" placeholder="Endereço" ng-model="vm.query.endereco" autocomplete="off" capitalize />
+                </div>
+
+                <!--EXCLUIDOS-->
+                <div class="form-group col-md-2 col-sm-12">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="excluidos" ng-model="vm.query.excluidos" />
+                        <label class="custom-control-label" for="excluidos">Exibir excluídos</label>
+                    </div>
+                </div>
+
+                <!--FILTRO-->
+                <div class="form-group col-md-2 col-sm-12">
+                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrar()"><em class="fas fa-filter"></em> Filtrar</button>
+                </div>
+
+            </div>
+        </fieldset>
+    </form>
+
+    <div class="row" ng-if="vm.locais">
+        <div class="col-md-12">
+            <table class="table table-striped-custom table-hover">
+                <caption ng-if="vm.pager.totalItems > 0">
+                    <nav aria-label="Page navigation">
+                        <div class="row col-12 text-center pr-1">
+                            <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vm.pager.pages.length">
+                                <li class="page-item" ng-class="{disabled:vm.pager.currentPage == 1}">
+                                    <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage - 1)"><<</a>
+                                </li>
+                                <li class="page-item" ng-repeat="page in vm.pager.pages" ng-class="{active:vm.pager.currentPage == page}">
+                                    <a class="page-link" ng-click="vm.filtrar(page)">{{page}}</a>
+                                </li>
+                                <li class="page-item" ng-class="{disabled:vm.pager.currentPage == vm.pager.totalPages}">
+                                    <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage + 1)">>></a>
+                                </li>
+                                <li class="page-item" style="padding-left: 15px;">
+                                    <select ng-model="vm.pageSize" class="page-link" ng-change="vm.filtrar(page)"
+                                            ng-options="size.qtd as size.desc for size in vm.listPageSize"></select>
+                                </li>
+                            </ul>
+                            <div class="offset-2 col-3 text-right pr-0">Exibindo: <strong>{{vm.pager.startIndex + 1}} - {{vm.pager.endIndex + 1}}</strong> de <strong>{{vm.pager.totalItems}}</strong> registro(s)</div>
+                        </div>
+                    </nav>
+                </caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width: 7%">ID</th>
+                        <th>Nome</th>
+                        <th style="width: 38%" class="d-none d-md-table-cell">Endereço</th>
+                        <th style="width: 10%" class="text-right d-none d-md-table-cell">Qtd. de salas</th>
+                        <th style="width: 10%" class="d-sm-table-cell d-md-none">Salas</th>
+                        <th style="width: 10%" class="text-right d-none d-md-table-cell">Capacidade</th>
+                        <th style="width: 10%" class="d-sm-table-cell d-md-none">Capacidade</th>
+                        <th style="width: 9%" class="table-actions">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="local in vm.locais" title="Clique na linha para visualizar as salas">
+                        <td ng-class="{strike: local.excluido}">{{local.id}}</td>
+                        <td ng-class="{strike: local.excluido}">{{local.nome}}</td>
+                        <td class="d-none d-md-table-cell" ng-click="vm.selecionaLocal(local)" ng-class="{strike: local.excluido}">{{local.logradouro}}</td>
+                        <td class="text-right" ng-class="{strike: local.excluido}">{{local.salas.length}}</td>
+                        <td class="text-right" ng-class="{strike: local.excluido}">{{local.capacidadeTotal}}</td>
+                        <td class="table-actions">
+                            <span ng-if="!local.excluido">
+                                <a ui-sref="locais-edicao({'id': {{local.id}} })"
+                                   tooltip
+                                   data-placement="top"
+                                   title="Editar"><span class="fa fa-pencil-alt"></span></a>
+                                <a ui-sref="" ng-click="vm.marcarExclusao(local.id)"
+                                   tooltip
+                                   data-toggle="modal"
+                                   data-placement="top"
+                                   title="Excluir"
+                                   data-target="#confirm-dialog"><span class="fa fa-trash"></span></a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr ng-if="vm.locais.length == 0">
+                        <td colspan="6">Nenhum registro encontrado.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+</div>

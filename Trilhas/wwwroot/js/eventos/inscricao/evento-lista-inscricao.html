@@ -1,0 +1,126 @@
+﻿<div ng-app="trilhasapp" ng-controller="EventoListaInscricaoController as vm">
+
+    <div id="tb-relatorio" class="print">
+        <table>
+            <tr id="l_1">
+                <td id="c1_1" rowspan="2"><img id="LogoES" src="/images/logoES.png" alt="Brasão do Espírito Santo"></td>
+                <td><strong>GOVERNO DO ESTADO DO ESPÍRITO SANTO </strong></td>
+                <td id="c1_3" rowspan="2"><strong>Emissão: {{vm.dataAtual | date: 'dd/MM/yyyy HH:mm'}}</strong><br />
+            </tr>
+            <tr id="l_2">
+                <td><strong>ESCOLA DE SERVIÇO PÚBLICO DO ESPÍRITO SANTO </strong></td>
+            </tr>
+            <tr id="l_3">
+                <td colspan="3"><strong>Relatório de Lista de Inscrição </strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="tb-relatorio" class="print">
+        <table>
+            <tr>
+                <td class="padding-td"><strong>Curso: </strong>{{vm.eventoListaInscrito.evento.nome}}</td>
+            </tr>
+            <tr>
+                <td class="padding-td"><strong>Entidade Demandante: </strong>{{vm.eventoListaInscrito.evento.entidade}}</td>
+            </tr>
+            <tr>
+                <td class="padding-td">
+                    <strong>Período de inscrição: </strong>{{vm.eventoListaInscrito.evento.dataInicioInscricao | date : 'dd/MM/yyyy'}} - {{vm.eventoListaInscrito.evento.dataFimInscricao | date : 'dd/MM/yyyy'}}
+                    <strong style="padding-left:9%">Período de realização: </strong>{{vm.eventoListaInscrito.evento.dataInicio | date : 'dd/MM/yyyy'}} - {{vm.eventoListaInscrito.evento.dataFim | date : 'dd/MM/yyyy'}}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="content-header">
+        <h5>Evento <em class="fa fa-angle-right"></em> Lista de Inscrição</h5>
+        <div class="line"></div>
+    </div>
+
+    <div class="sumario row no-print">
+        <div class="col-12">
+            <strong>Curso: </strong>{{vm.eventoListaInscrito.evento.nome}}
+        </div>
+        <div class="col-12">
+            <strong>Entidade Demandante: </strong>{{vm.eventoListaInscrito.evento.entidade}}
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <strong>Período de inscrição: </strong>{{vm.eventoListaInscrito.evento.dataInicioInscricao | date : 'dd/MM/yyyy'}} - {{vm.eventoListaInscrito.evento.dataFimInscricao | date : 'dd/MM/yyyy'}}
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <strong>Período de realização: </strong>{{vm.eventoListaInscrito.evento.dataInicio | date : 'dd/MM/yyyy'}} - {{vm.eventoListaInscrito.evento.dataFim | date : 'dd/MM/yyyy'}}
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <strong>Inscritos: </strong>{{vm.eventoListaInscrito.inscritos.length}}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped-custom table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Cursista</th>
+                        <th style="width: 12%">CPF</th>
+                        <th style="width: 12%">Nr. Funcional</th>
+                        <th style="width: 20%">E-mail</th>
+                        <th style="width: 12%">Data da Inscrição</th>
+                        <th style="width: 10%" class="table-actions">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="inscrito in vm.eventoListaInscrito.inscritos">
+                        <td>{{inscrito.cursista.nome}}</td>
+                        <td>{{inscrito.cursista.cpf}}</td>
+                        <td>{{inscrito.cursista.numeroFuncional}}</td>
+                        <td>{{inscrito.cursista.email}}</td>
+                        <td>{{inscrito.dataDeInscricao | date:'dd/MM/yyyy'}}</td>
+                        <td class="table-actions">
+                            <a href="/etiqueta/index?cursistaId={{inscrito.cursista.id}}&eventoId={{vm.eventoListaInscrito.evento.id}}" target="_blank"
+                               tooltip
+                               data-placement="top"
+                               title="Gerar Etiqueta de Identificação do Cursista">
+                                <em class="far fa-id-badge"></em>
+                            </a>
+                            <a ui-sref=""
+                               tooltip data-toggle="modal"
+                               data-placement="top"
+                               data-target="#confirm-dialog"
+                               title="Cancelar inscrição do Cursista"
+                               ng-click="vm.marcarCancelamento(inscrito.cursista.id)">
+                                <em class="fa fa-ban"></em>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr ng-if="vm.inscricaoAndamento && vm.eventoListaInscrito.inscritos.length == 0">
+                        <td colspan="6">Nenhum Cursista Inscrito no evento.</td>
+                    </tr>
+                    <tr ng-if="vm.inscricaoNaoIniciada">
+                        <td colspan="6">Atenção: O período de inscrição para o evento ainda não iniciou.</td>
+                    </tr>
+                    <tr ng-if="vm.inscricaoFinalizada">
+                        <td colspan="6">Atenção: Evento fora do período de inscrição.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <fieldset class="actions-form no-print">
+        <div class="row">
+            <div class="left-buttons col-md-4 col-sm-12">
+                <a href="" target="_blank" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+            </div>
+
+            <div class="right-buttons col-md-8 col-sm-12">
+                <a href="/relatorios/relatorioCursista?eventoId={{vm.eventoListaInscrito.evento.id}}" class="btn btn-success" target="_blank"><em class="fa fa-print"></em> Relatório de Inscritos</a>
+                <a href="/eventos/downloadListaInscritosEvento?id={{vm.eventoListaInscrito.evento.id}}" class="btn btn-success" target="_blank" title="Download da Lista de Inscrição"><em class="fa fa-file-csv"></em> Download (EAD)</a>
+                <button type="button" ui-sref="eventos-inscricao({id: vm.listaInscritosId })" class="btn btn-primary"><em class="fas fa-male"></em> Inscrever Cursista</button>
+            </div>
+        </div>
+    </fieldset>
+
+    <confirm-cancelar-inscricao-component confirmation-callback="vm.cancelarInscricao"></confirm-cancelar-inscricao-component>
+
+</div>

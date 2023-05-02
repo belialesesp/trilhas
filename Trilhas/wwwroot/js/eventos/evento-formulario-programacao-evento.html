@@ -1,0 +1,206 @@
+﻿<div class="row">
+    <!--COORDENADOR-->
+    <div class="form-group col-md-10">
+        <label for="entidade"><span class="asterisco">*</span>Coordenador:</label>
+        <div class="input-group">
+            <input type="text" id="coordenador" name="coordenador" class="form-control" autocomplete="off" readonly
+                   ng-class="{'is-invalid': ((!vm.evento.coordenador || !vm.evento.coordenador.nome) && form.$submitted ) }"
+                   value="{{vm.evento.coordenador.nome}}" placeholder="Selecione o Coordenador" />
+            <div class="input-group-append">
+                <button type="button"
+                        class="btn btn-primary"
+                        data-toggle="modal"
+                        data-target="#modalBuscarCoordenador">
+                    <em class="fa fa-search"></em>
+                </button>
+                <button type="button" class="btn btn-outline-primary"
+                        ui-sref="pessoas-cadastro" title="Adicionar Coordenador"
+                        ng-if="!vm.evento.coordenador.id">
+                    <em class="fa fa-plus-circle"></em>
+                </button>
+                <button type="button" class="btn btn-outline-primary"
+                        ui-sref="pessoas-edicao({'id': vm.evento.coordenador.id})" title="Editar Coordenador"
+                        ng-if="vm.evento.coordenador.id">
+                    <em class="fa fa-pencil-alt"></em>
+                </button>
+            </div>
+        </div>
+        <div role="alert" ng-if="((!vm.evento.coordenador || !vm.evento.coordenador.nome) && form.$submitted)">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--QUANTIDADE VAGAS-->
+    <div class="form-group col-md-2">
+        <label for="numeroVagas"><span class="asterisco">*</span>Número de Vagas:</label>
+        <input type="number" id="numeroVagas" name="numeroVagas" class="form-control" required autocomplete="off" min="0"
+               ng-class="{'is-invalid': form.numeroVagas.$invalid && (form.numeroVagas.$dirty || form.$submitted ) }"
+               ng-blur="vm.validaVagas()"
+               ng-model="vm.evento.agenda.numeroVagas" />
+        <div ng-messages="form.numeroVagas.$error" role="alert" ng-if="(form.numeroVagas.$dirty || form.$submitted ) ">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--ENTIDADE-->
+    <div class="form-group col-md-6">
+        <label for="entidade"><span class="asterisco">*</span>Entidade:</label>
+        <div class="input-group">
+            <input type="text" id="entidade" name="entidade" class="form-control" autocomplete="off" readonly
+                   ng-class="{'is-invalid': ((!vm.evento.entidade || !vm.evento.entidade.nome) && form.$submitted ) }"
+                   value="{{vm.evento.entidade.nome}}" placeholder="Selecione a Entidade" />
+            <div class="input-group-append">
+                <button type="button"
+                        class="btn btn-primary"
+                        data-toggle="modal"
+                        data-target="#modalBuscarEntidade">
+                    <em class="fa fa-search"></em>
+                </button>
+                <button type="button" class="btn btn-outline-primary"
+                        ui-sref="eventos-cadastro" title="Adicionar Evento"
+                        ng-if="!vm.evento.entidade.id">
+                    <em class="fa fa-plus-circle"></em>
+                </button>
+                <button type="button" class="btn btn-outline-primary"
+                        ui-sref="eventos-edicao({'id': vm.evento.entidade.id})" title="Editar Entidade"
+                        ng-if="vm.evento.entidade.id">
+                    <em class="fa fa-pencil-alt"></em>
+                </button>
+            </div>
+        </div>
+        <div role="alert" ng-if="((!vm.evento.entidade || !vm.evento.entidade.nome) && form.$submitted)">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--LOCAL-->
+    <div class="form-group col-md-6">
+        <div ng-if="!vm.flagEad">
+            <label for="local"><span class="asterisco">*</span>Local:</label>
+            <span class="float-right" ng-class="{'text-danger' : vm.evento.local.capacidadeTotal < vm.evento.agenda.numeroVagas}" ng-if="vm.evento.local">(Capacidade: {{vm.evento.local.capacidadeTotal}} pessoas)</span>
+            <div class="input-group">
+                <input type="text" id="local" name="local" class="form-control" autocomplete="off" readonly
+                       ng-class="{'is-invalid': ((!vm.evento.local || !vm.evento.local.nome) && form.$submitted ) }"
+                       value="{{vm.evento.local.nome}}" placeholder="Selecione o Local" />
+                <div class="input-group-append">
+                    <button type="button"
+                            class="btn btn-primary"
+                            data-toggle="modal"
+                            data-target="#modalBuscarLocal">
+                        <em class="fa fa-search"></em>
+                    </button>
+                    <button type="button" class="btn btn-outline-primary"
+                            ui-sref="locais-cadastro" title="Adicionar Local"
+                            ng-if="!vm.evento.local.id">
+                        <em class="fa fa-plus-circle"></em>
+                    </button>
+                    <button type="button" class="btn btn-outline-primary"
+                            ui-sref="locais-edicao({'id': vm.evento.local.id})" title="Editar Local"
+                            ng-if="vm.evento.local.id">
+                        <em class="fa fa-pencil-alt"></em>
+                    </button>
+                </div>
+            </div>
+            <div role="alert" ng-if="((!vm.evento.local || !vm.evento.local.nome) && form.$submitted)">
+                <div class="invalid-feedback d-block">Campo obrigatório</div>
+            </div>
+        </div>
+
+        <div ng-if="vm.flagEad">
+            <label for="urlEad"><span class="asterisco">*</span>URL do Ambiente Virtual:</label>
+            <div class="input-group">
+                <input type="url" id="urlEad" name="urlEad" class="form-control" placeholder=""
+                       ng-class="{'is-invalid': form.urlEad.$invalid && (form.urlEad.$dirty || form.$submitted)}"
+                       ng-model="vm.evento.urlEad" />
+            </div>
+        </div>
+    </div>
+
+    <!--DATA INICIO INSCRIÇÃO-->
+    <div class="form-group col-md-3">
+        <label for="dataInscricaoInicio"><span class="asterisco">*</span>Data Início Inscrição:</label>
+        <input type="date" id="dataInscricaoInicio" name="dataInscricaoInicio" class="form-control" required autocomplete="off"
+               ng-class="{'is-invalid': form.dataInscricaoInicio.$invalid && (form.dataInscricaoInicio.$dirty || form.$submitted)}"
+               ng-model="vm.evento.agenda.dataInscricaoInicio"
+               ng-blur="vm.validarDataInicioInscricao(form)" max="9999-12-31" />
+        <div ng-messages="form.dataInscricaoInicio.$error" role="alert" ng-if="(form.dataInscricaoInicio.$dirty || form.$submitted)">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-message="invalid" class="invalid-feedback d-block">Maior que a Data/Hora Fim</div>
+            <div ng-message="retroativa" class="invalid-feedback d-block">Anterior à Data atual</div>
+        </div>
+    </div>
+
+    <!--DATA FIM INSCRIÇÃO-->
+    <div class="form-group col-md-3">
+        <label for="dataInscricaoFim"><span class="asterisco">*</span>Data Fim Inscrição:</label>
+        <input type="date" id="dataInscricaoFim" name="dataInscricaoFim" class="form-control" autocomplete="off" required
+               ng-class="{'is-invalid': form.dataInscricaoFim.$invalid && (form.dataInscricaoFim.$dirty || form.$submitted)}"
+               ng-model="vm.evento.agenda.dataInscricaoFim"
+               ng-blur="vm.validarDataInscricao(form)" max="9999-12-31" />
+        <div ng-messages="form.dataInscricaoFim.$error" role="alert" ng-if="form.dataInscricaoFim.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-message="invalid" class="invalid-feedback d-block">Menor que a Data/Hora Início</div>
+        </div>
+    </div>
+
+    <!--HORARIO INICIO INSCRIÇÃO-->
+    <div class="form-group col-md-3">
+        <label for="horaInscricaoInicio"><span class="asterisco">*</span>Horário Início Inscrição:</label>
+        <input type="time" id="horaInscricaoInicio" name="horaInscricaoInicio" class="form-control" autocomplete="off" required
+               ng-class="{'is-invalid': form.horaInscricaoInicio.$invalid && (form.horaInscricaoInicio.$dirty || form.$submitted)}"
+               ng-model="vm.evento.agenda.horaInscricaoInicio"
+               ng-blur="vm.validarDataInscricao(form)" />
+        <div ng-messages="form.horaInscricaoInicio.$error" role="alert" ng-if="form.horaInscricaoInicio.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-message="invalid" class="invalid-feedback d-block">Maior que a Data/Hora Fim</div>
+            <div ng-message="retroativa" class="invalid-feedback d-block">Anterior à Data atual</div>
+        </div>
+    </div>
+
+    <!--HORARIO FIM INSCRIÇÃO-->
+    <div class="form-group col-md-3">
+        <label for="horaInscricaoFim"><span class="asterisco">*</span>Horário Fim Inscrição:</label>
+        <input type="time" id="horaInscricaoFim" name="horaInscricaoFim" class="form-control" autocomplete="off" required
+               ng-class="{'is-invalid': form.horaInscricaoFim.$invalid && (form.horaInscricaoFim.$dirty || form.$submitted)}"
+               ng-model="vm.evento.agenda.horaInscricaoFim"
+               ng-blur="vm.validarDataInscricao(form)" />
+        <div ng-messages="form.horaInscricaoFim.$error" role="alert" ng-if="form.horaInscricaoFim.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-message="invalid" class="invalid-feedback d-block">Menor que a Data/Hora Início</div>
+        </div>
+    </div>
+
+    <!--CERTIFICADO-->
+    <div class="form-group col-md-4">
+        <label for="certificado"><span class="asterisco" ng-if="vm.evento.curso.permiteCertificado">*</span>Certificado:</label>
+        <select id="certificado" name="certificado" class="form-control w-100" ng-model="vm.evento.certificadoId"
+                ng-required="vm.evento.curso.permiteCertificado" ng-disabled="!vm.evento.curso.permiteCertificado"
+                ng-options="certificado.id as certificado.nome for certificado in vm.certificados">
+        </select>
+        <div ng-messages="form.certificado.$error" role="alert" ng-if="form.certificado.$dirty">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--Declaração Cursista-->
+    <div class="form-group col-md-4">
+        <label for="declaracaoCursista"><span class="asterisco">*</span>Declaração Cursista:</label>
+        <select id="declaracaoCursista" name="declaracaoCursista" class="form-control w-100" ng-model="vm.evento.declaracaoCursistaId"
+                ng-disabled="!vm.evento.curso" ng-options="declaracaoCursista.id as declaracaoCursista.nome for declaracaoCursista in vm.declaracaoCursista">
+        </select>
+        <div ng-messages="form.declaracaoCursista.$error" role="alert" ng-if="form.declaracaoCursista.$dirty">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--Declaração Docente-->
+    <div class="form-group col-md-4">
+        <label for="declaracaoDocente"><span class="asterisco">*</span>Declaração Docente:</label>
+        <select id="declaracaoDocente" name="declaracaoDocente" class="form-control w-100" ng-model="vm.evento.declaracaoDocenteId"
+                ng-disabled="!vm.evento.curso" ng-options="declaracaoDocente.id as declaracaoDocente.nome for declaracaoDocente in vm.declaracaoDocente">
+        </select>
+        <div ng-messages="form.declaracaoDocente.$error" role="alert" ng-if="form.declaracaoDocente.$dirty">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+</div>

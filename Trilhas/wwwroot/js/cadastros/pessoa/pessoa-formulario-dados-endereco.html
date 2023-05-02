@@ -1,0 +1,86 @@
+﻿<div class="row">
+    <!--LOGRADOURO-->
+    <div class="form-group col-md-10 col-sm-12">
+        <label for="logradouro"><span class="asterisco">*</span>Logradouro:</label>
+        <input type="text" id="logradouro" name="logradouro" class="form-control" required autocomplete="off" capitalize
+               ng-class="{'is-invalid': form.logradouro.$invalid && (form.logradouro.$dirty || form.$submitted)}" ng-model="vm.pessoa.logradouro" />
+        <div ng-messages="form.logradouro.$error" role="alert" ng-if="form.logradouro.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--NUMERO-->
+    <div class="form-group col-md-2 col-sm-12">
+        <label for="numeroEndereco">Número:</label>
+        <input type="text" id="numeroEndereco" name="numeroEndereco" class="form-control text-right"
+               ng-model="vm.pessoa.numero" autocomplete="off" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+    </div>
+
+    <!--COMPLEMENTO-->
+    <div class="form-group col-md-9 col-sm-12">
+        <label for="complemento">Complemento:</label>
+        <input type="text" id="complemento" name="complemento" capitalize
+               class="form-control" autocomplete="off" ng-model="vm.pessoa.complemento" />
+    </div>
+
+    <!--CEP-->
+    <div class="form-group col-md-3 col-sm-12">
+        <label for="cep"><span class="asterisco">*</span>CEP: </label>
+        <input type="text" id="cep" name="cep" class="form-control text-center" required autocomplete="off" ui-br-cep-mask placeholder="00000-000" capitalize
+               ng-class="{'is-invalid': form.cep.$invalid && (form.cep.$dirty || form.$submitted)}" ng-model="vm.pessoa.cep" />
+        <div ng-messages="form.cep.$error" role="alert" ng-if="form.cep.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--BAIRRO-->
+    <div class="form-group col-md-5 col-sm-12">
+        <label for="bairro"><span class="asterisco">*</span>Bairro:</label>
+        <input type="text" id="bairro" name="bairro" class="form-control" autocomplete="off" capitalize required
+               ng-class="{'is-invalid': form.bairro.$invalid && (form.bairro.$dirty || form.$submitted)}" ng-model="vm.pessoa.bairro" />
+        <div ng-messages="form.bairro.$error" role="alert" ng-if="form.bairro.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--UF-->
+    <div class="form-group col-md-2 col-sm-12">
+        <label for="uf"><span class="asterisco">*</span>UF:</label>
+        <div class="input-group">
+            <select id="uf"
+                    name="uf"
+                    class="form-control"
+                    ng-class="{'is-invalid': form.uf.$invalid && (form.uf.$dirty || form.$submitted)}"
+                    ng-options="uf for uf in vm.ufs"
+                    ng-change="vm.carregarMunicipios(vm.pessoa.uf)"
+                    ng-model="vm.pessoa.uf"
+                    required>
+                <option value=""> -- UF -- </option>
+            </select>
+        </div>
+        <div ng-messages="form.uf.$error" role="alert" ng-if="form.uf.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--MUNICIPIO-->
+    <div class="form-group col-md-5 col-sm-12">
+        <label for="cidade"><span class="asterisco">*</span>Cidade:</label>
+        <div class="input-group">
+            <select id="cidade"
+                    name="cidade"
+                    class="form-control text-center"
+                    ng-class="{'is-invalid': form.cidade.$invalid && (form.cidade.$dirty || form.$submitted)}"
+                    ng-options="municipio.id as municipio.nomeMunicipio for municipio in vm.municipios"
+                    ng-model="vm.pessoa.cidade"
+                    ng-disabled="!vm.pessoa.uf"
+                    required>
+                <option value=""> -- Selecione um Município -- </option>
+            </select>
+        </div>
+
+        <div ng-messages="form.cidade.$error" role="alert" ng-if="form.cidade.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+</div>

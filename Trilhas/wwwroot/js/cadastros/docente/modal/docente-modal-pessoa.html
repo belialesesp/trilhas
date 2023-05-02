@@ -1,0 +1,91 @@
+﻿<div id="docenteModalBuscarPessoa" ng-controller="DocenteModalPessoaController as vmx"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Pesquisar Pessoa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <fieldset class="query-form">
+                    <div class="row">
+                        <!--NOME-->
+                        <div class="form-group col-12">
+                            <input type="text" id="nomeCoordenador" class="form-control w-100" placeholder="Nome" autocomplete="off" capitalize
+                                   ng-model="vmx.queryCoordenador.nome" ng-enter="vmx.filtrar()" />
+                        </div>
+                        <!--CPF-->
+                        <div class="form-group col-md-5 col-sm-12">
+                            <input type="text" id="cpfCoordenador" class="form-control" placeholder="CPF" autocomplete="off" ng-model-options="{allowInvalid: true}" ui-br-cpf-mask
+                                   ng-model="vmx.queryCoordenador.cpf" ng-enter="vmx.filtrar()" />
+                            <!--oninput="this.value=this.value.replace(/[^0-9]/g,'')"-->
+                        </div>
+                        <!--NUMERO FUNCIONAL-->
+                        <div class="form-group col-md-5 col-sm-12">
+                            <input type="text" id="numeroFuncionalCoordenador" class="form-control" placeholder="Número Funcional" autocomplete="off" oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                                   ng-model="vmx.queryCoordenador.numeroFuncional" ng-enter="vmx.filtrar()" />
+                        </div>
+                        <!--FILTRO-->
+                        <div class="form-group col-md-2 col-sm-12">
+                            <button class="btn btn-info btn-sm btn-block" ng-click="vmx.filtrar()"><em class="fas fa-filter"></em> Filtrar</button>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="row" ng-if="vmx.coordenadoresPesquisa">
+                    <div class="col-12">
+                        <table class="table table-sm table-striped-custom table-hover fixed_header">
+                            <caption ng-if="vmx.pager.totalItems > 0">
+                                <nav aria-label="Page navigation">
+                                    <div class="row col-12 text-center pr-1">
+                                        <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vmx.pager.pages.length">
+                                            <li class="page-item" ng-class="{disabled:vmx.pager.currentPage == 1}">
+                                                <a class="page-link" ng-click="vmx.filtrar(vmx.pager.currentPage - 1)"><<</a>
+                                            </li>
+                                            <li class="page-item" ng-repeat="page in vmx.pager.pages" ng-class="{active:vmx.pager.currentPage == page}">
+                                                <a class="page-link" ng-click="vmx.filtrar(page)">{{page}}</a>
+                                            </li>
+                                            <li class="page-item" ng-class="{disabled:vmx.pager.currentPage == vmx.pager.totalPages}">
+                                                <a class="page-link" ng-click="vmx.filtrar(vm.pager.currentPage + 1)">>></a>
+                                            </li>
+                                            <li class="page-item" style="padding-left: 15px;">
+                                                <select ng-model="vmx.pageSize" class="page-link" ng-change="vmx.filtrar(page)"
+                                                        ng-options="size.qtd as size.desc for size in vmx.listPageSize"></select>
+                                            </li>
+                                        </ul>
+                                        <div class="col-5 text-right pr-0">Exibindo: <strong>{{vmx.pager.startIndex + 1}} - {{vmx.pager.endIndex + 1}}</strong> de <strong>{{vmx.pager.totalItems}}</strong> registro(s)</div>
+                                    </div>
+                                </nav>
+                            </caption>
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th width="20%">Nr. Funcional</th>
+                                    <th width="20%">CPF</th>
+                                    <th>Nome</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="coordenador in vmx.coordenadoresPesquisa" ng-click="vmx.selecionarPessoa(coordenador)" data-dismiss="modal">
+                                    <td>{{coordenador.numeroFuncional}}</td>
+                                    <td>{{coordenador.cpf}}</td>
+                                    <td>{{coordenador.nome}}</td>
+                                </tr>
+                                <tr ng-if="vmx.coordenadoresPesquisa.length == 0">
+                                    <td colspan="3">Nenhum registro encontrado.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

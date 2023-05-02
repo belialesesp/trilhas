@@ -1,0 +1,61 @@
+﻿<div ng-controller="ProgramacaoEventoController as vm">
+    <div class="content-header">
+        <h5>Eventos <em class="fa fa-angle-right"></em> Programação de Eventos</h5>
+        <div class="line"></div>
+    </div>
+    <div>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label for="dataInicioModulo"><span class="asterisco">*</span>Informe o Mês:</label>
+                <select id="mes" name="mes" class="form-control"
+                        ng-model="vm.mes"
+                        ng-options="mes.id as mes.value for mes in vm.meses"
+                        ng-blur="vm.formataData()">
+                    <option value=""> Selecione um Mês </option>
+                </select>
+
+                <div id="btn-programacao" class="col-md-2">
+                    <a href="/programacaoEvento/index?mes={{vm.mes}}&ano={{vm.ano}}" target="_blank"
+                       tooltip
+                       data-placement="top"
+                       class="btn btn-primary"
+                       title="Gerar Relatório Programação de Evento"
+                       ng-if="vm.mes">
+                        <span>Gerar Relatório Completo</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="form-group col-md-8">
+                <label for="dataInicioModulo"><span class="asterisco">*</span>Evento:</label>
+                <div class="input-group">
+                    <input type="text" id="evento" name="evento" class="form-control" autocomplete="off" readonly placeholder="Selecionar Evento"
+                           value="{{vm.evento.evento}}" />
+                    <div class="input-group-append">
+                        <button type="button"
+                                class="btn btn-primary"
+                                data-toggle="modal"
+                                data-target="#modalBuscarEvento">
+                            <em class="fa fa-search"></em>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="btn-programacao" class="col-md-2">
+                    <a href="/programacaoEvento/individual?id={{vm.evento.id}}" target="_blank"
+                       tooltip
+                       data-placement="top"
+                       class="btn btn-primary"
+                       title="Gerar Relatório Programação de Evento"
+                       ng-if="vm.evento.id">
+                        <span>Gerar Relatório Individual </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <ng-include src="'/js/eventos/programacaoEvento/modal/programacao-evento-modal.html'"></ng-include>
+
+</div>

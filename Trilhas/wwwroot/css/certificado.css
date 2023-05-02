@@ -1,0 +1,17 @@
+﻿@page {
+	size: landscape
+}
+
+#impressao {
+	display: none;
+}
+
+@media print {
+	#impressao{
+		display: block;
+	}
+
+	form, .content-header, .col-md-6 {
+		display: none;
+	}
+}

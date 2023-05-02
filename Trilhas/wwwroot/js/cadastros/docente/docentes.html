@@ -1,0 +1,174 @@
+﻿<div ng-app="trilhasapp" ng-controller="DocentesController as vm">
+
+    <div id="tb-relatorio">
+        <table>
+            <tr id="l_1">
+                <td id="c1_1" rowspan="2"><img id="LogoES" src="/images/logoES.png" alt="Brasão do Espírito Santo"></td>
+                <td><strong>GOVERNO DO ESTADO DO ESPÍRITO SANTO </strong></td>
+                <td id="c1_3" rowspan="2"><strong>Emissão: {{vm.dataAtual | date: 'dd/MM/yyyy HH:mm'}}</strong><br />
+            </tr>
+            <tr id="l_2">
+                <td><strong>ESCOLA DE SERVIÇO PÚBLICO DO ESPÍRITO SANTO</strong></td>
+            </tr>
+            <tr id="l_3">
+                <td colspan="3">Relatório de Docentes</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="content-header">
+        <h5>Cadastros <em class="fa fa-angle-right"></em> Docentes</h5>
+        <div class="line"></div>
+    </div>
+
+    <a ui-sref="docentes-cadastro" id="btn-form" class="btn btn-primary esconde"><em class="fas fa-plus-circle"></em> Adicionar</a>
+
+    <form name="form">
+        <fieldset class="query-form">
+            <div class="row">
+                <!--NOME-->
+                <div class="form-group col-md-6 col-sm-12">
+                    <input class="form-control w-100" id="nome" type="text" placeholder="Nome Docente" ng-model="vm.query.nomeDocente" autocomplete="off" capitalize />
+                </div>
+
+                <!--Curso-->
+                <div class="form-group col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input type="text" id="solucao" name="solucao" class="form-control" autocomplete="off" readonly
+                               value="{{vm.eventoTitulo}}" ng-enter="vm.adicionarHabilitacao($event)" placeholder="Curso" />
+                        <div class="input-group-append">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#modalDocenteBuscarSolucao"
+                                    title="Adicionar Solucao">
+                                <em class="fa fa-search"></em>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-primary" title="Limpar Filtro"
+                                    ng-click="vm.eventoTitulo = ''; vm.query.cursoId = null">
+                                <em class="fa fa-eraser"></em>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!--MODALIDADE-->
+                <div class="form-group col-md-3">
+                    <select id="modalidade"
+                            name="modalidade"
+                            class="form-control"
+                            ng-model="vm.query.modalidadeCurso"
+                            ng-options="modalidade.codigo as modalidade.nome for modalidade in vm.modalidades">
+                        <option value=""> -- Modalidade -- </option>
+                    </select>
+                </div>
+
+                <!--DATA INICIO-->
+                <div class="form-group col-md-3">
+                    <input type="date" id="dataInicio" name="dataInicio" class="form-control formatarPlaceholderData" required autocomplete="off" placeholder="Data Início do Curso"
+                           ng-model="vm.query.dataInicio" max="9999-12-31" />
+                </div>
+
+                <!--DATA FIM-->
+                <div class="form-group col-md-3">
+                    <input type="date" id="dataFim" name="dataFim" class="form-control formatarPlaceholderData" required autocomplete="off" placeholder="Data Fim do Curso"
+                           ng-model="vm.query.dataFim" max="9999-12-31" />
+                </div>
+                <!--</div>
+
+                <div class="row">-->
+                <!--EXCLUIDOS-->
+                <div class="form-group col-md-3">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="excluidos" ng-model="vm.query.excluidos" />
+                        <label class="custom-control-label" for="excluidos">Exibir excluídos</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!--FILTRO-->
+                <div class="form-group col-md-2">
+                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrar()"><em class="fas fa-filter"></em> Filtrar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <div class="row" ng-if="vm.docentes">
+        <div class="col-12">
+            <table class="table table-striped-custom table-hover">
+                <caption ng-if="vm.pager.totalItems > 0">
+                    <nav aria-label="Page navigation">
+                        <div class="row col-12 text-center pr-1">
+                            <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vm.pager.pages.length">
+                                <li class="page-item" ng-class="{disabled:vm.pager.currentPage == 1}">
+                                    <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage - 1)"><<</a>
+                                </li>
+                                <li class="page-item" ng-repeat="page in vm.pager.pages" ng-class="{active:vm.pager.currentPage == page}">
+                                    <a class="page-link" ng-click="vm.filtrar(page)">{{page}}</a>
+                                </li>
+                                <li class="page-item" ng-class="{disabled:vm.pager.currentPage == vm.pager.totalPages}">
+                                    <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage + 1)">>></a>
+                                </li>
+                                <li class="page-item" style="padding-left: 15px;">
+                                    <select ng-model="vm.pageSize" class="page-link" ng-change="vm.filtrar(page)"
+                                            ng-options="size.qtd as size.desc for size in vm.listPageSize"></select>
+                                </li>
+                            </ul>
+                            <div class="offset-2 col-3 text-right pr-0">Exibindo: <strong>{{vm.pager.startIndex + 1}} - {{vm.pager.endIndex + 1}}</strong> de <strong>{{vm.pager.totalItems}}</strong> registro(s)</div>
+                        </div>
+                    </nav>
+                </caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th style="width: 12%">CPF</th>
+                        <th style="width: 20%" class="d-none d-md-table-cell">E-mail</th>
+                        <th style="width: 10%" class="text-right">Avaliação</th>
+                        <th style="width: 10%" class="d-none d-md-table-cell text-right">Eventos</th>
+                        <th style="width: 5%" class="d-none d-md-table-cell text-right">C/H</th>
+                        <th style="width: 10%" class="table-actions">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="docente in vm.docentes">
+                        <td ng-class="{strike: docente.excluido}">{{docente.nome}}</td>
+                        <td ng-class="{strike: docente.excluido}">{{docente.cpf}}</td>
+                        <td class="d-none d-md-table-cell" ng-class="{strike: docente.excluido}">{{docente.email}}</td>
+                        <td class="text-right" ng-class="{strike: docente.excluido}">{{docente.avaliacao}}</td>
+                        <td class="d-none d-md-table-cell text-right" ng-class="{strike: docente.excluido}">
+                            {{docente.quantidadeEnvento}} <a ui-sref="eventos({'docenteId': {{docente.id}}})" title="Exibir Eventos"><em class="far fa-calendar-alt"></em></a>
+                        </td>
+                        <td class="d-none d-md-table-cell text-right" ng-class="{strike: docente.excluido}">{{docente.cargaHorariaTotal}}</td>
+                        <td class="table-actions">
+                            <span ng-if="!docente.excluido">
+                                <a ui-sref="docentes-edicao({'id': {{docente.id}} })"
+                                   tooltip
+                                   data-placement="top"
+                                   title="Editar"><span class="fa fa-pencil-alt"></span></a>
+                                <a ui-sref="" ng-click="vm.marcarExclusao(docente.id)"
+                                   tooltip
+                                   data-toggle="modal"
+                                   data-placement="top"
+                                   title="Excluir"
+                                   data-target="#confirm-dialog"><span class="fa fa-trash"></span></a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr ng-if="vm.docentes.length == 0">
+                        <td colspan="7">Nenhum registro encontrado.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+
+    <!--Modal-->
+    <ng-include src="'/js/cadastros/docente/modal/docente-modal-curso.html'"></ng-include>
+</div>

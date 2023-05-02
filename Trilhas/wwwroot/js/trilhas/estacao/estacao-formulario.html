@@ -1,0 +1,74 @@
+﻿<div ng-controller="EstacaoFormularioController as vm">
+    <div class="content-header">
+        <h5>Trilhas <em class="fa fa-angle-right"></em> Estações <em class="fa fa-angle-right"></em> Formulário <small class="badge badge-secondary">{{vm.estacao.id ? vm.estacao.id : 'novo'}}</small></h5>
+        <div class="line"></div>
+    </div>
+
+    <form dirty-tracking name="form" novalidate ng-submit="vm.salvar(form)">
+
+        <div id="server-errors" class="alert alert-danger" ng-if="form.serverErrors && form.$submitted">
+            <ul>
+                <li ng-repeat="serverError in form.serverErrors">
+                    <strong>{{serverError.key}}:</strong> {{serverError.message}}
+                </li>
+            </ul>
+        </div>
+
+        <fieldset class="edit-form">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="estacaoEixo"><span class="asterisco">*</span>Eixo:</label>
+                        <div class="input-group">
+                            <select id="estacaoEixo" name="estacaoEixo" class="form-control" required ng-options="eixo.id as eixo.nome for eixo in vm.eixos"
+                                    ng-class="{'is-invalid': form.estacaoEixo.$invalid && (form.estacaoEixo.$dirty || form.$submitted)}" ng-model="vm.estacao.eixoId">
+                                <option value=""> -- Selecione um Eixo -- </option>
+                            </select>
+                            <div class="input-group-append" ng-if="!vm.estacao.eixoId">
+                                <button type="button" class="btn btn-outline-primary" ui-sref="eixos-cadastro">
+                                    <em class="fa fa-plus-circle" title="Adicionar Eixo"></em>
+                                </button>
+                            </div>
+                            <div class="input-group-append" ng-if="vm.estacao.eixoId">
+                                <button type="button" class="btn btn-outline-primary" ui-sref="eixos-edicao({'id': vm.estacao.eixoId})" title="Editar Eixo">
+                                    <em class="fa fa-pencil-alt"></em>
+                                </button>
+                            </div>
+                        </div>
+                        <div ng-messages="form.estacaoEixo.$error" role="alert" ng-if="form.estacaoEixo.$dirty || form.$submitted">
+                            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nome"><span class="asterisco">*</span>Nome:</label>
+                        <input id="nome" name="nome" class="form-control" type="text" required autocomplete="off" capitalize
+                               ng-class="{'is-invalid': form.nome.$invalid && (form.nome.$dirty || form.$submitted)}" ng-model="vm.estacao.nome" />
+                        <div ng-messages="form.nome.$error" role="alert" ng-if="form.nome.$dirty || form.$submitted">
+                            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="descricao">Descrição:</label>
+                        <textarea id="descricao" name="descricao" class="form-control" rows="6" capitalize
+                                  ng-class="{'is-invalid': form.descricao.$invalid && (form.descricao.$dirty || form.$submitted)}" ng-model="vm.estacao.descricao" />
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="actions-form">
+            <div class="row">
+                <div class="left-buttons col-md-6 col-sm-12">
+                    <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+                </div>
+                <div class="right-buttons col-md-6 col-sm-12">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirm-dialog" ng-if="vm.estacao.id"><em class="fa fa-trash"></em> Excluir</button>
+                    <!--<input type="submit" class="btn btn-success" value="Salvar e Novo" ng-click="vm.salvarNovo()">-->
+                    <button type="submit" class="btn btn-primary" ng-click="vm.salvarVoltar()"><em class="fa fa-save"></em> Salvar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+</div>

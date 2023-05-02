@@ -1,0 +1,476 @@
+﻿<div ng-controller="SolucaoFormularioController as vm">
+
+    <div class="content-header">
+        <h5>Trilhas <em class="fa fa-angle-right"></em> Solução Educacional <em class="fa fa-angle-right"></em> Formulário <small class="small badge badge-secondary">{{vm.solucao.id ? vm.solucao.id : 'novo'}}</small></h5>
+        <div class="line"></div>
+    </div>
+
+    <form dirty-tracking name="form" novalidate ng-submit="vm.salvar(form)">
+
+        <div id="server-errors" class="alert alert-danger" ng-if="form.serverErrors && form.$submitted">
+            <ul>
+                <li ng-repeat="serverError in form.serverErrors">
+                    <strong>{{serverError.key}}:</strong> {{serverError.message}}
+                </li>
+            </ul>
+        </div>
+
+        <fieldset class="edit-form">
+            <div class="row">
+                <!--ESTAÇÃO-->
+                <div class="form-group col-md-7">
+                    <label for="solucaoEducacionalEstacao"><span class="asterisco">*</span>Estação:</label>
+                    <div class="input-group">
+                        <select id="solucaoEducacionalEstacao"
+                                name="solucaoEducacionalEstacao"
+                                class="form-control"
+                                ng-class="{'is-invalid': form.solucaoEducacionalEstacao.$invalid && (form.solucaoEducacionalEstacao.$dirty || form.$submitted)}"
+                                required ng-options="estacao.id as estacao.nome for estacao in vm.estacoes"
+                                ng-model="vm.solucao.estacaoId">
+                            <option value=""> -- Selecione uma Estação -- </option>
+                        </select>
+                        <div class="input-group-append" ng-if="!vm.solucao.estacaoId">
+                            <button type="button" class="btn btn-outline-primary" ui-sref="estacoes-cadastro" title="Adicionar Estação"><em class="fa fa-plus-circle"></em></button>
+                        </div>
+                        <div class="input-group-append" ng-if="vm.solucao.estacaoId">
+                            <button type="button" class="btn btn-outline-primary" ui-sref="estacoes-edicao({'id': vm.solucao.estacaoId})" title="Editar Estação"><em class="fa fa-pencil-alt"></em></button>
+                        </div>
+                    </div>
+                    <div ng-messages="form.solucaoEducacionalEstacao.$error" role="alert" ng-if="form.solucaoEducacionalEstacao.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+                <!--TIPO SOLUÇÃO-->
+                <div class="form-group col-md-5">
+                    <label for="tipoSolucao"><span class="asterisco">*</span>Tipo da Solução:</label>
+                    <select id="tipoSolucao"
+                            name="tipoSolucao"
+                            class="form-control"
+                            ng-model="vm.solucao.tipoSolucao"
+                            ng-class="{'is-invalid': form.tipoSolucao.$invalid && (form.tipoSolucao.$dirty || form.$submitted)}"
+                            ng-options="tipo for tipo in vm.tiposSolucao" ng-disabled="vm.solucao.id" required>
+                        <option value=""> Selecione um Tipo </option>
+                    </select>
+                    <div ng-messages="form.tipoSolucao.$error" role="alert" ng-if="form.tipoSolucao.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--TIPO CURSO -->
+            <div ng-if="vm.solucao.tipoSolucao == vm.tiposSolucao[0]">
+                <div id="form-curso">
+                    <p class="my-3">
+                        <button type="button" class="btn btn-primary w-30 d-none d-md-inline-block" data-toggle="collapse" href="#tab-basico" role="button" aria-expanded="true" aria-controls="collapseExample" ng-click="vm.areas.basico = !vm.areas.basico">
+                            <em class="fas" ng-class="{'fa-angle-up' : vm.areas.basico, 'fa-angle-down': !vm.areas.basico}"></em> Informações Básicas
+                        </button>
+                    </p>
+                    <!--INFORMAÇÕES BÁSICAS-->
+                    <div id="tab-basico" class="collapse show">
+
+                        <div class="row">
+                            <!--TITULO-->
+                            <div class="form-group col-md-7">
+                                <label for="titulo"><span class="asterisco">*</span>Título:</label>
+                                <input type="text" id="titulo" name="titulo" class="form-control" required autocomplete="off" capitalize
+                                       ng-class="{'is-invalid': form.titulo.$invalid && (form.titulo.$dirty || form.$submitted)}" ng-model="vm.solucao.titulo" />
+                                <div ng-messages="form.titulo.$error" role="alert" ng-if="form.titulo.$dirty || form.$submitted">
+                                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                                </div>
+                            </div>
+
+                            <!--SIGLA-->
+                            <div class="form-group col-md-3">
+                                <label for="sigla"><span class="asterisco">*</span>Sigla:</label>
+                                <input type="text" id="sigla" name="sigla" class="form-control" required autocomplete="off" capitalize
+                                       ng-class="{'is-invalid': form.sigla.$invalid && (form.sigla.$dirty || form.$submitted)}" ng-model="vm.solucao.sigla" />
+                                <div ng-messages="form.sigla.$error" role="alert" ng-if="form.sigla.$dirty || form.$submitted">
+                                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                                </div>
+                            </div>
+
+                            <!--CARGA HORARIA TOTAL-->
+                            <div class="form-group col-md-2">
+                                <label for="cargaHorariaTotal">Carga Horária:</label>
+                                <input type="text" id="cargaHorariaTotal" class="form-control text-center" ng-model="vm.solucao.cargaHorariaTotal" disabled autocomplete="off" />
+                            </div>
+
+                            <!--DESCRIÇÃO-->
+                            <div class="form-group col-md-12">
+                                <label for="descricao"><span class="asterisco">*</span>Descrição:</label>
+                                <input type="text" id="descricao" name="descricao" class="form-control" required autocomplete="off" capitalize
+                                       ng-class="{'is-invalid': form.descricao.$invalid && (form.descricao.$dirty || form.$submitted)}" ng-model="vm.solucao.descricao" />
+                                <div ng-messages="form.descricao.$error" role="alert" ng-if="form.descricao.$dirty || form.$submitted">
+                                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                                </div>
+                            </div>
+
+                            <!--MODALIDADE-->
+                            <div class="form-group col-md-4">
+                                <label for="tipoCurso"><span class="asterisco">*</span>Modalidade:</label>
+                                <select id="modalidade"
+                                        name="modalidade"
+                                        class="form-control"
+                                        ng-model="vm.solucao.modalidade"
+                                        ng-class="{'is-invalid': form.modalidade.$invalid && (form.modalidade.$dirty || form.$submitted)}"
+                                        ng-options="modalidade.codigo as modalidade.nome for modalidade in vm.modalidades" required>
+
+                                    <option value=""> -- Selecione uma Modalidade -- </option>
+                                </select>
+                                <div ng-messages="form.modalidade.$error" role="alert" ng-if="form.modalidade.$dirty || form.$submitted">
+                                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                                </div>
+                            </div>
+
+                            <!--TIPO DE CURSO-->
+                            <div class="form-group col-md-4">
+                                <label for="tipoCurso"><span class="asterisco">*</span>Tipo:</label>
+                                <select id="tipoCurso"
+                                        name="tipoCurso"
+                                        class="form-control"
+                                        ng-model="vm.solucao.tipoCursoId"
+                                        ng-class="{'is-invalid': form.tipoCurso.$invalid && (form.tipoCurso.$dirty || form.$submitted)}"
+                                        ng-options="tipo.id as tipo.descricao for tipo in vm.tiposCurso" required>
+
+                                    <option value=""> -- Selecione um Tipo -- </option>
+                                </select>
+                                <div ng-messages="form.tipoCurso.$error" role="alert" ng-if="form.tipoCurso.$dirty || form.$submitted">
+                                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                                </div>
+                            </div>
+
+                            <!--NIVEL DO CURSO-->
+                            <div class="form-group col-md-4">
+                                <label for="nivelCurso"><span class="asterisco">*</span>Nível:</label>
+                                <select id="nivelCurso"
+                                        name="nivelCurso"
+                                        class="form-control"
+                                        ng-model="vm.solucao.nivelCursoId"
+                                        ng-class="{'is-invalid': form.nivelCurso.$invalid && (form.nivelCurso.$dirty || form.$submitted)}"
+                                        ng-options="nivel.id as nivel.descricao for nivel in vm.niveisCurso" required>
+
+                                    <option value=""> -- Selecione um Nível -- </option>
+                                </select>
+                                <div ng-messages="form.nivelCurso.$error" role="alert" ng-if="form.nivelCurso.$dirty || form.$submitted">
+                                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                                </div>
+                            </div>
+
+                            <!--FREQUENCIA MÍNIMA PARA CERTIFICADO-->
+                            <div class="form-group col-md-4">
+                                <label for="freqMinCertificado"><span class="asterisco">*</span>Frequência Mínima para Certificação:</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" max="100" id="freqMinCertificado" name="freqMinCertificado" class="form-control text-right" required autocomplete="off"
+                                           ng-class="{'is-invalid': form.freqMinCertificado.$invalid && (form.freqMinCertificado.$dirty || form.$submitted)}" ng-model="vm.solucao.frequenciaMinimaCertificado" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div ng-messages="form.freqMinCertificado.$error" role="alert" ng-if="form.freqMinCertificado.$dirty || form.$submitted">
+                                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                                </div>
+                            </div>
+
+                            <!--FREQUENCIA MÍNIMA PARA DECLARAÇÃO-->
+                            <div class="form-group col-md-4">
+                                <label for="freqMinDeclaracao"><span class="asterisco">*</span>Frequência Mínima para Declaração:</label>
+                                <div class="input-group">
+                                    <input type="number" min="0" max="100" id="freqMinDeclaracao" name="freqMinDeclaracao" class="form-control text-right" required autocomplete="off"
+                                           ng-class="{'is-invalid': form.freqMinDeclaracao.$invalid && (form.freqMinDeclaracao.$dirty || form.$submitted)}" ng-model="vm.solucao.frequenciaMinimaDeclaracao" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div ng-messages="form.freqMinDeclaracao.$error" role="alert" ng-if="form.freqMinDeclaracao.$dirty || form.$submitted">
+                                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                                </div>
+                            </div>
+
+                            <!--PERMITIR CERTIFICADO-->
+                            <div class="form-group col-md-4">
+                                <label>&nbsp;</label>
+                                <div class="custom-control custom-checkbox ml-4">
+                                    <input type="checkbox" class="custom-control-input" id="permitirCertificado" name="permitirCertificado" ng-model="vm.solucao.permiteCertificado">
+                                    <label class="custom-control-label" for="permitirCertificado">Permitir Certificado</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="line"></div>
+                    </div>
+
+                    <p class="my-3">
+                        <button type="button" class="btn btn-primary w-30 d-none d-md-inline-block" data-toggle="collapse" data-target="#tab-conteudo" aria-expanded="true" aria-controls="collapseExample" ng-click="vm.areas.conteudo = !vm.areas.conteudo">
+                            <em class="fas" ng-class="{'fa-angle-up' : vm.areas.conteudo, 'fa-angle-down': !vm.areas.conteudo}"></em> Conteúdo
+                        </button>
+                    </p>
+                    <!--CONTEÚDO-->
+                    <div id="tab-conteudo" class="collapse show">
+
+                        <div class="row">
+
+                            <!--PRE-REQUISITO-->
+                            <div class="form-group col-md-6">
+                                <label for="preRequisitos">Pré-Requisitos:</label>
+                                <input type="text" id="preRequisitos" name="preRequisitos" class="form-control" autocomplete="off" capitalize
+                                       ng-model="vm.solucao.preRequisitos" />
+                            </div>
+
+                            <!--PÚBLICO ALVO-->
+                            <div class="form-group col-md-6">
+                                <label for="publicoAlvo"><span class="asterisco">*</span>Público Alvo:</label>
+                                <input type="text" id="publicoAlvo" name="publicoAlvo" class="form-control" required autocomplete="off" capitalize
+                                       ng-class="{'is-invalid': form.publicoAlvo.$invalid && (form.publicoAlvo.$dirty || form.$submitted)}" ng-model="vm.solucao.publicoAlvo" />
+                                <div ng-messages="form.publicoAlvo.$error" role="alert" ng-if="form.publicoAlvo.$dirty || form.$submitted">
+                                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                                </div>
+                            </div>
+
+                            <!--CONTEÚDO PROGRAMÁTICO-->
+                            <div class="form-group col-md-12">
+                                <label for="conteudoProgramatico"><span class="asterisco">*</span>Conteúdo Programático:</label>
+                                <textarea type="text" id="conteudoProgramatico" name="conteudoProgramatico" class="form-control" required autocomplete="off" rows="8" capitalize
+                                          ng-class="{'is-invalid': form.conteudoProgramatico.$invalid && (form.conteudoProgramatico.$dirty || form.$submitted)}" ng-model="vm.solucao.conteudoProgramatico" />
+                                <div ng-messages="form.conteudoProgramatico.$error" role="alert" ng-if="form.conteudoProgramatico.$dirty || form.$submitted">
+                                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                                </div>
+                            </div>
+
+                            <!--HABILIDADE-->
+                            <div class="form-group col-md-10">
+                                <label for="habilidade"><span class="asterisco">*</span>Habilidade: <small>(máximo de 5 habilidades)</small></label>
+                                <input type="text" id="habilidade" name="habilidade" class="form-control" autocomplete="off" capitalize
+                                       ng-model="vm.habilidade"
+                                       ng-class="{'is-invalid': (!vm.solucao.habilidades || vm.solucao.habilidades.length == 0) && form.$submitted}"
+                                       ng-enter="vm.adicionarHabilidade($event)" />
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label class="">&nbsp;</label>
+                                <button class="btn btn-success btn-sm btn-block" type="button" ng-click="vm.adicionarHabilidade($event) "><em class="fas fa-plus-circle"></em> Incluir</button>
+                            </div>
+                        </div>
+
+                        <!--TABELA DE HABILIDADES-->
+                        <div ng-if="(!vm.solucao.habilidades || vm.solucao.habilidades.length == 0) && form.$submitted" role="alert">
+                            <div class="invalid-feedback d-block">Cadastre pelo menos 1 habilidade</div>
+                        </div>
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th style="width:7%"></th>
+                                    <th class="text-center">Habilidades</th>
+                                    <th style="width:10%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="habilidade in vm.solucao.habilidades track by $index">
+                                    <td class="text-center">{{$index + 1}}-</td>
+                                    <td>{{habilidade.descricao}}</td>
+                                    <td class="text-center">
+                                        <a href="" class="text-danger" ng-click="vm.excluirHabilidade($index)" title="Remover Habilidade"><em class="fa fa-window-close"></em></a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!vm.solucao.habilidades || vm.solucao.habilidades.length == 0">
+                                    <td colspan="3">Nenhuma habilidade cadastrada.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="line"></div>
+                    </div>
+
+                    <p class="my-3">
+                        <button type="button" class="btn btn-primary w-30 d-none d-md-inline-block" data-toggle="collapse" href="#tab-modulos" role="button" aria-expanded="true" aria-controls="collapseExample" ng-click="vm.areas.modulos = !vm.areas.modulos">
+                            <em class="fas" ng-class="{'fa-angle-up' : vm.areas.modulos, 'fa-angle-down': !vm.areas.modulos}"></em> Módulos
+                        </button>
+                    </p>
+                    <!--MÓDULO-->
+                    <div id="tab-modulos" class="collapse show">
+
+                        <div class="row">
+
+                            <!--Nome do modulo-->
+                            <div class="form-group col-md-3">
+                                <label for="nomeModulo"><span class="asterisco">*</span>Nome:</label>
+                                <input type="text" id="nomeModulo" name="nomeModulo" class="form-control" autocomplete="off" ng-model="vm.modulo.nome" capitalize
+                                       ng-class="{'is-invalid': (!vm.solucao.modulos || vm.solucao.modulos.length == 0) && form.$submitted}" />
+                            </div>
+
+                            <!--descrição do modulo-->
+                            <div class="form-group col-md-5">
+                                <label for="descricaoModulo">Descrição:</label>
+                                <input type="text" id="descricaoModulo" name="descricaoModulo" class="form-control" autocomplete="off" ng-model="vm.modulo.descricao" capitalize />
+                            </div>
+
+                            <!--Carga Horária do modulo-->
+                            <div class="form-group col-md-2">
+                                <label for="cargaHoraria"><span class="asterisco">*</span>Carga Horária:</label>
+                                <input type="number" min="0" id="cargaHoraria" name="cargaHoraria" class="form-control text-right" autocomplete="off" ng-model="vm.modulo.cargaHoraria"
+                                       ng-class="{'is-invalid': (!vm.solucao.modulos || vm.solucao.modulos.length == 0) && form.$submitted}"
+                                       ng-enter="vm.adicionarModulo($event)" />
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label class="">&nbsp;</label>
+                                <button class="btn btn-success btn-sm btn-block" type="button" ng-click="vm.adicionarModulo($event)"><em class="fas fa-plus-circle"></em> Incluir</button>
+                            </div>
+                        </div>
+
+                        <!--TABELA DE MÓDULOS-->
+                        <div ng-if="(!vm.solucao.modulos || vm.solucao.modulos.length == 0) && form.$submitted" role="alert">
+                            <div class="invalid-feedback d-block">Cadastre pelo menos um módulo</div>
+                        </div>
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th style="width:35%">Nome</th>
+                                    <th>Descrição</th>
+                                    <th class="text-right" style="width:15%">Carga Horária</th>
+                                    <th style="width:10%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="modulo in vm.solucao.modulos">
+                                    <td>{{modulo.nome}}</td>
+                                    <td>{{modulo.descricao}}</td>
+                                    <td class="text-right">{{modulo.cargaHoraria}}</td>
+                                    <td class="text-center">
+                                        <a href="" class="text-danger" ng-click="vm.excluirModulo($index)" title="Remover Módulo"><em class="fa fa-window-close"></em></a>
+                                    </td>
+                                </tr>
+                                <tr ng-if="!vm.solucao.modulos || vm.solucao.modulos.length == 0 ">
+                                    <td colspan="4">Nenhum módulo cadastrado.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!--TIPO LIVRO/ARTIGO-->
+            <div class="row" ng-if="vm.solucao.tipoSolucao == vm.tiposSolucao[1]">
+                <!--TITULO-->
+                <div class="form-group col-md-7">
+                    <label for="titulo"><span class="asterisco">*</span>Título:</label>
+                    <input type="text" id="titulo" name="titulo" class="form-control" required autocomplete="off" capitalize
+                           ng-class="{'is-invalid': form.titulo.$invalid && (form.titulo.$dirty || form.$submitted)}" ng-model="vm.solucao.titulo" />
+                    <div ng-messages="form.titulo.$error" role="alert" ng-if="form.titulo.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+                <!--AUTOR-->
+                <div class="form-group col-md-5">
+                    <label for="autor"><span class="asterisco">*</span>Autor:</label>
+                    <input type="text" id="autor" name="autor" class="form-control" required autocomplete="off" capitalize
+                           ng-class="{'is-invalid': form.autor.$invalid && (form.autor.$dirty || form.$submitted)}" ng-model="vm.solucao.autor" />
+                    <div ng-messages="form.autor.$error" role="alert" ng-if="form.autor.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+                <!--URL-->
+                <div class="form-group col-md-12">
+                    <label for="urllivro">URL:</label>
+                    <input type="url" id="urllivro" name="urllivro" class="form-control" autocomplete="off" ng-model="vm.solucao.url" />
+                </div>
+                <!--EDITORA-->
+                <div class="form-group col-md-7">
+                    <label for="editora"><span class="asterisco">*</span>Editora:</label>
+                    <input type="text" id="editora" name="editora" class="form-control" required autocomplete="off" capitalize
+                           ng-class="{'is-invalid': form.editora.$invalid && (form.editora.$dirty || form.$submitted)}"
+                           ng-model="vm.solucao.editora" />
+                    <div ng-messages="form.editora.$error" role="alert" ng-if="form.editora.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+                <!--DATA PUBLICAÇÃO-->
+                <div class="form-group col-md-3">
+                    <label for="dataPublicacao">Data de Publicação:</label>
+                    <input type="date" id="dataPublicacao" name="dataPublicacao" class="form-control" autocomplete="off" max="{{vm.hoje}}"
+                           ng-class="{'is-invalid': form.dataPublicacao.$invalid && (form.dataPublicacao.$dirty || form.$submitted)}" ng-model="vm.solucao.dataPublicacao" />
+                </div>
+                <!--EDIÇÃO-->
+                <div class="form-group col-md-2">
+                    <label for="edicao"><span class="asterisco">*</span>Edição:</label>
+                    <input type="text" id="edicao" name="edicao" class="form-control" required autocomplete="off"
+                           ng-class="{'is-invalid': form.edicao.$invalid && (form.edicao.$dirty || form.$submitted)}"
+                           ng-model="vm.solucao.edicao" />
+                    <div ng-messages="form.edicao.$error" role="alert" ng-if="form.edicao.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+                <!--OUTRAS INFORMAÇÕES-->
+                <div class="form-group col-md-12">
+                    <label for="outrasInformacoeslivro">Outras Informações:</label>
+                    <textarea type="text" id="outrasInformacoeslivro" name="outrasInformacoes" class="form-control" autocomplete="off" rows="8" capitalize
+                              ng-class="{'is-invalid': form.outrasInformacoes.$invalid && (form.outrasInformacoes.$dirty || form.$submitted)}" ng-model="vm.solucao.outrasInformacoes" />
+                </div>
+            </div>
+
+            <!--TIPO VIDEO-->
+            <div class="row" ng-if="vm.solucao.tipoSolucao == vm.tiposSolucao[2]">
+
+                <!--TITULO-->
+                <div class="form-group col-md-7">
+                    <label for="titulo"><span class="asterisco">*</span>Título:</label>
+                    <input type="text" id="titulo" name="titulo" class="form-control" required autocomplete="off" capitalize
+                           ng-class="{'is-invalid': form.titulo.$invalid && (form.titulo.$dirty || form.$submitted)}" ng-model="vm.solucao.titulo" />
+                    <div ng-messages="form.titulo.$error" role="alert" ng-if="form.titulo.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+                <!--RESPONASÁVEL-->
+                <div class="form-group col-md-5">
+                    <label for="responsavel"><span class="asterisco">*</span>Responsável:</label>
+                    <input type="text" id="responsavel" name="responsavel" class="form-control" required autocomplete="off" capitalize
+                           ng-class="{'is-invalid': form.responsavel.$invalid && (form.responsavel.$dirty || form.$submitted)}" ng-model="vm.solucao.responsavel" />
+                    <div ng-messages="form.responsavel.$error" role="alert" ng-if="form.responsavel.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+                <!--URL-->
+                <div class="form-group col-md-7">
+                    <label for="urlvideo">URL:</label>
+                    <input type="url" id="urlvideo" name="urlvideo" class="form-control" autocomplete="off" required
+                           ng-class="{'is-invalid': form.urlvideo.$invalid && (form.urlvideo.$dirty || form.$submitted)}" ng-model="vm.solucao.url" />
+                    <div ng-messages="form.urlvideo.$error" role="alert" ng-if="form.urlvideo.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+                <!--DATA PRODUÇÃO-->
+                <div class="form-group col-md-3">
+                    <label for="dataProducao">Data de Produção:</label>
+                    <input type="date" id="dataProducao" name="dataProducao" class="form-control" autocomplete="off" max="{{vm.hoje}}"
+                           ng-class="{'is-invalid': form.dataProducao.$invalid && (form.dataProducao.$dirty || form.$submitted)}" ng-model="vm.solucao.dataProducao" />
+                </div>
+                <!--DURAÇÃO-->
+                <div class="form-group col-md-2">
+                    <label for="duracao"><span class="asterisco">*</span>Duração:</label>
+                    <input type="text" id="duracao" name="duracao" class="form-control" required autocomplete="off"
+                           ng-class="{'is-invalid': form.duracao.$invalid && (form.duracao.$dirty || form.$submitted)}" ng-model="vm.solucao.duracao" />
+                    <div ng-messages="form.duracao.$error" role="alert" ng-if="form.duracao.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+                <!--OUTRAS INFORMAÇÕES-->
+                <div class="form-group col-md-12">
+                    <label for="outrasInformacoesvideo">Outras Informações:</label>
+                    <textarea type="text" id="outrasInformacoesvideo" name="outrasInformacoes" class="form-control" autocomplete="off" rows="8" capitalize
+                              ng-class="{'is-invalid': form.outrasInformacoes.$invalid && (form.outrasInformacoes.$dirty || form.$submitted)}" ng-model="vm.solucao.outrasInformacoes" />
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="actions-form">
+            <div class="row">
+                <div class="left-buttons col-md-6 col-sm-12">
+                    <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+                </div>
+                <div class="right-buttons col-md-6 col-sm-12">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirm-dialog" ng-if="vm.solucao.id"><em class="fa fa-trash"></em> Excluir</button>
+                    <button type="submit" class="btn btn-primary" ng-click="vm.salvarVoltar()"><em class="fa fa-save"></em>Salvar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+</div>

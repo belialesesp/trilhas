@@ -1,0 +1,239 @@
+﻿<div class="row">
+    <!--IMAGEM-->
+    <div class="col-md-2 col-sm-12">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group text-center">
+                    <label>Imagem: <span class="small">(80x80)</span></label><br />
+                    <img ng-src="data:image/jpeg;base64,{{vm.pessoa.imagem}}" name="imagemSelecionada" ng-if="vm.pessoa.imagem" />
+                    <img src="data:image/jpeg;base64,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" ng-if="!vm.pessoa.imagem" />
+                    <br />
+                    <br />
+                    <span class="btn btn-link btn-file btn-sm">
+                        Alterar<input type="file" id="icone" class="form-control" accept="image/png, image/jpeg" data-toggle="modal" data-target="#modal-crop2" />
+                    </span>
+                    <span class="btn btn-link btn-file btn-sm" ng-click="vm.limparImagem()">Limpar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10 col-sm-12">
+        <div class="row">
+            <div class="form-group col-md-2">
+                <label for="botaoPesquisar">&nbsp;</label>
+                <button type="button"
+                        id="botaoPesquisar"
+                        name="botaoPesquisar"
+                        class="btn btn-primary form-control"
+                        data-toggle="modal"
+                        data-target="#modalBuscarPessoa"
+                        title="Buscar Pessoa"
+                        ng-disabled="true">
+                    Pesquisar <em class="fa fa-search"></em>
+                </button>
+            </div>
+            <!--NUMERO FUNCIONAL-->
+            <div class="form-group col-md-5">
+                <label for="numeroFuncional">Número Funcional:</label>
+                <input type="text" id="numeroFuncional" name="numeroFuncional" class="form-control" oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                       autocomplete="off" value="{{vm.pessoa.numeroFuncional}}"
+                       ng-model="vm.pessoa.numeroFuncional" />
+            </div>
+            <!--CPF-->
+            <div class="form-group col-md-5">
+                <label for="cpf"><span class="asterisco">*</span>CPF:</label>
+                <input type="text" id="cpf" name="cpf" class="form-control" required cpf-valido autocomplete="off" ui-br-cpf-mask
+                       ng-class="{'is-invalid': form.cpf.$invalid && (form.cpf.$dirty || form.$submitted ) }" ng-model="vm.pessoa.cpf" />
+                <div ng-messages="form.cpf.$error" role="alert" ng-if="(form.cpf.$dirty || form.$submitted ) ">
+                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    <div ng-show="form.cpf.$error.cpf" class="invalid-feedback d-block">CPF Inválido</div>
+                </div>
+            </div>
+
+            <!--NOME-->
+            <div class="form-group col-md-12">
+                <label for="nome"><span class="asterisco">*</span>Nome:</label>
+                <input type="text" id="nome" name="nome" class="form-control" required autocomplete="off" capitalize
+                       ng-class="{'is-invalid': form.nome.$invalid && (form.nome.$dirty || form.$submitted)}" ng-model="vm.pessoa.nome" />
+                <div ng-messages="form.nome.$error" role="alert" ng-if="form.nome.$dirty || form.$submitted">
+                    <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!--NOME SOCIAL-->
+    <div class="form-group col-md-6">
+        <label for="nomeSocial">Nome Social:</label>
+        <input type="text" id="nomeSocial" name="nomeSocial" class="form-control" autocomplete="off" ng-model="vm.pessoa.nomeSocial" capitalize />
+    </div>
+
+    <!--SEXO -->
+    <div class="form-group col-md-3">
+        <label for="sexo2"><span class="asterisco">*</span>Sexo:</label>
+        <div class="input-group">
+            <select id="sexo2"
+                    name="sexo2"
+                    required
+                    class="form-control"
+                    ng-class="{'is-invalid': form.sexo2.$invalid && (form.sexo2.$dirty || form.$submitted)}"
+                    ng-options="sexo.id as sexo.nome for sexo in vm.sexos"
+                    ng-model="vm.pessoa.sexo">
+                <option value=""> -- Selecione um Sexo -- </option>
+            </select>
+        </div>
+        <div ng-messages="form.sexo2.$error" role="alert" ng-if="form.sexo2.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--DATA NASCIMENTO-->
+    <div class="form-group col-md-3">
+        <label for="dataNascimento"><span class="asterisco">*</span>Data Nascimento:</label>
+        <input type="date" id="dataNascimento" name="dataNascimento" class="form-control" required autocomplete="off"
+               ng-class="{'is-invalid': form.dataNascimento.$invalid && (form.dataNascimento.$dirty || form.$submitted)}" 
+               ng-blur="vm.validarDataNascimento(form)"
+               ng-model="vm.pessoa.dataNascimento" max="9999-12-31"/>
+        <div ng-messages="form.dataNascimento.$error" role="alert" ng-if="form.dataNascimento.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-message="invalid" class="invalid-feedback d-block">Data inválida</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!--RG-->
+    <div class="form-group col-md-3">
+        <label for="numeroIdentidade"><span class="asterisco">*</span>Registro Geral:</label>
+        <input type="text" id="numeroIdentidade" name="numeroIdentidade" class="form-control" required autocomplete="off" ui-number-mask="0"
+               ng-class="{'is-invalid': form.numeroIdentidade.$invalid && (form.numeroIdentidade.$dirty || form.$submitted)}" ng-model="vm.pessoa.numeroIdentidade" />
+        <div ng-messages="form.numeroIdentidade.$error" role="alert" ng-if="form.numeroIdentidade.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--ORGÃO EXPEDIDOR -->
+    <div class="form-group col-md-3">
+        <label for="orgaoExpedidorIdentidade"><span class="asterisco">*</span>Orgão Expedidor:</label>
+        <div class="input-group">
+            <select id="orgaoExpedidorIdentidade"
+                    name="orgaoExpedidorIdentidade"
+                    class="form-control" required
+                    ng-class="{'is-invalid': form.orgaoExpedidorIdentidade.$invalid && (form.orgaoExpedidorIdentidade.$dirty || form.$submitted ) }"
+                    ng-options="orgaoExpedidorIdentidade.id as orgaoExpedidorIdentidade.sigla for orgaoExpedidorIdentidade in vm.orgaoExpedidores"
+                    ng-model="vm.pessoa.orgaoExpedidorIdentidade">
+                <option value=""> -- Órgão Expedidor -- </option>
+            </select>
+        </div>
+        <div ng-messages="form.orgaoExpedidorIdentidade.$error" role="alert" ng-if="form.orgaoExpedidorIdentidade.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--UF EXPEDIDOR-->
+    <div class="form-group col-md-3">
+        <label for="ufIdentidade"><span class="asterisco">*</span>UF do Expedidor:</label>
+        <div class="input-group">
+            <select id="ufIdentidade"
+                    name="ufIdentidade"
+                    class="form-control"
+                    ng-class="{'is-invalid': form.ufIdentidade.$invalid && (form.ufIdentidade.$dirty || form.$submitted)}"
+                    required ng-options="ufIdentidade for ufIdentidade in vm.ufs"
+                    ng-model="vm.pessoa.ufIdentidade">
+                <option value=""> -- Selecione uma UF -- </option>
+            </select>
+        </div>
+        <div ng-messages="form.ufIdentidade.$error" role="alert" ng-if="form.ufIdentidade.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+
+    <!--TITULO ELEITORAL-->
+    <div class="form-group col-md-3">
+        <label for="numeroTitulo">Título Eleitoral:</label>
+        <input type="text" id="numeroTitulo" name="numeroTitulo" class="form-control" autocomplete="off" ng-model="vm.pessoa.numeroTitulo" ui-mask="9999 9999 9999" ui-mask-placeholder-char="space" ui-options="{clearOnBlur: false}" />
+    </div>
+</div>
+
+<div class="row">
+    <!--PIS-->
+    <div class="form-group col-md-3">
+        <label for="pis">PIS/PASEP:</label>
+        <input type="text" id="pis" name="pis" class="form-control" autocomplete="off" pis-pasep-valido ui-mask="99999999999" ui-mask-placeholder-char="space"
+               ng-class="{'is-invalid': form.pis.$invalid && (form.pis.$dirty || form.$submitted)}" ng-model="vm.pessoa.pis" />
+        <div ng-messages="form.pis.$error" role="alert" ng-if="form.pis.$dirty || form.$submitted">
+            <span ng-show="form.pis.$error.pisPasepValido" class="invalid-feedback d-block">PIS/PASEP Inválido</span>
+        </div>
+    </div>
+
+    <!--DEFICIENTE-->
+    <div class="form-group col-md-2 col-sm-12 m-auto">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="deficiente" ng-model="vm.pessoa.flagDeficiente" />
+            <label class="custom-control-label" for="deficiente">Deficiente</label>
+        </div>
+    </div>
+
+    <!--TIPO DEFICIENCIA-->
+    <div class="form-group col-md-6">
+        <label for="deficiencia">Tipo de deficiência:</label>
+        <div class="input-group">
+            <select id="deficiencia"
+                    name="deficiencia"
+                    class="form-control"
+                    ng-options="deficiencia.id as deficiencia.nome for deficiencia in vm.tiposDeficiencia"
+                    ng-model="vm.pessoa.deficiencia"
+                    ng-disabled="!vm.pessoa.flagDeficiente">
+                <option value=""> -- Selecione um Tipo de Deficiência -- </option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!--ESCOLARIADE-->
+    <div class="form-group col-md-12">
+        <label for="escolaridade"><span class="asterisco">*</span>Escolaridade:</label>
+        <div class="input-group">
+            <select id="escolaridade"
+                    name="escolaridade"
+                    class="form-control"
+                    ng-class="{'is-invalid': form.escolaridade.$invalid && (form.escolaridade.$dirty || form.$submitted)}"
+                    required ng-options="escolaridade.id as escolaridade.nome for escolaridade in vm.tiposEscolaridade"
+                    ng-model="vm.pessoa.escolaridade">
+                <option value=""> -- Selecione uma Escolaridade -- </option>
+            </select>
+        </div>
+        <div ng-messages="form.escolaridade.$error" role="alert" ng-if="form.escolaridade.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!--ENTIDADE-->
+    <div class="form-group col-md-12">
+        <label for="entidade"><span class="asterisco">*</span>Entidade:</label>
+        <div class="input-group">
+            <input type="text" id="entidade" name="entidade" class="form-control" autocomplete="off" required readonly
+                   ng-class="{'is-invalid': form.entidade.$invalid && (form.entidade.$dirty || form.$submitted)}"
+                   ng-model="vm.pessoa.entidadeNome" />
+            <div class="input-group-append">
+                <button type="button"
+                        class="btn btn-primary"
+                        data-toggle="modal"
+                        data-target="#modalBuscarEntidade"
+                        title="Pesquisar Entidade">
+                    <em class="fa fa-search"></em>
+                </button>
+                <button type="button" class="btn btn-outline-primary" ui-sref="entidades-cadastro" title="Adicionar Entidade" ng-if="!vm.pessoa.entidadeId"><em class="fa fa-plus-circle"></em></button>
+                <button type="button" class="btn btn-outline-primary" ui-sref="entidades-edicao({'id': vm.pessoa.entidadeId})" title="Editar Recurso" ng-if="vm.pessoa.entidadeId"><em class="fa fa-pencil-alt"></em></button>
+            </div>
+        </div>
+        <div ng-messages="form.entidade.$error" role="alert" ng-if="form.entidade.$dirty || form.$submitted">
+            <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+</div>

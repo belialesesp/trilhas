@@ -1,0 +1,87 @@
+﻿<div class="row">
+    <div class="col-12">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="limitarVagas" ng-model="vm.evento.limitarVagas" />
+            <label class="custom-control-label d-inline-flex" for="limitarVagas">
+                Limitar inscrições em
+                <input type="number" min="{{vm.evento.limitarVagas ? 1 : 0}}" max="{{vm.evento.agenda.numeroVagas}}" class="form-control text-center mx-2" autocomplete="off"
+                       ng-class="{'is-invalid': form.limitarVagas.$invalid && (form.limitarVagas.$dirty || form.$submitted ) }"
+                       ng-model="vm.evento.vagasPorEntidade" ng-disabled="!vm.evento.limitarVagas" ng-required="vm.evento.limitarVagas" style="width:80px;" 
+                       name="limitarVagas"/>
+                vagas por Entidade.
+            </label>
+        </div>
+        <div role="alert" ng-messages="form.limitarVagas.$error" ng-if="(form.limitarVagas.$dirty || form.$submitted)">
+            <div class="invalid-feedback d-block" ng-message="required">Preencha a quantidade de vagas por Entidade</div>
+            <div class="invalid-feedback d-block" ng-message="max">Quantidade máxima excedida</div>
+        </div>
+    </div>
+</div>
+
+<div class="line my-3"></div>
+
+<div class="row">
+    <!--ENTIDADE-->
+    <div class="form-group col-md-7">
+        <label for="entidade"><span class="asterisco">*</span>Entidade:</label>
+        <div class="input-group">
+            <input type="text" id="entidade" name="entidade" class="form-control" autocomplete="off" readonly
+                   ng-class="{'is-invalid' : (!vm.eventoCota.entidadeNome && vm.submitedCota)}"
+                   value="{{vm.eventoCota.entidadeNome}}" ng-enter="vm.adicionarCota($event)" />
+            <div class="input-group-append">
+                <button type="button"
+                        class="btn btn-primary"
+                        data-toggle="modal"
+                        data-target="#modalBuscarEntidadeCota"
+                        title="Adicionar Entidade">
+                    <em class="fa fa-search"></em>
+                </button>
+                <button type="button" class="btn btn-outline-primary" ui-sref="entidades-cadastro" title="Adicionar Entidade" ng-if="!vm.eventoCota.entidadeId"><em class="fa fa-plus-circle"></em></button>
+                <button type="button" class="btn btn-outline-primary" ui-sref="entidades-edicao({'id': vm.eventoCota.entidadeId})" title="Editar Entidade" ng-if="vm.eventoCota.entidadeId"><em class="fa fa-pencil-alt"></em></button>
+            </div>
+        </div>
+        <div role="alert" ng-if="!vm.eventoCota.entidadeNome && vm.submitedCota">
+            <div class="invalid-feedback d-block">Campo obrigatório</div>
+        </div>
+    </div>
+    <!--QUANTIDADE-->
+    <div class="form-group col-md-3">
+        <label for="quantidade"><span class="asterisco">*</span>Quantidade: (Máx. {{vm.evento.agenda.numeroVagas - vm.quantidadeVaga}})</label>
+        <input type="number" id="quantidadeCota" name="quantidadeCota" class="form-control text-right" autocomplete="off" min="0"
+               ng-class="{'is-invalid' : ((!vm.eventoCota || !vm.eventoCota.quantidade || vm.eventoCota.quantidade <= 0 || vm.eventoCota.quantidade > (vm.evento.agenda.numeroVagas - vm.quantidadeVaga)) && (!vm.isVagas || vm.submitedCota))}"
+               ng-model="vm.eventoCota.quantidade" ng-enter="vm.adicionarCota($event, form)" />
+        <div role="alert" ng-if="(!vm.eventoCota || !vm.eventoCota.quantidade || vm.eventoCota.quantidade <= 0 || vm.eventoCota.quantidade > (vm.evento.agenda.numeroVagas - vm.quantidadeVaga)) && (!vm.isVagas || vm.submitedCota)">
+            <div ng-if="vm.isVagas && !vm.eventoCota.quantidade" class="invalid-feedback d-block">Campo obrigatório</div>
+            <div ng-if="vm.eventoCota.quantidade > (vm.evento.agenda.numeroVagas - vm.quantidadeVaga)" ng-class="max" class="invalid-feedback d-block">Quantidade máxima excedida</div>
+        </div>
+    </div>
+
+    <!--BOTÃO ADICIONAR COTA-->
+    <div class="form-group col-md-2">
+        <label class="">&nbsp;</label>
+        <button class="btn btn-success btn-sm btn-block" type="button" ng-click="vm.adicionarCota($event, form)"><em class="fas fa-plus-circle"></em> Incluir</button>
+    </div>
+</div>
+
+<!--TABELA DE COTAS-->
+<table class="table table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Entidade</th>
+            <th class="text-right" style="width:20%">Quantidade de vagas</th>
+            <th style="width:10%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="cota in vm.evento.cotas track by $index">
+            <td>{{cota.entidadeNome}}</td>
+            <td class="text-right">{{cota.quantidade}}</td>
+            <td class="text-center">
+                <a href="" class="text-danger" ng-click="vm.excluirCota(form, $index)" title="Remover Cota"><em class="fa fa-window-close"></em></a>
+            </td>
+        </tr>
+        <tr ng-if="!vm.evento.cotas || vm.evento.cotas.length == 0">
+            <td colspan="3">Nenhuma cota cadastrada.</td>
+        </tr>
+    </tbody>
+</table>

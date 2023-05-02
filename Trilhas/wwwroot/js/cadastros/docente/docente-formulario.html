@@ -1,0 +1,60 @@
+﻿<div ng-controller="DocenteFormularioController as vm">
+
+    <div class="content-header">
+        <h5>Cadastro <em class="fa fa-angle-right"></em> Docente <em class="fa fa-angle-right"></em> Formulário <small class="small badge badge-secondary">{{vm.docente.id ? vm.docente.id : 'novo'}}</small></h5>
+        <div class="line"></div>
+    </div>
+
+    <form dirty-tracking name="form" novalidate ng-submit="vm.salvar(form)">
+        <div id="server-errors" class="alert alert-danger" ng-if="form.serverErrors && form.$submitted">
+            <ul>
+                <li ng-repeat="serverError in form.serverErrors">
+                    <strong>{{serverError.key}}:</strong> {{serverError.message}}
+                </li>
+            </ul>
+        </div>
+
+        <ul class="nav nav-tabs" role="tablist" ng-init="vm.tab=1">
+            <li class="nav-item">
+                <a class="nav-link" href="" ng-click="vm.tab=1" ng-class="{'active' : vm.tab == 1}">Dados Pessoais</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="" ng-click="vm.tab=2" ng-class="{'active' : vm.tab == 2}">Cursos Credenciados</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="" ng-click="vm.tab=3" ng-class="{'active' : vm.tab == 3}">Formação Acadêmica</a>
+            </li>
+        </ul>
+
+        <fieldset class="edit-form-tab">
+            <div id="form-docente" class="tab-content">
+                <!--DADOS PESSOAIS-->
+                <div ng-include="'/js/cadastros/docente/docente-formulario-dados-pessoais.html'" class="tab-pane container-fluid" ng-class="{'active' : vm.tab == 1}"></div>
+                <!--HABILIDADES-->
+                <div ng-include="'/js/cadastros/docente/docente-formulario-dados-habilitacoes.html'" class="tab-pane container-fluid" ng-class="{'active' : vm.tab == 2}"></div>
+                <!--FORMAÇÃO-->
+                <div ng-include="'/js/cadastros/docente/docente-formulario-dados-formacao.html'" class="tab-pane container-fluid" ng-class="{'active' : vm.tab == 3}"></div>
+            </div>
+        </fieldset>
+
+        <fieldset class="actions-form">
+            <div class="row">
+                <div class="left-buttons col-md-6 col-sm-12">
+                    <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+                </div>
+                <div class="right-buttons col-md-6 col-sm-12">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirm-dialog" ng-if="vm.docente.id"><em class="fa fa-trash"></em> Excluir</button>
+                    <button type="submit" class="btn btn-primary" ng-click="vm.salvarVoltar()"><em class="fa fa-save"></em> Salvar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+
+    <!--MODAL ENTIDADE-->
+    <ng-include src="'/js/cadastros/docente/modal/docente-modal-pessoa.html'"></ng-include>
+    <ng-include src="'/js/cadastros/docente/modal/docente-modal-curso.html'"></ng-include>
+
+
+</div>

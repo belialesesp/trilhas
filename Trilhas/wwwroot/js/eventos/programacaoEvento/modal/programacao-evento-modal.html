@@ -1,0 +1,130 @@
+﻿<div id="modalBuscarEvento"
+     ng-controller="ProgramacaoEventoModalController as vmx" class="modal fade"
+     tabindex="-1" role="dialog"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Pesquisar Evento</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <fieldset class="query-form">
+                    <div class="row">
+                        <div class="form-group col-md-4 col-sm-12">
+                            <input class="form-control w-100" id="nomeCurso" type="text" placeholder="Nome/Sigla Curso" ng-model="vmx.query.curso" autocomplete="off" capitalize />
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <select id="modalidade"
+                                    name="modalidade"
+                                    class="form-control"
+                                    ng-model="vmx.query.modalidade"
+                                    ng-options="modalidade.codigo as modalidade.nome for modalidade in vmx.modalidades">
+                                <option value=""> -- Modalidade -- </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <input class="form-control w-100" id="nomeEntidade" type="text" placeholder="Nome/Sigla Entidade" ng-model="vmx.query.entidadeDemandante" autocomplete="off" capitalize />
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <input class="form-control w-100" id="nomeDocente" type="text" placeholder="Nome Docente" ng-model="vmx.query.docente" autocomplete="off" capitalize />
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <div class="input-group">
+                                <select id="uf"
+                                        name="uf"
+                                        class="form-control"
+                                        ng-options="uf for uf in vmx.ufs"
+                                        ng-change="vmx.carregarMunicipios()"
+                                        ng-model="vmx.query.uf">
+                                    <option value=""> -- UF -- </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <div class="input-group">
+                                <select id="cidade"
+                                        name="cidade"
+                                        class="form-control text-center"
+                                        ng-options="municipio.id as municipio.nomeMunicipio for municipio in vmx.municipios"
+                                        ng-model="vmx.query.municipioId"
+                                        ng-disabled="!vmx.query.uf">
+                                    <option value=""> -- Selecione uma Cidade -- </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <input type="date" id="dataInicio" name="dataInicio" class="form-control formatarPlaceholderData" required autocomplete="off"
+                                   placeholder="Data Início do Evento"
+                                   ng-model="vmx.query.dataInicio" />
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <input type="date" id="dataFim" name="dataFim" class="form-control formatarPlaceholderData" required autocomplete="off"
+                                   placeholder="Data Fim do Evento"
+                                   ng-model="vmx.query.dataFim" />
+                        </div>
+                        <div class="form-group col-md-2 col-sm-12">
+                            <button class="btn btn-info btn-sm btn-block" ng-click="vmx.filtrar()"><em class="fas fa-filter"></em> Filtrar</button>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="row" ng-if="vmx.eventos">
+                    <div class="col-md-12">
+                        <table class="table table-striped-custom table-hover">
+                            <caption ng-if="vmx.pager.totalItems > 0">
+                                <nav aria-label="Page navigation">
+                                    <div class="row col-12 text-center pr-1">
+                                        <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vmx.pager.pages.length">
+                                            <li class="page-item" ng-class="{disabled:vmx.pager.currentPage == 1}">
+                                                <a class="page-link" ng-click="vmx.filtrar(vmx.pager.currentPage - 1)"><<</a>
+                                            </li>
+                                            <li class="page-item" ng-repeat="page in vmx.pager.pages" ng-class="{active:vmx.pager.currentPage == page}">
+                                                <a class="page-link" ng-click="vmx.filtrar(page)">{{page}}</a>
+                                            </li>
+                                            <li class="page-item" ng-class="{disabled:vmx.pager.currentPage == vmx.pager.totalPages}">
+                                                <a class="page-link" ng-click="vmx.filtrar(vmx.pager.currentPage + 1)">>></a>
+                                            </li>
+                                            <li class="page-item" style="padding-left: 15px;">
+                                                <select ng-model="vmx.pageSize" class="page-link" ng-change="vmx.filtrar(page)"
+                                                        ng-options="size.qtd as size.desc for size in vmx.listPageSize"></select>
+                                            </li>
+                                        </ul>
+                                        <div class="col-5 text-right pr-0">Exibindo: <strong>{{vmx.pager.startIndex + 1}} - {{vmx.pager.endIndex + 1}}</strong> de <strong>{{vmx.pager.totalItems}}</strong> registro(s)</div>
+                                    </div>
+                                </nav>
+                            </caption>
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th style="">Curso</th>
+                                    <th style="width:15%">Entidade</th>
+                                    <th style="width:25%">Município</th>
+                                    <th style="width:22%" class="text-center">Período</th>
+                                    <th style="width:8%" class="text-right">C/H</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="evento in vmx.eventos" ng-click="vmx.selecionarEvento(evento)" data-dismiss="modal">
+                                    <td>{{evento.evento}}</td>
+                                    <td>{{evento.entidade}}</td>
+                                    <td>{{evento.municipio}}</td>
+                                    <td class="text-center">{{evento.dataInicio | date : 'dd/MM/yyyy'}} - {{evento.dataFim | date : 'dd/MM/yyyy'}}</td>
+                                    <!--<td class="text-center">{{evento.dataInicio | date : 'dd/MM/yyyy'}}</td>-->
+                                    <td class="text-right">{{evento.cargaHoraria}}</td>
+                                </tr>
+                                <tr ng-if="vmx.eventos.length == 0">
+                                    <td colspan="5">Nenhum registro encontrado.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,153 @@
+﻿/*table {
+	width: 90%;
+	margin: auto;
+}*/
+
+#cabecalho_1 {
+	margin: auto;
+	text-align: center;
+}
+
+#cabecalho_2 {
+	margin: auto;
+	width: 98%;
+}
+
+#listaCursista {
+	margin: auto;
+	width: 98%;
+}
+
+.aling {
+	text-align: right;
+}
+
+#LogoES {
+	width: 70px;
+	height: 75px;
+	margin: 10px 15px 10px 5px;
+}
+
+#cabecalho-info {
+	display: flex;
+	width: 98%;
+	margin: 0px auto 0px auto;
+}
+
+/*#info {}*/
+
+#divCabecalho {
+	border: 1px solid;
+	border-radius: 5px;
+	width: 95%;
+	margin: 5px auto;
+	padding: 5px 0px 5px 5px;
+}
+
+.linha {
+	padding-top: 24px;
+	font-size: 12px;
+	padding-right: 5px;
+}
+
+.linha2 {
+	padding-top: 4px;
+}
+
+#divCabecalhoInfo {
+	width: 98%;
+	border: 1px solid;
+	border-radius: 5px;
+	margin: 5px 0px 0px auto;
+	padding: 5px 0px 5px 5px;
+}
+
+#divCabecalhoInfo2 {
+	width: 30%;
+	display: flex;
+	border: 1px solid;
+	border-radius: 5px;
+	margin: 6px auto 0px 5px;
+	padding: 5px 5px 5px 12px;
+	align-items: center
+}
+
+
+/*Relatorio Cursista*/
+
+#tb-relatorio {
+	border: 1px solid;
+	border-radius: 5px;
+	width: 95%;
+	margin: 5px auto;
+}
+
+	#tb-relatorio table {
+		width: 100%;
+	}
+
+#l_3 {
+	text-align: center;
+	font-size: 25px;
+	font-weight: bolder;
+	border-top: 1px solid;
+}
+
+    #l_3 td {
+        padding: 5px 0;
+    }
+
+#c1_1 {
+	border-right: 1px solid;
+	width: 8%;
+}
+
+#c1_3 {
+	border-left: 1px solid;
+	width: 15%;
+	padding-left: 8px;
+}
+
+#l_2 {
+	border-top: 1px solid;
+}
+
+#div-tabela{
+	width: 95%; 
+	margin: 5px auto;
+}
+
+#listaCursista td {
+	font-size: 12px;
+}
+
+@media print {
+	#divCabecalhoInfo {
+		margin: 0px auto 0px auto;
+	}
+
+	#divCabecalhoInfo2 {
+		margin: 0px auto 0px 0px;
+	}
+
+	#cabecalho-info, #divCabecalho{
+		width: 100%;
+	}
+
+	footer {
+		page-break-after: always;
+	}
+
+	#tb-relatorio{
+		width: 100%;
+	}
+
+	#div-tabela {
+		width: 100%;
+		margin: 0px auto;
+	}
+
+	#c1_3 {
+		width: 21%;
+	}
+}

@@ -1,0 +1,112 @@
+﻿<div ng-controller="EventoFormularioController as vm">
+
+    <div class="content-header">
+        <h5>Evento <em class="fa fa-angle-right"></em> Formulário <small class="small badge badge-secondary">{{vm.evento.id ? vm.evento.id : 'novo'}}</small></h5>
+        <div class="line"></div>
+    </div>
+
+    <form dirty-tracking name="form" novalidate ng-submit="vm.salvar(form)">
+
+        <div id="server-errors" class="alert alert-danger" ng-if="form.serverErrors && form.$submitted">
+            <ul>
+                <li ng-repeat="serverError in form.serverErrors">
+                    <strong>{{serverError.key}}:</strong> {{serverError.message}}
+                </li>
+            </ul>
+        </div>
+
+        <div class="row mb-3">
+            <!--SOLUÇÃO-->
+            <div class="form-group col-md-10">
+                <label for="solucao"><span class="asterisco">*</span>Curso:</label>
+                <div class="input-group">
+                    <input type="text" id="evento" name="evento" class="form-control" autocomplete="off" readonly placeholder="Selecione um Curso"
+                           value="{{vm.evento.curso.titulo}}"
+                           ng-class="{'is-invalid': (!vm.evento.curso.titulo && form.$submitted ) }" />
+                    <div class="input-group-append">
+                        <button type="button"
+                                class="btn btn-primary"
+                                data-toggle="modal"
+                                data-target="#modalBuscarSolucao">
+                            <em class="fa fa-search"></em>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary"
+                                ui-sref="solucoes-cadastro" title="Adicionar Solução"
+                                ng-if="!vm.evento.curso.id">
+                            <em class="fa fa-plus-circle"></em>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary"
+                                ui-sref="solucoes-edicao({'id': vm.evento.curso.id})" title="Editar Solução"
+                                ng-if="vm.evento.curso.id">
+                            <em class="fa fa-pencil-alt"></em>
+                        </button>
+                    </div>
+                </div>
+                <div role="alert" ng-if="(!vm.evento.curso.titulo && form.$submitted)">
+                    <div class="invalid-feedback d-block">Campo obrigatório</div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="cargaHoraria">Carga Horária:</label>
+                <input type="text" class="form-control text-center" ng-model="vm.evento.curso.cargaHorariaTotal" disabled />
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs" role="tablist" ng-init="vm.tab=1">
+            <li class="nav-item">
+                <a class="nav-link" href="" ng-class="{'active' : vm.tab == 1}" ng-click="vm.tab = 1">Programação do Evento</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="" ng-class="{'active' : vm.tab == 2}" ng-click="vm.tab = 2">Horários</a>
+            </li>
+            <li class="nav-item" ng-if="!vm.flagEad">
+                <a class="nav-link" href="" ng-class="{'active' : vm.tab == 3}" ng-click="vm.tab = 3">Recursos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="" ng-class="{'active' : vm.tab == 4}" ng-click="vm.tab = 4">Cotas</a>
+            </li>
+        </ul>
+
+        <fieldset class="edit-form-tab">
+            <div id="form-evento" class="tab-content">
+                <!--PROGRAMAÇÃO DO EVENTO-->
+                <div ng-include="'/js/eventos/evento-formulario-programacao-evento.html'" class="tab-pane container-fluid" ng-class="{'active' : vm.tab == 1}"></div>
+                <!--HORÁRIO-->
+                <div ng-include="'/js/eventos/evento-formulario-horarios.html'" class="tab-pane container-fluid" ng-class="{'active' : vm.tab == 2}"></div>
+                <!--RECURSO-->
+                <div ng-include="'/js/eventos/evento-formulario-recursos.html'" class="tab-pane container-fluid" ng-class="{'active' : vm.tab == 3}"></div>
+                <!--COTA-->
+                <div ng-include="'/js/eventos/evento-formulario-cotas.html'" class="tab-pane container-fluid" ng-class="{'active' : vm.tab == 4}"></div>
+            </div>
+        </fieldset>
+
+        <fieldset class="actions-form">
+            <div class="row">
+                <div class="left-buttons col-md-6 col-sm-12">
+                    <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+                </div>
+                <div class="right-buttons col-md-6 col-sm-12">
+                    <a ng-if="vm.evento.listaDeInscricaoId" ui-sref="eventos-lista-inscricao({'id': {{vm.evento.listaDeInscricaoId}} })" class="btn btn-success" tooltip data-placement="top" title="Lista de Inscrição"><span class="fa fa-address-card"></span>Lista de Inscrição</a>
+                    <button ng-if="vm.podeCancelar()" type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalMotivoExclusao"><em class="fas fa-ban"></em> Cancelar Evento</button>
+                    <button ng-if="vm.evento.situacao == 'Encerrado'" type="button" class="btn btn-primary" ng-click="vm.finalizarEvento()"><em class="fas fa-clipboard-check"></em> Finalizar Evento</button>
+                    <button ng-if="vm.evento.situacao == 'Finalizado'" type="button" class="btn btn-primary" ng-click="vm.resultados()"><em class="fas fa-clipboard-check"></em> Resultados</button>
+                    <button ng-if="vm.evento.situacao != 'Finalizado'" type="submit" class="btn btn-primary" ng-click="vm.salvarVoltar()"><em class="fa fa-save"></em> Salvar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <notification-component message="{{vm.mensagemNotificacao}}"></notification-component>
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+
+    <!--MODAIS-->
+    <ng-include src="'/js/eventos/modal/evento-modal-coordenador.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-entidade.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-docente.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-local.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-recurso.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-curso.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-entidade-cota.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-motivoExclusao.html'"></ng-include>
+</div>

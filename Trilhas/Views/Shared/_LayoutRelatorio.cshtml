@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+	<app>
+		<div id="tb-relatorio">
+			<table>
+				<tr id="l_1">
+					<td id="c1_1" rowspan="2"><img id="LogoES" src="/images/logoES.png" alt="Brasão do Espirito Santo"></td>
+					<td><strong>GOVERNO DO ESTADO DO ESPÍRITO SANTO </strong></td>
+					<td id="c1_3" rowspan="2"><strong>Emissão: </strong>@Model.DataAtual.ToString(" dd/MM/yyyy HH:mm")</td>
+				</tr>
+
+				<tr id="l_2">
+					<td><strong>ESCOLA DE SERVIÇO PÚBLICO DO ESPÍRITO SANTO </strong></td>
+				</tr>
+
+				<tr id="l_3">
+					<td colspan="3">@Model.Relatorio</td>
+				</tr>
+			</table>
+		</div>
+		<div>
+			@RenderBody()
+		</div>
+
+	</app>
+</body>
+</html>

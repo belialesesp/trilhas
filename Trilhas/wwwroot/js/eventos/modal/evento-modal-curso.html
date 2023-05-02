@@ -1,0 +1,117 @@
+﻿<div id="modalBuscarSolucao" ng-controller="EventoModalCursoController as vmx"
+	 class="modal fade"
+	 tabindex="-1"
+	 role="dialog"
+	 aria-hidden="true">
+
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<h5 class="modal-title">Pesquisar Curso</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+
+			<div class="modal-body">
+				<fieldset class="query-form">
+                    <div class="row">
+                        <!--Sigla-->
+                        <div class="form-group col-md-2 col-sm-12">
+                            <input class="form-control w-100" id="sigla" type="text" placeholder="Sigla" capitalize autocomplete="off"
+                                   ng-model="vmx.queryCurso.sigla" ng-enter="vmx.filtrar()" />
+                        </div>
+                        <!--Titulo-->
+                        <div class="form-group col-md-6 col-sm-12">
+                            <input class="form-control w-100" id="titulo" type="text" placeholder="Título" capitalize autocomplete="off"
+                                   ng-model="vmx.queryCurso.titulo" ng-enter="vmx.filtrar() " />
+                        </div>
+                        <!--Modalidade-->
+                        <div class="form-group col-md-4 col-sm-12">
+                            <select id="modalidade"
+                                    name="modalidade"
+                                    class="form-control"
+                                    ng-model="vmx.queryCurso.modalidadeCurso"
+                                    ng-options="modalidade.codigo as modalidade.nome for modalidade in vmx.modalidades">
+                                <option value=""> -- Modalidade -- </option>
+                            </select>
+                        </div>
+                        <!--Eixo-->
+                        <div class="form-group col-md-5 col-sm-12">
+                            <select id="eixoId" name="eixoId" class="form-control w-100" required ng-options="eixo.id as eixo.nome for eixo in vmx.eixos"
+                                    ng-model="vmx.queryCurso.eixoId"
+                                    ng-change="vmx.carregarDropDownEstacoes()"
+                                    ng-enter="vmx.filtrar()">
+                                <option value=""> -- Filtrar por Eixo -- </option>
+                            </select>
+                        </div>
+                        <!--Estacao-->
+                        <div class="form-group col-md-5 col-sm-12">
+                            <select id="estacaoId" name="estacaoId" class="form-control w-100" required ng-options="estacao.id as estacao.nome for estacao in vmx.estacoes"
+                                    ng-model="vmx.queryCurso.estacaoId"
+                                    ng-disabled="!vmx.queryCurso.eixoId"
+                                    ng-enter="vmx.filtrar()">
+                                <option value=""> -- Filtrar por Estação -- </option>
+                            </select>
+                        </div>
+                        <!--FILTRO-->
+                        <div class="form-group col-md-2 col-sm-12">
+                            <button class="btn btn-info btn-sm btn-block" ng-click="vmx.filtrar()"><em class="fas fa-filter"></em>Filtrar</button>
+                        </div>
+                    </div>
+				</fieldset>
+
+				<div class="row" ng-if="vmx.cursos">
+					<div class="col-12">
+						<table class="table table-striped-custom table-hover">
+                            <caption ng-if="vmx.pager.totalItems > 0">
+                                <nav aria-label="Page navigation">
+                                    <div class="row col-12 text-center pr-1">
+                                        <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vmx.pager.pages.length">
+                                            <li class="page-item" ng-class="{disabled:vmx.pager.currentPage == 1}">
+                                                <a class="page-link" ng-click="vmx.filtrar(vmx.pager.currentPage - 1)"><<</a>
+                                            </li>
+                                            <li class="page-item" ng-repeat="page in vmx.pager.pages" ng-class="{active:vmx.pager.currentPage == page}">
+                                                <a class="page-link" ng-click="vmx.filtrar(page)">{{page}}</a>
+                                            </li>
+                                            <li class="page-item" ng-class="{disabled:vmx.pager.currentPage == vmx.pager.totalPages}">
+                                                <a class="page-link" ng-click="vmx.filtrar(vmx.pager.currentPage + 1)">>></a>
+                                            </li>
+                                            <li class="page-item" style="padding-left: 15px;">
+                                                <select ng-model="vmx.pageSize" class="page-link" ng-change="vmx.filtrar(page)"
+                                                        ng-options="size.qtd as size.desc for size in vmx.listPageSize"></select>
+                                            </li>
+                                        </ul>
+                                        <div class="col-5 text-right pr-0">Exibindo: <strong>{{vmx.pager.startIndex + 1}} - {{vmx.pager.endIndex + 1}}</strong> de <strong>{{vmx.pager.totalItems}}</strong> registro(s)</div>
+                                    </div>
+                                </nav>
+                            </caption>
+							<thead class="thead-dark">
+								<tr>
+									<th class="d-none d-md-table-cell" style="width: 32%">Eixo / Estação</th>
+									<!--<th class="d-none d-md-table-cell" style="width: 19%">Estação</th>-->
+									<th>Título</th>
+									<th style="width: 18%">Modalidade</th>
+									<th class="d-none d-md-table-cell text-center" style="width: 15%">Carga Horária</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="curso in vmx.cursos" ng-click="vmx.selecionarCurso(curso)" data-dismiss="modal">
+                                    <td class="d-none d-md-table-cell">{{curso.eixoNome}} <em class="fa fa-angle-right"></em> {{curso.estacaoNome}}</td>
+                                    <!--<td class="d-none d-md-table-cell">{{curso.estacaoNome}}</td>-->
+                                    <td>{{curso.titulo}}</td>
+                                    <td>{{curso.modalidadeDeCurso}}</td>
+                                    <td class="d-none d-md-table-cell text-center">{{curso.cargaHorariaTotal}}</td>
+								</tr>
+								<tr ng-if="vmx.cursos.length === 0">
+									<td colspan="4">Nenhum registro encontrado.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

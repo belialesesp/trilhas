@@ -1,0 +1,59 @@
+﻿<div ng-controller="RecursoFormularioController as vm">
+
+    <div class="content-header">
+        <h5>Cadastros <em class="fa fa-angle-right"></em> Recursos Operacionais <em class="fa fa-angle-right"></em> Formulário <small class="badge badge-secondary">{{vm.recurso.id ? vm.recurso.id : 'novo'}}</small></h5>
+        <div class="line"></div>
+    </div>
+
+    <form dirty-tracking name="form" novalidate ng-submit="vm.salvar(form)">
+
+        <div id="server-errors" class="alert alert-danger" ng-if="form.serverErrors && form.$submitted">
+            <ul>
+                <li ng-repeat="serverError in form.serverErrors">
+                    <strong>{{serverError.key}}:</strong> {{serverError.message}}
+                </li>
+            </ul>
+        </div>
+
+        <fieldset class="edit-form">
+            <div class="row">
+                <!--NOME-->
+                <div class="form-group col-md-7">
+                    <label for="nome"><span class="asterisco">*</span>Nome:</label>
+                    <input type="text" id="nome" name="nome" class="form-control" required autocomplete="off" autofocus ng-model="vm.recurso.nome" capitalize
+                           ng-class="{'is-invalid': form.nome.$invalid && (form.nome.$dirty || form.$submitted)}" />
+                    <div ng-messages="form.nome.$error" role="alert" ng-if="form.nome.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+
+                <!--Custo-->
+                <div class="form-group col-md-5">
+                    <label for="custo">Custo:</label>
+                    <input type="text" id="custo" name="custo" ui-money-mask class="form-control text-right" autocomplete="off" ng-model="vm.recurso.custo"
+                           ng-class="{'is-invalid': form.custo.$invalid && (form.custo.$dirty || form.$submitted)}"/>
+                </div>
+
+                <!--DESCRICAO-->
+                <div class="form-group col-md-12">
+                    <label for="descricao">Descrição:</label>
+                    <input type="text" id="descricao" name="descricao" class="form-control" autocomplete="off" ng-model="vm.recurso.descricao" capitalize />
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="actions-form">
+            <div class="row">
+                <div class="left-buttons col-md-6 col-sm-12">
+                    <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+                </div>
+                <div class="right-buttons col-md-6 col-sm-12">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirm-dialog" ng-if="vm.recurso.id"><em class="fa fa-trash"></em> Excluir</button>
+                    <button type="submit" class="btn btn-primary" ng-click="vm.salvarVoltar()"><em class="fa fa-save"></em> Salvar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+</div>

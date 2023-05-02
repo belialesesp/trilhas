@@ -1,0 +1,41 @@
+﻿@model Trilhas.Models.Evento.EtiquetaViewModel
+
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> UserManager
+
+@{ Layout = null; }
+
+<html lang="pt-br">
+<head>
+	<base href="./">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="~/css/etiqueta.css" rel="stylesheet" />
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="~/lib/JsBarcode/JsBarcode.all.min.js"></script>
+	<script src="~/js/eventos/Etiqueta.js"></script>
+	<script type="text/javascript" src="~/lib/popup-master/assets/js/jquery.popup.min.js" async=""></script>
+	@*<script>
+		function gerarEtiqueta() {
+			cursistaId = document.getElementById('cursistaId').innerHTML;
+			eventoId = document.getElementById('eventoId').innerHTML;
+			JsBarcode("#barcode", cursistaId.toString() + eventoId.toString());
+		};
+	</script>*@
+	<title>Etiqueta Cursista</title>
+</head>
+
+<body onload="gerarEtiqueta()">
+	<span id="cursistaId" style="display:none">@Model.CursistaId</span>
+	<span id="eventoId" style="display:none">@Model.EventoId</span>
+
+	<div id="etiqueta">
+		<h2 class="align-baseline">@Model.Nome</h2>
+		<h3 class="align-baseline">@Model.Entidade</h3>
+		<svg id="barcode"></svg>
+	</div>
+
+</body>
+</html>

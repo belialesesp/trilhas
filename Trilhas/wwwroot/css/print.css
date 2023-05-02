@@ -1,0 +1,116 @@
+﻿#tb-relatorio {
+    border: 1px solid;
+    border-radius: 5px;
+    display: none;
+}
+
+    #tb-relatorio table {
+        width: 100%;
+    }
+
+#l_1 td, #l_2 td {
+    padding-left: 5px;
+}
+
+#l_3 {
+    text-align: center;
+    font-size: 25px;
+    font-weight: bolder;
+    border-top: 1px solid;
+    text-transform: uppercase;
+}
+
+    #l_3 td {
+        padding: 8px 0;
+    }
+
+#c1_1 {
+	border-right: 1px solid;
+	border-bottom: 1px solid;
+	width: 8%;
+}
+
+#c1_3 {
+    border-left: 1px solid;
+    width: 15%;
+}
+
+#l_2 {
+    border-top: 1px solid;
+}
+
+#LogoES {
+    width: 70px;
+    height: 75px;
+    margin: 10px 15px 10px 5px;
+}
+
+.print{
+	display: none;
+}
+
+.padding-td {
+	padding: 5px 0px 5px 15px;
+}
+
+@media print {
+
+    .print {
+        display:block;
+    }
+	
+	.no-print {
+		display: none;
+	}
+
+	 div.content-header {
+        display: none;
+    }
+
+    #tb-relatorio {
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    #c1_3 {
+        width: 20%;
+    }
+
+    /*body {
+        color: #050000;
+    }*/
+    div.line {
+        display: none;
+    }
+
+    .table .thead-dark th {
+        color: #383636;
+        border-color: darkgray;
+    }
+
+    .table thead th {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .table .table-actions {
+        display: none;
+    }
+
+    .table td a {
+        display: none;
+    }
+
+    #content-navbar,
+    #sidebar,
+    caption {
+        display: none;
+    }
+
+    .query-form {
+        display: none;
+    }
+
+    #btn-form {
+        display: none;
+    }
+}

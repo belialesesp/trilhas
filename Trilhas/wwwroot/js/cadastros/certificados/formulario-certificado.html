@@ -1,0 +1,48 @@
+﻿<div ng-app="trilhasapp" ng-controller="FormularioCertificadoController as vm">
+
+    <div class="content-header">
+        <h5>Cadastro <em class="fa fa-angle-right"></em> Certificado <em class="fa fa-angle-right"></em> Formulário <small class="badge badge-secondary">{{vm.certificado.id ? vm.certificado.id : 'novo'}}</small></h5>
+        <div class="line"></div>
+    </div>
+
+    <form dirty-tracking name="form" novalidate ng-submit="vm.salvar(form)">
+        <fieldset class="edit-form">
+
+            <!-- Tipo Certificado -->
+            <div class="row">
+                <!--NOME-->
+                <div class="form-group col-md-9">
+                    <label for="nome"><span class="asterisco">*</span>Nome:</label>
+                    <input type="text" id="nome" name="nome" class="form-control" required autocomplete="off" autofocus ng-model="vm.certificado.nome" capitalize
+                           ng-class="{'is-invalid': form.nome.$invalid && (form.nome.$dirty || form.$submitted)}" />
+                    <div ng-messages="form.nome.$error" role="alert" ng-if="form.nome.$dirty || form.$submitted">
+                        <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                    </div>
+                </div>
+
+                <!--CERTIFICADO PADRÃO-->
+                <div class="form-group col-md-3 col-sm-12 m-auto">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="padrao" ng-model="vm.certificado.padrao" />
+                        <label class="custom-control-label" for="padrao">Padrão</label>
+                    </div>
+                </div>
+            </div>
+            <textarea ckeditor="vm.editorOptions" ng-model="vm.certificado.dados" required></textarea>
+        </fieldset>
+
+        <fieldset class="actions-form">
+            <div class="row">
+                <div class="left-buttons col-md-6 col-sm-12">
+                    <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+                </div>
+                <div class="right-buttons col-md-6 col-sm-12">
+                    <a href="/certificados/preview?id={{vm.certificado.id}}" class="btn btn-secondary" target="_blank" ng-if="vm.certificado.id"><em class="fas fa-eye"></em> Pré-visualizar</a>
+                    <button type="submit" class="btn btn-primary"><em class="fa fa-save"></em> Salvar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+</div>

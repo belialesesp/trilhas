@@ -1,0 +1,91 @@
+﻿<div ng-app="trilhasapp" ng-controller="EixosController as vm">
+
+    <div class="content-header">
+        <h5>Trilhas <em class="fa fa-angle-right"></em> Eixos</h5>
+        <div class="line"></div>
+    </div>
+
+    <a ui-sref="eixos-cadastro" id="btn-form" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Adicionar</a>
+
+    <form name="form">
+        <fieldset class="query-form">
+            <div class="row">
+                <div class="form-group col-md-8 col-sm-12">
+                    <input class="form-control w-100" id="nome" type="text" placeholder="Nome" ng-model="vm.query.nome" autocomplete="off" capitalize autofocus />
+                </div>
+                <div class="form-group col-md-2 col-sm-12">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="excluidos" ng-model="vm.query.excluidos" />
+                        <label class="custom-control-label" for="excluidos">Exibir excluídos</label>
+                    </div>
+                </div>
+                <div class="form-group col-md-2 col-sm-12">
+                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrar()"><i class="fas fa-filter"></i> Filtrar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <div class="row" ng-if="vm.eixos">
+        <div class="col-12">
+            <table class="table table-striped-custom table-hover">
+                <caption ng-if="vm.pager.totalItems > 0">
+                    <nav aria-label="Page navigation">
+                        <div class="row col-12 text-center pr-1">
+                            <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vm.pager.pages.length">
+                                <li class="page-item" ng-class="{disabled:vm.pager.currentPage == 1}">
+                                    <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage - 1)"><<</a>
+                                </li>
+                                <li class="page-item" ng-repeat="page in vm.pager.pages" ng-class="{active:vm.pager.currentPage == page}">
+                                    <a class="page-link" ng-click="vm.filtrar(page)">{{page}}</a>
+                                </li>
+                                <li class="page-item" ng-class="{disabled:vm.pager.currentPage == vm.pager.totalPages}">
+                                    <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage + 1)">>></a>
+                                </li>
+                                <li class="page-item" style="padding-left: 15px;">
+                                    <select ng-model="vm.pageSize" class="page-link" ng-change="vm.filtrar(page)"
+                                            ng-options="size.qtd as size.desc for size in vm.listPageSize"></select>
+                                </li>
+                            </ul>
+                            <div class="offset-2 col-3 text-right pr-0">Exibindo: <strong>{{vm.pager.startIndex + 1}} - {{vm.pager.endIndex + 1}}</strong> de <strong>{{vm.pager.totalItems}}</strong> registro(s)</div>
+                        </div>
+                    </nav>
+                </caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width: 7%">ID</th>
+                        <th style="width: 30%">Nome</th>
+                        <th class="d-none d-md-table-cell">Descrição</th>
+                        <th style="width: 8%" class="table-actions">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="eixo in vm.eixos">
+                        <td ng-class="{strike: eixo.excluido}">{{eixo.id}}</td>
+                        <td ng-class="{strike: eixo.excluido}">{{eixo.nome}}</td>
+                        <td class="d-none d-md-table-cell" ng-class="{strike: eixo.excluido}">{{eixo.descricao}}</td>
+                        <td class="table-actions">
+                            <span ng-if="!eixo.excluido">
+                                <a ui-sref="eixos-edicao({'id': {{eixo.id}} })"
+                                   tooltip
+                                   data-placement="top"
+                                   title="Editar"><span class="fa fa-pencil-alt"></span></a>
+                                <a ui-sref="" ng-click="vm.marcarExclusao(eixo.id)"
+                                   tooltip
+                                   data-toggle="modal"
+                                   data-placement="top"
+                                   title="Excluir"
+                                   data-target="#confirm-dialog"><span class="fa fa-trash"></span></a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr ng-if="vm.eixos.length == 0">
+                        <td colspan="4">Nenhum registro encontrado.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+</div>

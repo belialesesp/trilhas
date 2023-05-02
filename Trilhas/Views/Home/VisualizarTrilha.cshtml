@@ -1,0 +1,241 @@
+﻿@model Trilhas.Models.Usuario.VisualizarTrilhaViewModel
+
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    Layout = null;
+}
+
+<html lang="pt-br">
+<head>
+    <base href="./">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- <link rel="icon" href="./favicon.ico"> -->
+
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css">
+    <link rel="stylesheet" href="~/css/usuario.css">
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/lib/popup-master/assets/js/jquery.popup.min.js" async=""></script>
+
+    <title>Trilhas de Aprendizagem – ESESP</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top nav-trilhas nav-trilhas-red">
+        <div class="container">
+            <h1 class="navbar-brand mb-0 mt-1">
+                <a itemprop="url" rel="" title="Logo ESESP">
+                    <img alt="Logo ESESP" src="~/images/usuario/marca-esesp-branca.svg" width="32px">
+                </a>
+            </h1>
+            <a class="navbar-brand" href="/home/Index">
+                Trilhas de <span class="d-block d-sm-none">
+                    <br>
+                </span> Aprendizagem
+            </a>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown menu-usuario pull-right">
+                    <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle btn btn-2 btn-sm hidden-when-767" data-toggle="dropdown" href="#" role="button">@UserManager.GetUserName(User)</a>
+                    <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle btn btn-2 btn-sm display-when-767" data-toggle="dropdown" href="#" role="button" style="display: none">Menu</a>
+                    <div class="dropdown-menu mb-2">
+                        <a class="dropdown-item" asp-controller="home" asp-action="index">
+                            Trilhas
+                        </a>
+                        <a class="dropdown-item" asp-controller="home" asp-action="VisualizarCertificados">
+                            Visualizar Certificados
+                        </a>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <a class="dropdown-item" asp-controller="admin" asp-action="index">
+                                Administração
+                            </a>
+                        }
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" asp-controller="account" asp-action="logout">Sair</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main role="main">
+        <router-outlet></router-outlet>
+        <section class="section-profile">
+            <div class="container">
+                <div class="row pt-3 pb-3">
+                    @*IMAGEM DE PERFIL*@
+                    <div class="col-md-2 col-3 text-center pt-5">
+                        <img src="~/images/usuario/perfil/icone-perfil.svg" width="80%">
+                    </div>
+                    @*INFORMÃCOES DO USUARIO*@
+                    <div class="col-md-10 col-9 pr-5 suporte-escuro">
+                        <h3 class=" mt-7 pb-0 mb-0">@UserManager.GetUserName(User)</h3>
+                        <p class="mb-0">
+                            <i hidden=""> Não informado!!</i> SEGER, CPF 70080090001 [ @Model.UsuarioCPF ]
+                        </p>
+                        <p>@Model.UsuarioEmail</p>
+                        <p>
+                            <a asp-controller="home" asp-action="index" class="btn btn-2 btn-sm mb-2 w-300" tabindex="0">Adicionar novas soluções</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section-minha-trilha suporte-claro">
+            <div class="container">
+                <div class="row mt-6 mb-5">
+                    <div class="col-md-6">
+                        <h3 class="text-uppercase">Minha Trilha</h3>
+                        <p class="w-300 color-666"> Essa é sua trilha, que reune todas as soluções que fazem parte do seu aprendizado. Sempre confira os status das últimas soluções enviadas ao gestor. </p>
+                    </div>
+                </div>
+                <div class="row pb-6">
+                    <div class="col-md-12">
+                        <div class="minha-trilha-aguardando mb-5">
+                            <h6 class="text-uppercase w-600 color-status-aguardando mb-0"> Soluções Selecionadas </h6>
+
+                            @foreach (var agrupadorEixoKey in Model.AgrupadorEixos.Keys)
+                            {
+                                var agrupadorEixo = Model.AgrupadorEixos[agrupadorEixoKey];
+
+                                <div class="mt-3">
+
+                                    @foreach (var agrupadorEstacaoKey in agrupadorEixo.Keys)
+                                    {
+                                        var agrupadorEstacao = agrupadorEixo[agrupadorEstacaoKey];
+
+                                        foreach (var agrupadorSolucao in agrupadorEstacao)
+                                        {
+                                            <p class="open-sans mb-0 w-400">
+                                                <small class="text-capitalize">
+                                                    @agrupadorEixoKey <i class="fas fa-angle-double-right">
+                                                    </i> @agrupadorEstacaoKey <i class="fas fa-angle-double-right">
+                                                    </i> @agrupadorSolucao.SolucaoNome
+                                                </small>
+                                                <span class="p-solucoes-status">
+                                                    @switch (agrupadorSolucao.SolucaoTipo)
+                                                    {
+                                                        case "curso":
+                                                            {
+                                                                <i class="fas fa-chalkboard-teacher fa-icone-tipo-de-solucao"></i>
+                                                                break;
+                                                            }
+                                                        case "livro":
+                                                            {
+                                                                <i class="fas fa-book-open fa-icone-tipo-de-solucao"></i>
+                                                                break;
+                                                            }
+                                                        case "video":
+                                                            {
+                                                                <i class="fas fa-video fa-icone-tipo-de-solucao"></i>
+                                                                break;
+                                                            }
+                                                    }
+                                                </span>
+                                                <span class="ml-3">
+                                                    <small>
+                                                        <a asp-controller="home"
+                                                           asp-action="RemoverDaTrilha"
+                                                           asp-route-solucaoId="@agrupadorSolucao.SolucaoId">
+                                                            (Remover)
+                                                        </a>
+                                                    </small>
+                                                </span>
+                                            </p>
+                                        }
+                                    }
+
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer pt-5">
+        <section class="section-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2 col-4 text-center">
+                        <img src="~/images/usuario/principal/Brasao_Governo_320.png" width="76%">
+                    </div>
+                    <div class="col-md-10 text-right small mt-4">
+                        <p>Projeto Trilhas de Aprendizagem ESESP<br> Av. Governador Bley - Ed. Fábio Ruschi, 236 - Centro <br> CEP: 29010-150 - Vitória / ES</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-right small"> 2018 – 2019 • Desenvolvido pelo Grupo de Aprendizagem, na ESESP. </div>
+                </div>
+            </div>
+        </section>
+    </footer>
+
+    <div aria-hidden="true" aria-labelledby="login-cadastre-se" class="modal fade" id="target-login-cadastre-se" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header pb-0 pt-2">
+                    <h4 class="modal-title suporte-escuro w-600 ">Faça seu login</h4>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <alert>
+                    </alert>
+                    <div class="modal-inner-white-login pt-4 text-center">
+                        <p>Para prosseguir, coloque seus dados de login ou cadastre-se.</p>
+                        <form novalidate="" class="ng-dirty ng-touched ng-valid">
+                            <div class="input-group input-group-md mb-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">
+                                        <i class="fas fa-user-circle">
+                                        </i>
+                                    </span>
+                                </div>
+                                <input aria-describedby="inputGroup-sizing-sm" aria-label="Sizing example input" class="form-control ng-dirty ng-valid ng-touched" formcontrolname="cpf" placeholder="cpf" type="text">
+                            </div>
+                            <div class="input-group input-group-md mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-key">
+                                        </i>
+                                    </span>
+                                </div>
+                                <input class="form-control ng-dirty ng-valid ng-touched" formcontrolname="pw" placeholder="senha" type="password">
+                            </div>
+                            <button class="btn btn-3 btn-sm text-uppercase pl-5 pr-5">Entrar</button>
+                        </form>
+                        <p class="small mt-1">
+                            ou <a aria-controls="multiCollapseExample1" aria-expanded="false" data-toggle="collapse" href="#multiCollapseExample1" role="button">cadastre-se</a>
+                        </p>
+                        <div class="collapse multi-collapse" id="multiCollapseExample1">
+                            <div class="card card-body">
+                                <p>Qual o seu perfil profissional?</p>
+                                <button class="btn btn-3 btn-sm text-uppercase pl-5 pr-5 mb-2" data-dismiss="modal" tabindex="0">Servidor Estadual</button>
+                                <button class="btn btn-3 btn-sm text-uppercase pl-5 pr-5 mb-2" data-dismiss="modal" tabindex="0">Servidor Municipal</button>
+                                <button class="btn btn-3 btn-sm text-uppercase pl-5 pr-5 mb-2" data-dismiss="modal" tabindex="0">Integrante de OSC</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ascrail2000" class="nicescroll-rails nicescroll-rails-vr" style="width: 8px; z-index: auto; cursor: default; position: fixed; top: 0px; height: 100%; right: 0px; display: block; opacity: 0;">
+        <div class="nicescroll-cursors" style="position: relative; top: 0px; float: right; width: 6px; height: 318px; background-color: rgb(66, 66, 66); border: 1px solid rgb(255, 255, 255); background-clip: padding-box; border-radius: 5px;">
+        </div>
+    </div>
+    <div id="ascrail2000-hr" class="nicescroll-rails nicescroll-rails-hr" style="height: 8px; z-index: auto; position: fixed; left: 0px; width: 100%; bottom: 0px; cursor: default; display: none; opacity: 0;">
+        <div class="nicescroll-cursors" style="position: absolute; top: 0px; height: 6px; width: 1350px; background-color: rgb(66, 66, 66); border: 1px solid rgb(255, 255, 255); background-clip: padding-box; border-radius: 5px;">
+        </div>
+    </div>
+</body>
+</html>

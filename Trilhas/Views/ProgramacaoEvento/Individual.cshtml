@@ -1,0 +1,104 @@
+﻿@model Trilhas.Models.Evento.Relatorios.RelatorioProgramacaoEventoViewModel
+
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> UserManager
+
+@{ Layout = null; }
+
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Programação de Eventos</title>
+	<link rel="stylesheet" href="~/css/programacao-evento.css">
+	<script type="text/javascript">
+		window.onload = function () {
+			window.print();
+		}
+	</script>
+</head>
+
+<body>
+	<div id="cabecalho">
+		<img id="logoESESP" src="~/images/logo-esesp.jpg" alt="Logo ESESP">
+		<div style="width: 75%;">
+			<div id="titulo">
+				@Model.Nome
+			</div>
+			<div id="sub-titulo">
+				@Model.Modalidade
+			</div>
+			<div id="sigla">
+				<strong>Sigla: </strong>@Model.Sigla
+			</div>
+		</div>
+	</div>
+
+	<div id="prog-evento-info">
+		<table>
+			<tr>
+				<td class="c_1">
+					<strong>Carga Horária</strong>
+				</td>
+				<td class="c_2">
+					@Model.CargaHoraria
+				</td>
+			</tr>
+			<tr>
+				<td class="c_1">
+					<strong>Período Realização</strong>
+				</td>
+				<td class="c_2">
+					@Model.PeriodoRealizacao
+				</td>
+			</tr>
+
+			<tr>
+				<td class="c_1">
+					<strong>Local</strong>
+				</td>
+				<td class="c_2">
+					@Model.Local
+				</td>
+			</tr>
+			<tr>
+				<td class="c_1">
+					<strong>Número Vagas</strong>
+				</td>
+				<td class="c_2">
+					@Model.NumeroVagas vagas
+				</td>
+			</tr>
+			<tr>
+				<td class="c_1">
+					<strong>Docente</strong>
+				</td>
+				<td class="c_2">
+					@Model.Docente
+				</td>
+			</tr>
+			<tr>
+				<td class="c_1">
+					<strong>Público-Alvo</strong>
+				</td>
+				<td class="c_2">
+					@Model.PublicoAlvo
+				</td>
+			</tr>
+		</table>
+
+		<div id="p-inscricao">
+			<div>
+				<strong>Período Inscrição</strong>
+			</div>
+			<div>
+				@Model.PeriodoInscricao
+			</div>
+		</div>
+		<div>
+			<strong>Inscreva-se no RH do seu órgão por meio do Sistema de Capacitação</strong>
+		</div>
+	</div>
+</body>
+</html>

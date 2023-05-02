@@ -1,0 +1,121 @@
+﻿<div id="modalBuscarEntidadeCota" ng-controller="EventoModalEntidadeCotaController as vmx"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Pesquisar Entidade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <fieldset class="query-form">
+                    <div class="row">
+                        <!--NOME-->
+                        <div class="form-group col-md-6 col-sm-12">
+                            <input class="form-control w-100" id="nomeEntidade" type="text" placeholder="Sigla/Nome" autocomplete="off" capitalize
+                                   ng-model="vmx.queryEntidade.nome" ng-enter="vmx.filtrar()" />
+                        </div>
+                        <!--TIPO-->
+                        <div class="form-group col-md-6">
+                            <div class="input-group">
+                                <select id="tipoEntidade"
+                                        name="tipoEntidade"
+                                        class="form-control"
+                                        ng-options="tipo.id as tipo.descricao for tipo in vmx.tiposEntidade"
+                                        ng-model="vmx.queryEntidade.tipoEntidadeId"
+                                        ng-enter="vmx.filtrar()">
+                                    <option value=""> -- Selecione um Tipo -- </option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--UF-->
+                        <div class="form-group col-md-3">
+                            <div class="input-group">
+                                <select id="uf"
+                                        name="uf"
+                                        class="form-control"
+                                        ng-options="uf for uf in vmx.ufs"
+                                        ng-change="vmx.carregarMunicipiosEntidade()"
+                                        ng-model="vmx.queryEntidade.uf"
+                                        ng-enter="vmx.filtrar()">
+                                    <option value=""> -- UF -- </option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--MUNICIPIO-->
+                        <div class="form-group col-md-7">
+                            <div class="input-group">
+                                <select id="cidade"
+                                        name="cidade"
+                                        class="form-control text-center"
+                                        ng-options="municipio.id as municipio.nomeMunicipio for municipio in vmx.municipios"
+                                        ng-model="vmx.queryEntidade.municipioId"
+                                        ng-disabled="!vmx.queryEntidade.uf"
+                                        ng-enter="vmx.filtrar()">
+                                    <option value=""> -- Selecione uma Cidade -- </option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--FILTRO-->
+                        <div class="form-group col-md-2 col-sm-12">
+                            <button class="btn btn-info btn-sm btn-block" ng-click="vmx.filtrar()"><em class="fas fa-filter"></em> Filtrar</button>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="row" ng-if="vmx.entidades">
+                    <div class="col-12 scroll-y">
+                        <table class="table table-sm table-striped-custom table-hover">
+                            <caption ng-if="vmx.pager.totalItems > 0">
+                                <nav aria-label="Page navigation">
+                                    <div class="row col-12 text-center pr-1">
+                                        <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vmx.pager.pages.length">
+                                            <li class="page-item" ng-class="{disabled:vmx.pager.currentPage == 1}">
+                                                <a class="page-link" ng-click="vmx.filtrar(vmx.pager.currentPage - 1)"><<</a>
+                                            </li>
+                                            <li class="page-item" ng-repeat="page in vmx.pager.pages" ng-class="{active:vmx.pager.currentPage == page}">
+                                                <a class="page-link" ng-click="vmx.filtrar(page)">{{page}}</a>
+                                            </li>
+                                            <li class="page-item" ng-class="{disabled:vmx.pager.currentPage == vmx.pager.totalPages}">
+                                                <a class="page-link" ng-click="vmx.filtrar(vmx.pager.currentPage + 1)">>></a>
+                                            </li>
+                                            <li class="page-item" style="padding-left: 15px;">
+                                                <select ng-model="vmx.pageSize" class="page-link" ng-change="vmx.filtrar(page)"
+                                                        ng-options="size.qtd as size.desc for size in vmx.listPageSize"></select>
+                                            </li>
+                                        </ul>
+                                        <div class="col-5 text-right pr-0">Exibindo: <strong>{{vmx.pager.startIndex + 1}} - {{vmx.pager.endIndex + 1}}</strong> de <strong>{{vmx.pager.totalItems}}</strong> registro(s)</div>
+                                    </div>
+                                </nav>
+                            </caption>
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th class="d-none d-md-table-cell" style="width: 15%">Tipo</th>
+                                    <th class="d-none d-md-table-cell" style="width: 15%">Município</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="entidade in vmx.entidades" ng-click="vmx.selecionarEntidadeCota(entidade)" data-dismiss="modal">
+                                    <td>{{entidade.nome}}</td>
+                                    <td class="d-none d-md-table-cell">{{entidade.tipo}}</td>
+                                    <td class="d-none d-md-table-cell">{{entidade.municipio}}</td>
+                                </tr>
+                                <tr ng-if="vmx.entidades.length == 0">
+                                    <td colspan="3">Nenhum registro encontrado.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

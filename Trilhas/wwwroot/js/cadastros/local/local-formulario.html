@@ -1,0 +1,405 @@
+﻿<div ng-controller="LocalFormularioController as vm">
+
+    <div class="content-header">
+        <h5>Cadastro <em class="fa fa-angle-right"></em> Local <em class="fa fa-angle-right"></em> Formulário <small class="small badge badge-secondary">{{vm.local.id ? vm.local.id : 'novo'}}</small></h5>
+        <div class="line"></div>
+    </div>
+
+    <form dirty-tracking name="form" novalidate ng-submit="vm.salvar(form)">
+
+        <div id="server-errors" class="alert alert-danger" ng-if="form.serverErrors && form.$submitted">
+            <ul>
+                <li ng-repeat="serverError in form.serverErrors">
+                    <strong>{{serverError.key}}:</strong> {{serverError.message}}
+                </li>
+            </ul>
+        </div>
+
+        <ul class="nav nav-tabs" role="tablist" ng-init="vm.tab = 1">
+            <li class="nav-item">
+                <a class="nav-link" href="" ng-class="{'active' : vm.tab == 1}" ng-click="vm.tab = 1">Informações Básicas</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="" ng-class="{'active' : vm.tab == 2}" ng-click="vm.tab = 2">Endereço</a>
+            </li>
+        </ul>
+
+        <fieldset class="edit-form-tab">
+            <div id="form-local" class="tab-content">
+                <div class="tab-pane container-fluid" ng-class="{'active' : vm.tab == 1}">
+                    <!--NOME-->
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label for="nome"><span class="asterisco">*</span>Nome:</label>
+                            <input type="text" id="nome" name="nome" class="form-control" required autocomplete="off" capitalize
+                                   ng-class="{'is-invalid': form.nome.$invalid && (form.nome.$dirty || form.$submitted)}" ng-model="vm.local.nome" />
+                            <div ng-messages="form.nome.$error" role="alert" ng-if="form.nome.$dirty || form.$submitted">
+                                <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="line"></div>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <p class="my-3">
+                                <button type="button" class="btn btn-primary w-30 d-none d-md-inline-block" data-toggle="collapse" href="#area-local" role="button" aria-expanded="true" aria-controls="collapseExample" ng-click="vm.areas.local = !vm.areas.local">
+                                    <em class="fas" ng-class="{'fa-angle-up' : vm.areas.local, 'fa-angle-down': !vm.areas.local}"></em> Salas
+                                </button>
+                            </p>
+
+                            <div id="area-local" class="collapse show">
+                                <div class="row">
+                                    <!--SIGLA-->
+                                    <div class="form-group col-md-4">
+                                        <label for="sigla"><span class="asterisco">*</span>Sigla:</label>
+                                        <input type="text" id="sigla" name="sigla" class="form-control" autocomplete="off" capitalize
+                                               ng-class="{'is-invalid' : ((vm.sala.sigla == '')  && vm.submitedSala)}"
+                                               ng-model="vm.sala.sigla" />
+                                        <div role="alert" ng-if="((vm.sala.sigla == '') && vm.submitedSala)">
+                                            <div class="invalid-feedback d-block">Campo obrigatório</div>
+                                        </div>
+                                    </div>
+
+                                    <!--NUMERO SALA-->
+                                    <div class="form-group col-md-3">
+                                        <label for="numeroSala"><span class="asterisco">*</span>Número:</label>
+                                        <input type="text" id="numeroSala" name="numeroSala" class="form-control" autocomplete="off" capitalize
+                                               ng-class="{'is-invalid' : (vm.sala.numero == '' && vm.submitedSala)}" ng-model="vm.sala.numero" />
+                                        <div role="alert" ng-if="vm.sala.numero == '' && vm.submitedSala">
+                                            <div class="invalid-feedback d-block">Campo obrigatório</div>
+                                        </div>
+                                    </div>
+
+                                    <!--CAPACIDADE-->
+                                    <div class="form-group col-md-3">
+                                        <label for="capacidade"><span class="asterisco">*</span>Capacidade:</label>
+                                        <input type="number" id="capacidade" name="capacidade" class="form-control text-right" autocomplete="off" min="0"
+                                               ng-class="{'is-invalid' : (vm.sala.capacidade <= 0 && vm.submitedSala)}"
+                                               ng-model="vm.sala.capacidade"
+                                               ng-enter="vm.adicionarSala($event)" />
+                                        <div role="alert" ng-if="vm.sala.capacidade <= 0 && vm.submitedSala">
+                                            <div class="invalid-feedback d-block">Campo obrigatório</div>
+                                        </div>
+                                    </div>
+
+                                    <!--BOTÃO ADICIONAR SALA -->
+                                    <div class="form-group col-md-2">
+                                        <label class="">&nbsp;</label>
+                                        <button class="btn btn-success btn-sm btn-block" type="button" ng-click="vm.adicionarSala($event) "><em class="fas fa-plus-circle"></em> Incluir</button>
+                                    </div>
+                                </div>
+
+                                <!--TABELA DE SALAS-->
+                                <table class="table table-hover">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th style="width:5%"></th>
+                                            <th style="width:35%">Sigla</th>
+                                            <th style="width:25%">Número</th>
+                                            <th style="width:25%">Capacidade</th>
+                                            <th style="width:10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="sala in vm.local.salas track by $index">
+                                            <td>{{$index + 1}}</td>
+                                            <td>{{sala.sigla}}</td>
+                                            <td>{{sala.numero}}</td>
+                                            <td>{{sala.capacidade}}</td>
+                                            <td class="text-center">
+                                                <a href="" class="text-danger" ng-click="vm.excluirSala($index)" title="Remover Sala"><em class="fa fa-window-close"></em></a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="(!vm.local.salas || vm.local.salas.length == 0) ">
+                                            <td colspan="5" ng-class="{'td-invalid' : form.$submitted}">
+                                                Nenhuma sala cadastrada.
+                                                <div role="alert" ng-if="form.$submitted">
+                                                    <div class="invalid-feedback d-block">Cadastre pelo menos uma sala</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <p class="my-3">
+                                <button type="button" class="btn btn-primary w-30 d-none d-md-inline-block" data-toggle="collapse" href="#area-recurso" role="button" aria-expanded="true" aria-controls="collapseExample" ng-click="vm.areas.recurso = !vm.areas.recurso">
+                                    <em class="fas" ng-class="{'fa-angle-up' : vm.areas.recurso, 'fa-angle-down': !vm.areas.recurso}"></em> Recursos Operacionais
+                                </button>
+                            </p>
+                            <div id="area-recurso" class="collapse show">
+                                <div class="row">
+                                    <!--RECURSO-->
+                                    <div class="form-group col-md-7">
+                                        <label for="recurso"><span class="asterisco">*</span>Recurso:</label>
+                                        <div class="input-group">
+                                            <input type="text" id="recurso" name="recurso" class="form-control" autocomplete="off" readonly
+                                                   value="{{vm.recurso.nome}}"
+                                                   ng-class="{'is-invalid' : (vm.recurso.nome == '' && vm.submitedRecurso)}" />
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-primary"
+                                                        data-toggle="modal"
+                                                        data-target="#modalBuscarRecurso"
+                                                        title="Adicionar Recurso">
+                                                    <em class="fa fa-search"></em>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-primary" ui-sref="recursos-cadastro" title="Adicionar Recurso" ng-if="!vm.recurso.recursoId"><em class="fa fa-plus-circle"></em></button>
+                                                <button type="button" class="btn btn-outline-primary" ui-sref="recursos-edicao({'id': vm.recurso.recursoId})" title="Editar Recurso" ng-if="vm.recurso.recursoId"><em class="fa fa-pencil-alt"></em></button>
+                                            </div>
+                                        </div>
+                                        <div role="alert" ng-if="vm.recurso.nome == '' && vm.submitedRecurso">
+                                            <div class="invalid-feedback d-block">Campo obrigatório</div>
+                                        </div>
+                                    </div>
+
+                                    <!--QUANTIDADE-->
+                                    <div class="form-group col-md-3">
+                                        <label for="quantidade"><span class="asterisco">*</span>Quantidade:</label>
+                                        <input type="number" id="quantidade" name="quantidade" class="form-control text-right" autocomplete="off" min="0"
+                                               ng-class="{'is-invalid' : (vm.recurso.quantidade <= 0 && vm.submitedRecurso)}"
+                                               ng-model="vm.recurso.quantidade"
+                                               ng-enter="vm.adicionarRecurso($event)" />
+                                        <div role="alert" ng-if="vm.recurso.quantidade <= 0 && vm.submitedRecurso">
+                                            <div class="invalid-feedback d-block">Campo obrigatório</div>
+                                        </div>
+                                    </div>
+
+                                    <!--BOTÃO ADICIONAR RECURSO-->
+                                    <div class="form-group col-md-2">
+                                        <label class="">&nbsp;</label>
+                                        <button class="btn btn-success btn-sm btn-block" type="button" ng-click="vm.adicionarRecurso($event) "><em class="fas fa-plus-circle"></em> Incluir</button>
+                                    </div>
+                                </div>
+
+                                <!--TABELA DE RECURSOS-->
+                                <table class="table table-hover">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th style="width:5%"></th>
+                                            <th style="width:30%">Nome</th>
+                                            <th style="width:40%">Descrição</th>
+                                            <th style="width:15%">Quantidade</th>
+                                            <th style="width:10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="recurso in vm.local.recursos track by $index">
+                                            <td>{{$index + 1}}</td>
+                                            <td>{{recurso.nome}}</td>
+                                            <td>{{recurso.descricao}}</td>
+                                            <td>{{recurso.quantidade}}</td>
+                                            <td class="text-center">
+                                                <a href="" class="text-danger" ng-click="vm.excluirRecurso($index)" title="Remover Recurso"><em class="fa fa-window-close"></em></a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="!vm.local.recursos || vm.local.recursos.length == 0">
+                                            <td colspan="5">Nenhum recurso cadastrado.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="line"></div>
+
+                            <p class="my-3">
+                                <button type="button" class="btn btn-primary w-30 d-none d-md-inline-block" data-toggle="collapse" href="#area-contato" role="button" aria-expanded="true" aria-controls="collapseExample" ng-click="vm.areas.contato = !vm.areas.contato">
+                                    <em class="fas" ng-class="{'fa-angle-up' : vm.areas.contato, 'fa-angle-down': !vm.areas.contato}"></em> Contato
+                                </button>
+                            </p>
+                            <div id="area-contato" class="collapse show">
+                                <div class="row">
+
+                                    <!--TIPO CONTATO -->
+                                    <div class="form-group col-md-5">
+                                        <label for="tipoContato"><span class="asterisco">*</span>Tipo de Contato:</label>
+                                        <div class="input-group">
+                                            <select id="tipoContato"
+                                                    name="tipoContato"
+                                                    class="form-control"
+                                                    ng-options="tipo as tipo.nome for tipo in vm.tiposContato"
+                                                    ng-class="{'is-invalid' : (!vm.contato.tipo && vm.submitedContato)}"
+                                                    ng-model="vm.contato.tipo">
+                                                <option value=""> -- Selecione um Tipo -- </option>
+                                            </select>
+                                        </div>
+                                        <div role="alert" ng-if="!vm.contato.tipo && vm.submitedContato">
+                                            <div class="invalid-feedback d-block">Campo obrigatório</div>
+                                        </div>
+                                    </div>
+
+                                    <!--NUMERO CONTATO-->
+                                    <div class="form-group col-md-5">
+                                        <label for="numeroContato"><span class="asterisco">*</span>Número:</label>
+                                        <input type="text" min="0" id="numeroContato" name="numeroContato" class="form-control" autocomplete="off" capitalize
+                                               ng-model="vm.contato.numero" ui-mask="(99) 9?99999999"
+                                               ng-class="{'is-invalid' : (vm.contato.numero == '' && vm.submitedContato)}"
+                                               ng-enter="vm.adicionarContato($event)" />
+                                        <div role="alert" ng-if="vm.contato.numero == '' && vm.submitedContato">
+                                            <div class="invalid-feedback d-block">Campo obrigatório</div>
+                                        </div>
+                                    </div>
+
+                                    <!--BOTÃO ADICIONAR CONTATO-->
+                                    <div class="form-group col-md-2">
+                                        <label class="">&nbsp;</label>
+                                        <button class="btn btn-success btn-sm btn-block" type="button" ng-click="vm.adicionarContato($event) "><em class="fas fa-plus-circle"></em> Incluir</button>
+                                    </div>
+                                </div>
+
+                                <!--TABELA DE CONTATO-->
+                                <table class="table table-hover">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th style="width:35%">Tipo</th>
+                                            <th>Número</th>
+                                            <th style="width:10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="contato in vm.local.contatos track by $index">
+                                            <td>{{contato.tipo.nome}}</td>
+                                            <td>{{contato.numero}}</td>
+                                            <td class="text-center">
+                                                <a href="" class="text-danger" ng-click="vm.excluirContato($index)" title="Remover Contato"><em class="fa fa-window-close"></em></a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="!vm.local.contatos || vm.local.contatos.length == 0">
+                                            <td colspan="3" ng-class="{'td-invalid' : form.$submitted}">
+                                                Nenhum contato cadastrado.
+                                                <div role="alert" ng-if="form.$submitted">
+                                                    <div class="invalid-feedback d-block">Cadastre pelo menos um contato</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="line"></div>
+
+                    <!--OBSERVACAO-->
+                    <div class="row mt-4">
+                        <div class="form-group col-md-12">
+                            <label for="observacao">Observações:</label>
+                            <textarea type="text" id="observacao" name="observacao" class="form-control" autocomplete="off" ng-model="vm.local.observacoes" rows="5" capitalize />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane container-fluid" ng-class="{'active' : vm.tab == 2}">
+                    <div class="row">
+                        <!--ENDEREÇO-->
+                        <div class="form-group col-md-10 col-sm-12">
+                            <label for="logradouro"><span class="asterisco">*</span>Endereço:</label>
+                            <input type="text" id="logradouro" name="logradouro" class="form-control" required autocomplete="off" capitalize
+                                   ng-class="{'is-invalid': form.logradouro.$invalid && (form.logradouro.$dirty || form.$submitted)}" ng-model="vm.local.logradouro" />
+                            <div ng-messages="form.logradouro.$error" role="alert" ng-if="form.logradouro.$dirty || form.$submitted">
+                                <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                            </div>
+                        </div>
+
+                        <!--NUMERO-->
+                        <div class="form-group col-md-2 col-sm-12">
+                            <label for="numeroEndereco">Número:</label>
+                            <input type="text" id="numeroEndereco" name="numeroEndereco" class="form-control text-right"
+                                   ng-model="vm.local.numero" autocomplete="off" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+                        </div>
+
+                        <!--COMPLEMENTO-->
+                        <div class="form-group col-md-9 col-sm-12">
+                            <label for="complemento">Complemento:</label>
+                            <input type="text" id="complemento" name="complemento" capitalize
+                                   class="form-control" autocomplete="off" ng-model="vm.local.complemento" />
+                        </div>
+
+                        <!--CEP-->
+                        <div class="form-group col-md-3 col-sm-12">
+                            <label for="cep"><span class="asterisco">*</span>CEP:</label>
+                            <input type="text" id="cep" name="cep" class="form-control text-center" required autocomplete="off" ui-br-cep-mask placeholder="00000-000"
+                                   ng-class="{'is-invalid': form.cep.$invalid && (form.cep.$dirty || form.$submitted)}" ng-model="vm.local.cep" />
+                            <div ng-messages="form.cep.$error" role="alert" ng-if="form.cep.$dirty || form.$submitted">
+                                <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                            </div>
+                        </div>
+
+                        <!--BAIRRO-->
+                        <div class="form-group col-md-5 col-sm-12">
+                            <label for="bairro"><span class="asterisco">*</span>Bairro:</label>
+                            <input type="text" id="bairro" name="bairro" class="form-control" required autocomplete="off" capitalize
+                                   ng-class="{'is-invalid': form.bairro.$invalid && (form.bairro.$dirty || form.$submitted)}" ng-model="vm.local.bairro" />
+                            <div ng-messages="form.bairro.$error" role="alert" ng-if="form.bairro.$dirty || form.$submitted">
+                                <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                            </div>
+                        </div>
+
+                        <!--UF-->
+                        <div class="form-group col-md-2 col-sm-12">
+                            <label for="uf"><span class="asterisco">*</span>UF:</label>
+                            <div class="input-group">
+                                <select id="uf"
+                                        name="uf"
+                                        class="form-control"
+                                        ng-class="{'is-invalid': form.uf.$invalid && (form.uf.$dirty || form.$submitted)}"
+                                        ng-options="uf for uf in vm.ufs"
+                                        ng-change="vm.carregarMunicipios(vm.local.uf)"
+                                        ng-model="vm.local.uf"
+                                        required>
+                                    <option value=""> -- UF -- </option>
+                                </select>
+                            </div>
+                            <div ng-messages="form.uf.$error" role="alert" ng-if="form.uf.$dirty || form.$submitted">
+                                <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                            </div>
+                        </div>
+
+                        <!--MUNICIPIO-->
+                        <div class="form-group col-md-5 col-sm-12">
+                            <label for="municipio"><span class="asterisco">*</span>Cidade:</label>
+
+                            <div class="input-group">
+                                <select id="municipio"
+                                        name="municipio"
+                                        class="form-control text-center"
+                                        ng-class="{'is-invalid': form.municipio.$invalid && (form.municipio.$dirty || form.$submitted)}"
+                                        ng-options="municipio.id as municipio.nomeMunicipio for municipio in vm.municipios"
+                                        ng-model="vm.local.municipioId"
+                                        ng-disabled="!vm.local.uf"
+                                        required>
+                                    <option value=""> -- Selecione um Município -- </option>
+                                </select>
+                            </div>
+
+                            <div ng-messages="form.municipio.$error" role="alert" ng-if="form.municipio.$dirty || form.$submitted">
+                                <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="actions-form">
+            <div class="row">
+                <div class="left-buttons col-md-6 col-sm-12">
+                    <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+                </div>
+                <div class="right-buttons col-md-6 col-sm-12">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirm-dialog" ng-if="vm.solucao.id"><em class="fa fa-trash"></em> Excluir</button>
+                    <button type="submit" class="btn btn-primary" ng-click="vm.salvarVoltar()"><em class="fa fa-save"></em> Salvar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+
+    <!--MODAL-->
+    <ng-include src="'/js/cadastros/local/modal/local-modal-recurso.html'"></ng-include>
+</div>

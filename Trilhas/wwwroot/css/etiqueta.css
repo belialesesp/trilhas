@@ -1,0 +1,47 @@
+﻿h2, h3 {
+	margin: 0cm 0cm 0cm 0.2cm;
+}
+h2 {
+	font-size: 20px;
+}
+
+h3{
+    font-size: 13px;
+    font-weight: 100;
+}
+#etiqueta{
+	width: 6cm;
+	display: contents;
+}
+
+#barcode {
+	width: 200px;
+	height: 100px;
+	margin-top: -2px;
+}
+
+@media print{
+	*{
+		background: transparent !important;
+		color: #000 !important;
+		text-shadow: none !important;
+		filter: none !important;
+		-ms-filter: none !important;
+	}
+
+	body {
+		margin: 0;
+		padding: 0;
+		line-height: 1.4em;
+	}
+
+	/*h2{
+		font-size: 0.7cm;
+	}*/
+
+}
+
+/*define as margens do pagina*/
+@page {
+	margin: 0.1cm 0cm 0cm 0.8cm;
+}
