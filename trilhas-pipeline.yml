@@ -1,0 +1,81 @@
+trigger:
+ branches:
+   include:
+     - develop
+     - staging
+    #  - main
+
+variables:
+ BuildConfiguration: Release
+ BuildPlatform: any cpu
+ system.debug: true
+ NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+resources:
+ repositories:
+ - repository: templates
+   type: git
+   name: DevopsTools/prodest-build-deploy-templates
+
+stages:
+
+- stage: BuildStage
+  jobs:
+  - template: buildDotnetCore.yml@templates
+    parameters: 
+     projetos: |
+       **/Trilhas.csproj
+
+- stage: Desenvolvimento
+  displayName: Desenvolvimento
+  dependsOn: BuildStage
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+ 
+  jobs: 
+
+  - template: deployDotnetCore.yml@templates
+    parameters:
+     displayName: DeployTrilhas
+     deployment: DeployTrilhas
+     environment: IISDesenvolvimento
+     group: esesp-trilhas-dev
+     arquivo: Trilhas.zip
+     sistema: trilhas
+     orgao: esesp
+     diretorioraiz: D:\Sites\$(Orgao)\$(Sistema)
+
+- stage: Homologacao
+  displayName: Homologacao
+  dependsOn: BuildStage
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/staging')
+
+  jobs: 
+
+  - template: deployDotnetCore.yml@templates
+    parameters:
+     displayName: DeployTrilhas
+     deployment: DeployTrilhas
+     environment: IISHomologacao
+     group: esesp-trilhas-hom
+     arquivo: Trilhas.zip
+     sistema: trilhas
+     orgao: esesp
+     diretorioraiz: D:\Sites\$(Orgao)\$(Sistema)
+
+- stage: Producao
+  displayName: Producao
+  dependsOn: BuildStage
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+
+  jobs: 
+
+  - template: deployDotnetCore.yml@templates
+    parameters:
+     displayName: DeployTrilhas
+     deployment: DeployTrilhas
+     environment: IISProducaoMinor
+     group: esesp-trilhas-prod
+     arquivo: Trilhas.zip
+     sistema: trilhas
+     orgao: esesp
+     diretorioraiz: D:\Sites\$(Orgao)\$(Sistema)
