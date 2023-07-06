@@ -47,11 +47,11 @@ namespace Trilhas.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [HttpGet("/ping")]
+        [HttpGet("/health/live")]
         [AllowAnonymous]
         public IActionResult Ping()
         {
-            return Json("pong");
+            return Json("healthy");
         }
     }
 
