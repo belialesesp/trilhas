@@ -23,10 +23,5 @@ namespace Trilhas.Controllers
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
-
-        public async Task Teste()
-        {
-
-        }
     }
 }
