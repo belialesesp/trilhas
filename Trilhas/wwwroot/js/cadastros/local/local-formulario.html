@@ -30,7 +30,7 @@
                     <!--NOME-->
                     <div class="row">
                         <div class="form-group col-md-12">
-                            <label for="nome"><span class="asterisco">*</span>Nome:</label>
+                            <label for="nome"><span class="asterisco">*</span>Local:</label>
                             <input type="text" id="nome" name="nome" class="form-control" required autocomplete="off" capitalize
                                    ng-class="{'is-invalid': form.nome.$invalid && (form.nome.$dirty || form.$submitted)}" ng-model="vm.local.nome" />
                             <div ng-messages="form.nome.$error" role="alert" ng-if="form.nome.$dirty || form.$submitted">
@@ -179,7 +179,7 @@
                                     <thead class="thead-dark">
                                         <tr>
                                             <th style="width:5%"></th>
-                                            <th style="width:30%">Nome</th>
+                                            <th style="width:30%">Recurso</th>
                                             <th style="width:40%">Descrição</th>
                                             <th style="width:15%">Quantidade</th>
                                             <th style="width:10%"></th>

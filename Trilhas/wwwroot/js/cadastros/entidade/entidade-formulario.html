@@ -29,7 +29,7 @@
 
                 <!--NOME-->
                 <div class="form-group col-md-9">
-                    <label for="nome"><span class="asterisco">*</span>Nome:</label>
+                    <label for="nome"><span class="asterisco">*</span>Entidade:</label>
                     <input type="text" id="nome" name="nome" class="form-control" required autocomplete="off" autofocus capitalize
                            ng-class="{'is-invalid': form.nome.$invalid && (form.nome.$dirty || form.$submitted)}" ng-model="vm.entidade.nome" />
                     <div ng-messages="form.nome.$error" role="alert" ng-if="form.nome.$dirty || form.$submitted">
@@ -39,7 +39,7 @@
 
                 <!--TIPO ENTIDADE -->
                 <div class="form-group col-md-5">
-                    <label for="tipo"><span class="asterisco">*</span>Tipo:</label>
+                    <label for="tipo"><span class="asterisco">*</span>Âmbito:</label>
                     <div class="input-group">
                         <select id="tipo"
                                 name="tipo"
@@ -47,7 +47,7 @@
                                 ng-class="{'is-invalid': form.tipo.$invalid && (form.tipo.$dirty || form.$submitted)}"
                                 required ng-options="tipo.id as tipo.descricao for tipo in vm.tipos"
                                 ng-model="vm.entidade.tipoEntidadeId">
-                            <option value=""> -- Selecione um Tipo -- </option>
+                            <option value=""> -- Selecione um Âmbito -- </option>
                         </select>
                     </div>
                     <div ng-messages="form.tipo.$error" role="alert" ng-if="form.tipo.$dirty || form.$submitted">
@@ -97,7 +97,7 @@
                 </div>
 
                 <div class="form-group col-md-12">
-                    <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#modalBuscarGestor"><em class="fa fa-plus-circle"></em> Adicionar Gestor</button>
+                    <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#modalBuscarGestor"><em class="fa fa-plus-circle"></em> Adicionar Responsável RH</button>
                 </div>
             </div>
 
@@ -120,7 +120,7 @@
                         </td>
                     </tr>
                     <tr ng-if="!vm.gestores || vm.gestores.length == 0">
-                        <td colspan="4">Nenhum Gestor cadastrado.</td>
+                        <td colspan="4">Nenhum Responsável RH cadastrado.</td>
                     </tr>
                 </tbody>
             </table>
