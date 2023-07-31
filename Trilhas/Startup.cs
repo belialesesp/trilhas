@@ -116,14 +116,15 @@ namespace Trilhas
 				options.Scope.Add("email");
                 //options.Scope.Add("cpf");
                 options.Scope.Add("permissoes");
+				options.Scope.Add("agentepublico");
 
-                //options.Authority = acessoCidadaoHybridClientConfiguration.Authority;
-                //options.ClientId = acessoCidadaoHybridClientConfiguration.ClientId;
-                //options.ClientSecret = acessoCidadaoHybridClientConfiguration.ClientSecret;
-                //options.GetClaimsFromUserInfoEndpoint = acessoCidadaoHybridClientConfiguration.GetClaimsFromUserInfoEndpoint;
-                //options.RequireHttpsMetadata = acessoCidadaoHybridClientConfiguration.RequireHttpsMetadata;
-                //options.ResponseType = acessoCidadaoHybridClientConfiguration.ResponseType;
-                //options.SaveTokens = acessoCidadaoHybridClientConfiguration.SaveTokens;
+				//options.Authority = acessoCidadaoHybridClientConfiguration.Authority;
+				//options.ClientId = acessoCidadaoHybridClientConfiguration.ClientId;
+				//options.ClientSecret = acessoCidadaoHybridClientConfiguration.ClientSecret;
+				//options.GetClaimsFromUserInfoEndpoint = acessoCidadaoHybridClientConfiguration.GetClaimsFromUserInfoEndpoint;
+				//options.RequireHttpsMetadata = acessoCidadaoHybridClientConfiguration.RequireHttpsMetadata;
+				//options.ResponseType = acessoCidadaoHybridClientConfiguration.ResponseType;
+				//options.SaveTokens = acessoCidadaoHybridClientConfiguration.SaveTokens;
 
 				//ICollection<string> scopes = acessoCidadaoHybridClientConfiguration.Scopes;
 				//options.Scope.Clear();

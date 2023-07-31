@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Model\Entidades\**" />
+    <Content Remove="Data\Model\Entidades\**" />
+    <EmbeddedResource Remove="Data\Model\Entidades\**" />
+    <None Remove="Data\Model\Entidades\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Data\Migrations\20190607173537_locais-municipio.cs" />
   </ItemGroup>
 
@@ -105,7 +112,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Model\Entidades\" />
     <Folder Include="wwwroot\images\usuario\" />
     <Folder Include="wwwroot\lib\ckeditor\UploadImage\" />
     <Folder Include="wwwroot\lib\font-awesome\" />

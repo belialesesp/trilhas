@@ -4,7 +4,7 @@ namespace Trilhas.Data.Model.Eventos
 {
     public enum EnumSituacaoCursista
     {
-        [Description("CERTIFICADO")]
+        [Description("CURSANDO")]
         CURSANDO = 0,
 
         [Description("CERTIFICADO")]

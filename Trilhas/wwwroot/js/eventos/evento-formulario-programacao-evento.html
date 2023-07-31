@@ -1,10 +1,9 @@
 ﻿<div class="row">
     <!--COORDENADOR-->
     <div class="form-group col-md-10">
-        <label for="entidade"><span class="asterisco">*</span>Coordenador:</label>
+        <label for="entidade">Coordenador:</label>
         <div class="input-group">
             <input type="text" id="coordenador" name="coordenador" class="form-control" autocomplete="off" readonly
-                   ng-class="{'is-invalid': ((!vm.evento.coordenador || !vm.evento.coordenador.nome) && form.$submitted ) }"
                    value="{{vm.evento.coordenador.nome}}" placeholder="Selecione o Coordenador" />
             <div class="input-group-append">
                 <button type="button"
@@ -24,9 +23,6 @@
                     <em class="fa fa-pencil-alt"></em>
                 </button>
             </div>
-        </div>
-        <div role="alert" ng-if="((!vm.evento.coordenador || !vm.evento.coordenador.nome) && form.$submitted)">
-            <div class="invalid-feedback d-block">Campo obrigatório</div>
         </div>
     </div>
 

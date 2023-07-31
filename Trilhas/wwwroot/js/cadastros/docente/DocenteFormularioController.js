@@ -270,9 +270,6 @@ function DocenteFormularioController($state, $stateParams, $q, $http, $scope, Se
             if (!vm.formacao.curso) vm.cursoFormacaoRequired = true;
             if (!vm.formacao.titulacao) vm.titulacaoRequired = true;
             if (!vm.formacao.instituicao) vm.instituicaoRequired = true;
-            if (!vm.formacao.cargaHoraria) vm.cargaHorariaRequired = true;
-            if (!vm.formacao.dataInicio) vm.dataInicioRequired = true;
-            if (!vm.formacao.dataFim || vm.isDataFormacao) vm.dataFimRequired = true;
             toastr["error"]('Erro ao adicionar a Formação do Docente.');
         }
 

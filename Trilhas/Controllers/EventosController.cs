@@ -426,7 +426,11 @@ namespace Trilhas.Controllers
 
         private Evento CriarEvento(SalvarEventoViewModel vm)
         {
-            Pessoa coordenador = _pessoaService.RecuperarPessoa(vm.Coordenador.Id);
+            Pessoa coordenador = null;
+
+            if (vm.Coordenador != null && vm.Coordenador.Id > 0)
+                coordenador = _pessoaService.RecuperarPessoa(vm.Coordenador.Id);
+
             Curso curso = (Curso)_solucaoService.RecuperarSolucaoEducacionalCompleta(vm.Curso.Id);
             Entidade entidade = _entidadeService.RecuperarEntidade(vm.Entidade.Id);
 
@@ -476,9 +480,12 @@ namespace Trilhas.Controllers
 
         private Evento AtualizarEvento(SalvarEventoViewModel vm)
         {
-            Evento evento = _eventoService.RecuperarEventoCompleto(vm.Id);
+            Pessoa coordenador = null;
+            
+            if(vm.Coordenador != null && vm.Coordenador.Id > 0)
+                coordenador = _pessoaService.RecuperarPessoa(vm.Coordenador.Id);
 
-            Pessoa coordenador = _pessoaService.RecuperarPessoa(vm.Coordenador.Id);
+            Evento evento = _eventoService.RecuperarEventoCompleto(vm.Id);
             Curso curso = (Curso)_solucaoService.RecuperarSolucaoEducacionalCompleta(vm.Curso.Id);
             Entidade entidade = _entidadeService.RecuperarEntidade(vm.Entidade.Id);
 
@@ -525,10 +532,6 @@ namespace Trilhas.Controllers
 
         private void ValidarCadastroEvento(SalvarEventoViewModel vm)
         {
-            if (vm.Coordenador.Id <= 0)
-            {
-                ModelState.AddModelError("Coordenador", "Coordenador não Informado.");
-            }
             if (vm.Curso.Id <= 0)
             {
                 ModelState.AddModelError("Solução Educacional", "Solução Educacional não Informada.");
@@ -568,10 +571,6 @@ namespace Trilhas.Controllers
             {
                 ModelState.AddModelError("Agenda", "O Horário do Fim das inscrições não foi informado.");
             }
-            //if (vm.Agenda.DataInscricaoInicio > vm.Agenda.DataInscricaoFim && vm.Agenda.HoraInscricaoInicio > vm.Agenda.HoraInscricaoFim)
-            //{
-            //    ModelState.AddModelError("Agenda", "Data início da inscrição não pode ser superior a data fim da inscrição");
-            //}
 
             if (vm.Horarios.Count <= 0)
             {
@@ -595,10 +594,6 @@ namespace Trilhas.Controllers
                 {
                     ModelState.AddModelError("Horário", "Existe(m) horário(s) sem Função de Docente informado.");
                 }
-                //if (vm.Horarios.Min(x => x.HoraInicio) < vm.Agenda.HoraInscricaoFim)
-                //{
-                //    ModelState.AddModelError("Horário", "O início do curso deve ser posterior à data/hora fim das inscrições.");
-                //}
             }
 
             if (vm.LimitarVagas && vm.VagasPorEntidade <= 0)

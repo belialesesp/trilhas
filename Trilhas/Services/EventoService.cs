@@ -299,13 +299,6 @@ namespace Trilhas.Services
             {
                 throw new TrilhasException("Esse Evento foi Cancelado e não pode mais ser alterado.");
             }
-
-            //var possuiInscritos = _context.ListaDeInscricao.Include(x => x.Inscritos).Any(x => x.Evento.Id == evento.Id && x.Inscritos.Any(y => !y.DeletionTime.HasValue));
-
-            //if (possuiInscritos)
-            //{
-            //    throw new TrilhasException("O Evento possui Cursistas Inscritos e não pode mais ser alterado.");
-            //}
         }
 
         private void ValidarHorarios(Evento evento)

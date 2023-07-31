@@ -32,39 +32,30 @@
 
     <!--CARGA HORARIA-->
     <div class="form-group col-md-3">
-        <label for="cargaHoraria"><span class="asterisco">*</span>Carga Horária:</label>
+        <label for="cargaHoraria">Carga Horária:</label>
         <input type="text" id="cargaHoraria" name="cargaHoraria" class="form-control" autocomplete="off" ui-number-mask="0" ui-hide-group-sep min="0" max="99999" maxlength="5"
-               ng-class="{'is-invalid':(vm.cargaHorariaRequired && vm.submitedFormacao && !vm.formacao.cargaHoraria)}"
                ng-model="vm.formacao.cargaHoraria" />
-        <div role="alert" ng-if="(vm.cargaHorariaRequired && vm.submitedFormacao && !vm.formacao.cargaHoraria)">
-            <div class="invalid-feedback d-block">Campo obrigatório</div>
-        </div>
     </div>
 
     <!--DATA INICIO-->
     <div class="form-group col-md-3">
-        <label for="dataInicioFormacao"><span class="asterisco">*</span>Data Início:</label>
+        <label for="dataInicioFormacao">Data Início:</label>
         <input type="date" id="dataInicioFormacao" name="dataInicioFormacao" class="form-control" autocomplete="off"
-               ng-class="{'is-invalid': (vm.dataInicioRequired && vm.submitedFormacao && !vm.formacao.dataInicio)}"
                ng-model="vm.formacao.dataInicio"
                ng-blur="vm.validaDataFormacao()" 
                max="9999-12-31"/>
-        <div role="alert" ng-if="(vm.dataInicioRequired && vm.submitedFormacao && !vm.formacao.dataInicio)">
-            <div class="invalid-feedback d-block">Campo obrigatório</div>
-        </div>
     </div>
 
     <!--DATA TÉRMINO-->
     <div class="form-group col-md-3">
-        <label for="dataFimFormacao"><span class="asterisco">*</span>Data Término:</label>
+        <label for="dataFimFormacao">Data Término:</label>
         <input type="date" id="dataFimFormacao" name="dataFimFormacao" class="form-control" autocomplete="off"
-               ng-class="{'is-invalid': (vm.dataFimRequired && vm.submitedFormacao && !vm.formacao.dataFim) || !vm.isDataFormacao }"
+               ng-class="{'is-invalid': !vm.isDataFormacao }"
                ng-model="vm.formacao.dataFim"
                ng-enter="vm.adicionarFormacao($event)"
                ng-change="vm.validaDataFormacao()" 
                max="9999-12-31"/>
-        <div role="alert" ng-if="(vm.dataFimRequired && vm.submitedFormacao && !vm.formacao.dataFim) || !vm.isDataFormacao">
-            <div ng-if="vm.isDataFormacao" class="invalid-feedback d-block">Campo obrigatório</div>
+        <div role="alert" ng-if="!vm.isDataFormacao">
             <span ng-if="!vm.isDataFormacao" class="invalid-feedback d-block">Data Inválida</span>
         </div>
     </div>
