@@ -1,4 +1,6 @@
-﻿angular
+﻿const { log } = require("util");
+
+angular
     .module('trilhasapp')
     .controller('EventosController', EventosController);
 
@@ -170,6 +172,7 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
     var buscar = function () {
 
         var success = function (response) {
+            console.log('Eventos:', response.data);
 			vm.eventos = response.data;
         };
 
