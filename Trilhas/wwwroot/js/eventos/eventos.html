@@ -251,6 +251,7 @@
                         <th style="width: 5%" class="text-right d-none d-md-table-cell">C/H</th>
                         <th style="width: 15%">Período</th>
                         <th style="width: 12%" class="d-none d-md-table-cell">Município</th>
+                        <th style="width: 12%" class="d-none d-md-table-cell">Modalidade</th>
                         <th style="width: 3%" class="text-right">Ins</th>
                         <th style="width: 3%" class="text-right">Apr</th>
                         <th style="width: 3%" class="text-right">Dec</th>
@@ -267,6 +268,7 @@
                         <td class="text-right d-none d-md-table-cell" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.cargaHoraria}}</td>
                         <td class="" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.dataInicio | date : 'dd/MM/yyyy'}} - {{evento.dataFim | date : 'dd/MM/yyyy'}}</td>
                         <td class="d-none d-md-table-cell" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.municipio ? evento.municipio : 'EAD'}}</td>
+                        <td class="d-none d-md-table-cell" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.modalidade}}</td>
                         <td class="text-right" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.inscritos}}</td>
                         <td class="text-right" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.aprovados}}</td>
                         <td class="text-right" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.declarados}}</td>
@@ -275,9 +277,9 @@
                         <td class="table-actions">
                             <span ng-if="evento.situacao != 'CANCELADO'">
                                 <!--<a ng-href="/eventos/downloadListaInscritosEvento?id={{evento.id}}" target="_blank"
-       tooltip
-       data-placement="top"
-       title="Download Lista de Inscrição"><span class="fa fa-file-csv"></span></a>-->
+            tooltip
+            data-placement="top"
+            title="Download Lista de Inscrição"><span class="fa fa-file-csv"></span></a>-->
 
                                 <a ui-sref="eventos-encerramento({'id': {{evento.id}} })" ng-if="evento.situacao == 'FINALIZADO'"
                                    tooltip
@@ -295,11 +297,11 @@
                                    title="Editar"><span class="fa fa-pencil-alt"></span></a>
 
                                 <!--<a ui-sref="" ng-click="vm.marcarExclusao(evento.id)"
-       tooltip
-       data-toggle="modal"
-       data-placement="top"
-       title="Excluir"
-       data-target="#confirm-dialog"><span class="fa fa-trash"></span></a>-->
+            tooltip
+            data-toggle="modal"
+            data-placement="top"
+            title="Excluir"
+            data-target="#confirm-dialog"><span class="fa fa-trash"></span></a>-->
                             </span>
                         </td>
                     </tr>
