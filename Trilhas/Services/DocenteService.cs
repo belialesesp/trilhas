@@ -244,7 +244,7 @@ namespace Trilhas.Services
                                 group by d.Id, p.NomeSocial, p.Nome, p.cpf, p.Email, d.deletionTime, e.id) as f
                             group by f.id, f.Nome, f.cpf, f.email, f.Excluido";
 
-            return _context.Query<GridDocenteDto>().FromSql(sql, docente, exibirExcluidos, curso, dtInicio, dtFim, modalidade);
+            return _context.GridDocenteDto.FromSqlRaw(sql, docente, exibirExcluidos, curso, dtInicio, dtFim, modalidade);
         }
     }
 }
