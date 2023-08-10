@@ -19,6 +19,6 @@ namespace Trilhas.Models.Evento
         public int Declarados { get; set; }
         public int Desistentes { get; set; }
         public bool Ead { get; set; }
-        public string Modalidade { get; set; }
+
     }
 }

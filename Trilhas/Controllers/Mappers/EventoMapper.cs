@@ -5,7 +5,6 @@ using Trilhas.Data.Model;
 using Trilhas.Data.Model.Cadastro;
 using Trilhas.Data.Model.Eventos;
 using Trilhas.Data.Model.Trilhas;
-using Trilhas.Extensions;
 using Trilhas.Models;
 using Trilhas.Models.Cadastros.Docente;
 using Trilhas.Models.Evento;
@@ -153,8 +152,7 @@ namespace Trilhas.Controllers.Mappers
                     Declarados = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && x.Situacao == EnumSituacaoCursista.DECLARADO).Count() : 0,
                     Desistentes = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && x.Situacao == EnumSituacaoCursista.DESISTENTE).Count() : 0,
                     Situacao = situacaoDisplay,
-                    Ead = evento.Curso.Modalidade == EnumModalidade.EAD,
-                    Modalidade = evento.Curso.Modalidade.GetDescription()
+                    Ead = evento.Curso.Modalidade == EnumModalidade.EAD
                 });
 
                 ch += evento.Curso.CargaHorariaTotal();
