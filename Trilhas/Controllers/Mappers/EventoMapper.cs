@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Trilhas.Data.Enums;
 using Trilhas.Data.Model;
 using Trilhas.Data.Model.Cadastro;
@@ -101,6 +102,9 @@ namespace Trilhas.Controllers.Mappers
 
         public EventoCoordenadorViewModel MapearCoordenadorViewModel(Pessoa coordenador)
         {
+            if(coordenador is null)
+                return null;
+
             EventoCoordenadorViewModel vm = new EventoCoordenadorViewModel(coordenador.Id);
             vm.Nome = coordenador.NomeSocial ?? coordenador.Nome;
 
