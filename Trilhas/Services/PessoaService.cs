@@ -319,7 +319,7 @@ namespace Trilhas.Services
 
         public int PesquisarQuantidadeCursistasSqlQuery(long? cursistaId, long? cursoId, long? modalidadeCurso, long? entidadeId, string ufNome, long? municipioId, DateTime? dataInicio, DateTime? dataFim, bool exibirDesistentes)
         {
-            return QueryCursistas(cursistaId, cursoId, modalidadeCurso, entidadeId, ufNome, municipioId, dataInicio, dataFim, exibirDesistentes).Count();
+            return QueryCursistas(cursistaId, cursoId, modalidadeCurso, entidadeId, ufNome, municipioId, dataInicio, dataFim, exibirDesistentes).AsEnumerable().Count();
         }
 
         public List<GridCursistaDto> PesquisarCursistasSqlQuery(long? cursistaId, long? cursoId, long? modalidadeCurso, long? entidadeId, string ufNome, long? municipioId, DateTime? dataInicio, DateTime? dataFim, bool exibirDesistentes, int start = -1, int count = -1)

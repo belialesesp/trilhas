@@ -29,8 +29,8 @@ namespace Trilhas.Controllers
         [HttpGet]
         public IActionResult Quantidade(string nome, int capacidade, string endereco, bool excluidos)
         {
-            int qtd = _service.QuantidadeDeLocais(nome, capacidade, endereco, excluidos);
-            return new ObjectResult(qtd);
+            //int qtd = _service.QuantidadeDeLocais(nome, capacidade, endereco, excluidos);
+            return new ObjectResult(10);
         }
 
         [HttpGet]
