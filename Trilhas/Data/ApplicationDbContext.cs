@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using Trilhas.Data.Model;
 using Trilhas.Data.Model.Cadastro;
@@ -88,8 +89,8 @@ namespace Trilhas.Data
 
 
         #region Dto retorno query sql
-        public DbQuery<GridDocenteDto> GridDocenteDto { get; set; }
-        public DbQuery<GridCursistaDto> GridCursistaDto { get; set; }
+        public DbSet<GridDocenteDto> GridDocenteDto { get; set; }
+        public DbSet<GridCursistaDto> GridCursistaDto { get; set; }
 		#endregion
 	}
 }

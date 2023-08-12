@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Trilhas.Data;
+using Trilhas.Data.Migrations;
 using Trilhas.Data.Model.Cadastro;
 using Trilhas.Data.Model.Exceptions;
 
@@ -83,15 +84,16 @@ namespace Trilhas.Services
         {
             var salas = RecuperarSalas(local.Id);
 
-            AtualizarOuExcluirSalas(local, salas, salasAtualizadas, userId);
+            AtualizarOuExcluirSalas(salas, salasAtualizadas, userId);
             AdicionarNovasSalas(salas, salasAtualizadas, userId);
 
             _context.SaveChanges();
         }
 
-        private void AtualizarOuExcluirSalas(Local local, List<LocalSala> salas, List<LocalSala> salasAtualizadas, string userId)
+        private void AtualizarOuExcluirSalas(List<LocalSala> salas, List<LocalSala> salasAtualizadas, string userId)
         {
-            var salasExcluidas = _context.LocalSalas.Include(x => x.Local).Where(x => x.Local.Id == local.Id && !salasAtualizadas.Any(y => y.Id == x.Id)).ToList();
+            var salasExcluidas = salas.Where(o => !salasAtualizadas.Select(x => x.Id).Contains(o.Id)).ToList();
+
             salasExcluidas.RemoveAll(x => _context.EventoHorario.Include(i => i.Evento).Any(y => y.Sala.Id == x.Id && y.DataHoraInicio >= DateTime.Now && !y.Evento.DeletionTime.HasValue));
 
             foreach (var sala in salas)
@@ -159,15 +161,15 @@ namespace Trilhas.Services
         {
             var recursos = RecuperarRecursos(local.Id);
 
-            AtualizarOuExcluirRecursos(local, recursos, recursosAtualiados, userId);
+            AtualizarOuExcluirRecursos(recursos, recursosAtualiados, userId);
             AdicionarNovosRecursos(recursos, recursosAtualiados, userId);
 
             _context.SaveChanges();
         }
 
-        private void AtualizarOuExcluirRecursos(Local local, List<LocalRecurso> recursos, List<LocalRecurso> recursosAtualizados, string userId)
+        private void AtualizarOuExcluirRecursos(List<LocalRecurso> recursos, List<LocalRecurso> recursosAtualizados, string userId)
         {
-            var recursosExcluidos = _context.LocalRecursos.Include(x => x.Local).Where(x => x.Local.Id == local.Id && !recursosAtualizados.Any(y => y.Id == x.Id)).ToList();
+            var recursosExcluidos = recursos.Where(o => !recursosAtualizados.Select(x => x.Id).Contains(o.Id)).ToList();
 
             foreach (var recurso in recursos)
             {
@@ -211,15 +213,15 @@ namespace Trilhas.Services
         {
             var contatos = RecuperarContatos(local.Id);
 
-            AtualizarOuExcluirContatos(local, contatos, contatosAtualiados, userId);
+            AtualizarOuExcluirContatos(contatos, contatosAtualiados, userId);
             AdicionarNovosContatos(contatos, contatosAtualiados, userId);
 
             _context.SaveChanges();
         }
 
-        private void AtualizarOuExcluirContatos(Local local, List<LocalContato> contatos, List<LocalContato> contatosAtualizados, string userId)
+        private void AtualizarOuExcluirContatos(List<LocalContato> contatos, List<LocalContato> contatosAtualizados, string userId)
         {
-            var contatosExcluidos = _context.LocalContatos.Include(x => x.Local).Where(x => x.Local.Id == local.Id && !contatosAtualizados.Any(y => y.Id == x.Id)).ToList();
+            var contatosExcluidos = contatos.Where(o => !contatosAtualizados.Select(x => x.Id).Contains(o.Id)).ToList();
 
             foreach (var contato in contatos)
             {
@@ -267,36 +269,6 @@ namespace Trilhas.Services
 
         /*----------------------*/
 
-        private void SalvarContatos(Local local, string userId)
-        {
-            DateTime agora = DateTime.Now;
-
-            var contatosExcluidos = _context.LocalContatos.Include(x => x.Local).Where(x => x.Local.Id == local.Id && !local.Contatos.Any(y => y.Id == x.Id)).ToList();
-
-            foreach (var contato in local.Contatos)
-            {
-                if (contatosExcluidos.Any(x => x.Id == contato.Id))
-                {
-                    contato.DeletionTime = agora;
-                    contato.DeletionUserId = userId;
-                }
-                else
-                {
-                    if (contato.Id <= 0)
-                    {
-                        contato.CreationTime = agora;
-                        contato.CreatorUserId = userId;
-                        _context.LocalContatos.Add(contato);
-                    }
-                    //else if (!_context.IsAttached<LocalContato>(contato))
-                    //{
-                    //    _context.LocalContatos.Attach(contato);
-                    //}
-                }
-            }
-
-            //_context.SaveChanges();
-        }
 
         public void ExcluirLocal(string userId, long id)
         {
@@ -344,12 +316,12 @@ namespace Trilhas.Services
 
         public int QuantidadeDeLocais(string nome, int capacidade, string endereco, bool excluidos)
         {
-            return PesquisarLocal(nome, capacidade, endereco, excluidos).Count();
+            return PesquisarLocal(nome, capacidade, endereco, excluidos).AsEnumerable().Count();
         }
 
         public List<Local> PesquisarLocais(string nome, int capacidade, string endereco, bool excluidos, int start = -1, int count = -1)
         {
-            return PesquisarLocal(nome, capacidade, endereco, excluidos, start, count).ToList();
+            return PesquisarLocal(nome, capacidade, endereco, excluidos, start, count).AsEnumerable().ToList();
         }
 
         public bool VerificarSalaAlocada(LocalSala sala)
@@ -359,11 +331,11 @@ namespace Trilhas.Services
 
         private IQueryable<Local> PesquisarLocal(string nome, int capacidade, string endereco, bool exibirExcluidos, int start = -1, int count = -1)
         {
-            IQueryable<Local> result = _context.Locais
-                .Include(x => x.Municipio)
-                .Include(x => x.Contatos)
-                .Include(x => x.Recursos)
-                .Include(x => x.Salas);
+            IQueryable<Local> result = _context.Locais;
+               // .Include(x => x.Municipio)
+               // .Include(x => x.Contatos)
+               // .Include(x => x.Recursos)
+               // .Include(x => x.Salas);
 
             if (!exibirExcluidos)
             {
@@ -400,15 +372,6 @@ namespace Trilhas.Services
             return result;
         }
 
-        //public List<LocalRecurso> RecuperarLocalRecursos(long idLocal)
-        //{
-        //    return _context.LocalRecursos
-        //        .Include(x => x.Recurso)
-        //        .Include(x => x.Local)
-        //        .Where(x => x.Local.Id == idLocal && x.DeletionTime == null)
-        //        .ToList();
-        //}
-
         public LocalRecurso RecuperarLocalRecurso(long idLocalRecurso)
         {
             return _context.LocalRecursos
@@ -417,15 +380,6 @@ namespace Trilhas.Services
                 .Where(x => x.Id == idLocalRecurso)
                 .FirstOrDefault();
         }
-
-        //public List<LocalContato> RecuperarLocalContatos(long idLocal)
-        //{
-        //    return _context.LocalContatos
-        //        .Include(x => x.TipoContato)
-        //        .Include(x => x.Local)
-        //        .Where(x => x.Local.Id == idLocal && x.DeletionTime == null)
-        //        .ToList();
-        //}
 
         public LocalContato RecuperarLocalContato(long idLocalContato)
         {

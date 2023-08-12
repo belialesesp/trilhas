@@ -319,7 +319,7 @@ namespace Trilhas.Services
 
         public int PesquisarQuantidadeCursistasSqlQuery(long? cursistaId, long? cursoId, long? modalidadeCurso, long? entidadeId, string ufNome, long? municipioId, DateTime? dataInicio, DateTime? dataFim, bool exibirDesistentes)
         {
-            return QueryCursistas(cursistaId, cursoId, modalidadeCurso, entidadeId, ufNome, municipioId, dataInicio, dataFim, exibirDesistentes).Count();
+            return QueryCursistas(cursistaId, cursoId, modalidadeCurso, entidadeId, ufNome, municipioId, dataInicio, dataFim, exibirDesistentes).AsEnumerable().Count();
         }
 
         public List<GridCursistaDto> PesquisarCursistasSqlQuery(long? cursistaId, long? cursoId, long? modalidadeCurso, long? entidadeId, string ufNome, long? municipioId, DateTime? dataInicio, DateTime? dataFim, bool exibirDesistentes, int start = -1, int count = -1)
@@ -343,42 +343,17 @@ namespace Trilhas.Services
 
         private IQueryable<GridCursistaDto> QueryCursistas(long? cursistaId, long? cursoId, long? modalidadeCurso, long? entidadeId, string ufNome, long? municipioId, DateTime? dataInicio, DateTime? dataFim, bool exibirDesistentes)
         {
-            SqlParameter cursista = new SqlParameter("@cursista", cursistaId.HasValue ? cursistaId.Value.ToString() : "");
-            SqlParameter curso = new SqlParameter("@curso", cursoId.HasValue ? cursoId.Value.ToString() : "");
-            SqlParameter modalidade = new SqlParameter("@modalidade", modalidadeCurso.HasValue ? modalidadeCurso.Value.ToString() : "");
-            SqlParameter entidade = new SqlParameter("@entidade", entidadeId.HasValue ? entidadeId.Value.ToString() : "");
-            SqlParameter uf = new SqlParameter("@uf", "%" + ufNome + "%");
-            SqlParameter municipio = new SqlParameter("@municipio", municipioId.HasValue ? municipioId.Value.ToString() : "");
-            SqlParameter dtInicio = new SqlParameter("@dataInicio", dataInicio.HasValue ? dataInicio.Value.Year.ToString() + '-' + dataInicio.Value.Month.ToString() + '-' + dataInicio.Value.Day.ToString() : "");
-            SqlParameter dtFim = new SqlParameter("@dataFim", dataFim.HasValue ? dataFim.Value.Year.ToString() + '-' + dataFim.Value.Month.ToString() + '-' + dataFim.Value.Day.ToString() : "");
-            SqlParameter desistentes = new SqlParameter("@desistentes", Convert.ToInt32(exibirDesistentes));
+            var cursista = cursistaId.HasValue ? cursistaId.Value : 0;
+            var curso = cursoId.HasValue ? cursoId.Value : 0;
+            var modalidade = modalidadeCurso.HasValue ? modalidadeCurso.Value : 0;
+            var entidade = entidadeId.HasValue ? entidadeId.Value : 0;
+            var uf = "%" + ufNome + "%";
+            var municipio = municipioId.HasValue ? municipioId.Value : 0;
+            var dtInicio = dataInicio.HasValue ? dataInicio.Value.Year.ToString() + '-' + dataInicio.Value.Month.ToString() + '-' + dataInicio.Value.Day.ToString() : "";
+            var dtFim = dataFim.HasValue ? dataFim.Value.Year.ToString() + '-' + dataFim.Value.Month.ToString() + '-' + dataFim.Value.Day.ToString() : "";
+            var desistentes = Convert.ToInt32(exibirDesistentes);
 
-            string sql = $@"
-                    select q.Id, q.Nome, q.cpf, q.Email, q.Entidade, q.Municipio, q.Uf, count(q.QuantidadeEvento) as QuantidadeEvento
-                    from
-                        (select p.Id, COALESCE(p.NomeSocial, p.Nome) as Nome, p.cpf, p.Email, en.Sigla Entidade, c.NomeMunicipio Municipio, c.Uf, count(distinct e.id) as QuantidadeEvento
-                        from dbo.Pessoas p
-	                        join dbo.Municipios c on c.Id = p.MunicipioId
-	                        join dbo.Inscritos i on (i.PessoaId = p.Id and i.DeletionTime is null)
-	                        join dbo.ListaDeInscricao li on li.Id = i.ListaDeInscricaoId
-	                        join dbo.Eventos e on (e.Id = li.EventoId and e.DeletionTime is null)
-                            join dbo.EventoHorario eh on (e.id = eh.EventoId)
-		                    join dbo.SolucoesEducacionais se on (se.Id = e.CursoId)
-                            join dbo.Entidades en on en.Id = p.EntidadeId	
-	                    where p.DeletionTime is null
-                            and(@desistentes = 1 or i.situacao != 2)
-                            and (@cursista = '' or p.Id = @cursista)
-					        and (@curso = '' or se.Id = @curso)
-					        and (@modalidade = '' or se.modalidade = @modalidade)
-					        and (@entidade = '' or en.Id = @entidade)
-					        and (@uf = '%%' or c.Uf like @uf)
-					        and (@municipio = '' or c.Id = @municipio)
-					        and (@dataInicio = '' or eh.DataHoraInicio >= @dataInicio)
-					        and (@dataFim = '' or eh.DataHoraFim <= @dataFim)
-	                    group by p.Id, p.NomeSocial, p.Nome, p.cpf, p.email, en.Sigla, c.NomeMunicipio, c.Uf, e.id) as q
-	                group by q.Id, q.Nome, q.cpf, q.email, q.Entidade, q.Municipio, q.Uf, q.id";
-
-            var query = _context.Query<GridCursistaDto>().FromSql(sql, cursista, curso, modalidade, entidade, uf, municipio, dtInicio, dtFim, desistentes);
+            var query = _context.GridCursistaDto.FromSqlInterpolated($"GridCursista {cursista}, {curso}, {modalidade}, {entidade}, '{uf}', {municipio}, '{dtInicio}', '{dtFim}', {desistentes}");
 
             return query;
         }

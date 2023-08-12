@@ -9,17 +9,23 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using RestSharp.Deserializers;
 using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Trilhas.Data;
+using Trilhas.Data.Model;
 using Trilhas.Services;
 using Trilhas.Settings;
 
@@ -37,8 +43,9 @@ namespace Trilhas
 
 		public IConfiguration Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
+        // This method gets called by the runtime. Use this method to add services to the container.
+        [Obsolete]
+        public void ConfigureServices(IServiceCollection services)
 		{
 			services.Configure<CookiePolicyOptions>(options => {
 				// This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -51,13 +58,13 @@ namespace Trilhas
 			});
 
 			services.AddDbContext<ApplicationDbContext>(options =>
-				options.UseSqlServer(
-					Configuration.GetConnectionString("DefaultConnection")));
-			services.AddDefaultIdentity<IdentityUser>()
-				.AddEntityFrameworkStores<ApplicationDbContext>();
+				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-			// SETTINGS
-			services.Configure<MinioSettings>(Configuration.GetSection("MinioSettings"));
+            services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            // SETTINGS
+            services.Configure<MinioSettings>(Configuration.GetSection("MinioSettings"));
 
 			// SERVICES 
 			services.AddSingleton<MinioService>();
@@ -118,58 +125,28 @@ namespace Trilhas
                 options.Scope.Add("permissoes");
 				options.Scope.Add("agentepublico");
 
-				//options.Authority = acessoCidadaoHybridClientConfiguration.Authority;
-				//options.ClientId = acessoCidadaoHybridClientConfiguration.ClientId;
-				//options.ClientSecret = acessoCidadaoHybridClientConfiguration.ClientSecret;
-				//options.GetClaimsFromUserInfoEndpoint = acessoCidadaoHybridClientConfiguration.GetClaimsFromUserInfoEndpoint;
-				//options.RequireHttpsMetadata = acessoCidadaoHybridClientConfiguration.RequireHttpsMetadata;
-				//options.ResponseType = acessoCidadaoHybridClientConfiguration.ResponseType;
-				//options.SaveTokens = acessoCidadaoHybridClientConfiguration.SaveTokens;
-
-				//ICollection<string> scopes = acessoCidadaoHybridClientConfiguration.Scopes;
-				//options.Scope.Clear();
-
-				//if (scopes != null && scopes.Count > 0)
-				//{
-				//    foreach (string scope in scopes)
-				//    {
-				//        options.Scope.Add(scope);
-				//    }
-				//}
-
 				options.Events = new OpenIdConnectEvents() {
 					OnUserInformationReceived = async c => {
 						var id = new ClaimsIdentity(c.Principal.Identity.AuthenticationType);
 
-						id.AddClaim(c.User.ToClaims().FirstOrDefault(uc => uc.Type.ToLower().Equals("verificada")));
+                        var user = JsonConvert.DeserializeObject<Usuario>(c.User.RootElement.ToString());
 
-						var nameClaim = c.User.ToClaims().FirstOrDefault(uc => uc.Type.ToLower().Equals("apelido"));
+                        id.AddClaim(new Claim("verificada", user.Verificada.ToString()));
 
-						if(nameClaim != null)
+                        if (!string.IsNullOrEmpty(user.Apelido))
 						{
-							id.AddClaim(new Claim(id.NameClaimType, nameClaim.Value));
+							id.AddClaim(new Claim(id.NameClaimType, user.Apelido));
 						}
 
-						var emailClaim = c.User.ToClaims().FirstOrDefault(uc => uc.Type.ToLower().Equals("email"));
-
-						if(emailClaim != null)
+						if(!string.IsNullOrEmpty(user.Email))
 						{
-							id.AddClaim(new Claim("email", emailClaim.Value));
+							id.AddClaim(new Claim("email", user.Email));
 						}
 
-                        var cpfClaim = c.User.ToClaims().FirstOrDefault(uc => uc.Type.ToLower().Equals("cpf"));
-
-                        if (cpfClaim != null)
+                        if (!string.IsNullOrEmpty(user.Role))
                         {
-                            id.AddClaim(new Claim("cpf", cpfClaim.Value));
+                            id.AddClaim(new Claim(id.RoleClaimType, user.Role));
                         }
-
-                        var roles = c.User.ToClaims().Where(uc => uc.Type.ToLower().Equals("role"));
-
-						foreach(var role in roles)
-						{
-							id.AddClaim(new Claim(id.RoleClaimType, role.Value));
-						}
 
 						id.AddClaim(new Claim("id_token", c.ProtocolMessage.IdToken));
 						c.Principal.AddIdentity(id);
@@ -185,17 +162,18 @@ namespace Trilhas
 				};
 			});
 
-			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+			services.AddMvc(options => {
+				options.EnableEndpointRouting = false;
+			}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 		}
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			if(env.IsDevelopment())
 			{
 				app.UseHttpsRedirection();
 				app.UseDeveloperExceptionPage();
-				app.UseDatabaseErrorPage();
 			} else
 			{
 				app.Use((context, next) => {
@@ -203,7 +181,6 @@ namespace Trilhas
 					return next();
 				});
 				app.UseExceptionHandler("/Home/Error");
-				//app.UseHsts();
 			}
 
 			//app.UseHttpsRedirection();
@@ -213,19 +190,8 @@ namespace Trilhas
 			app.UseAuthentication();
 
 			app.UseMvc(routes => {
-				//routes
-				//.MapRoute("admin", "Admin", defaults: new { controller = "Admin", action = "Index" });
-
 				routes.MapRoute("admin", "admin/{*index}", defaults: new { controller = "Admin", action = "Index" });
 				routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
-
-				//.MapRoute(
-				//    name: "default",
-				//    template: "{controller=Home}/{action=Index}/{id?}");
-				//.MapRoute(
-				//    name: "defaultAdmin",
-				//    template: "Admin/{action=Index}/{id?}"
-				//    );
 			});
 		}
 	}
