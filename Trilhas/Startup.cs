@@ -60,11 +60,11 @@ namespace Trilhas
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-			services.AddIdentityCore<IdentityUser>()
-					.AddUserStore<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
-			// SETTINGS
-			services.Configure<MinioSettings>(Configuration.GetSection("MinioSettings"));
+            // SETTINGS
+            services.Configure<MinioSettings>(Configuration.GetSection("MinioSettings"));
 
 			// SERVICES 
 			services.AddSingleton<MinioService>();
