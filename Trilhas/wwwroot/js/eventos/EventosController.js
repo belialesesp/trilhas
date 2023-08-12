@@ -1,5 +1,4 @@
-﻿const { log } = require("util");
-
+﻿
 angular
     .module('trilhasapp')
     .controller('EventosController', EventosController);
@@ -172,13 +171,11 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
     var buscar = function () {
 
         var success = function (response) {
-            console.log('Eventos:', response.data);
 			vm.eventos = response.data;
         };
 
         var error = function (response) {
             toastr["error"]("Ocorreu um erro ao consultar os registros.");
-            console.log(response.data);
         };
 
         if (vm.query.dataInicio) {
@@ -211,7 +208,6 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
 
         var error = function (response) {
             toastr["error"](response.data, "Erro");
-            console.log('Erro ao excluir evento id = ' + vm.registroParaExcluir);
             vm.registroParaExcluir = null;
         };
 
@@ -236,7 +232,6 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
             var error = function (response) {
                 ServerErrorsService.handleServerErrors(response, form);
                 toastr["error"](response.data.message, "Erro");
-                console.log(response.data.internalMessage);
             };
 
             return $http.post('/eventos/finalizarEvento?eventoId=' + vm.evento.id).then(success, error).finally(onComplete);

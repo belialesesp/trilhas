@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Trilhas.Data.Enums;
 using Trilhas.Data.Model;
 using Trilhas.Data.Model.Cadastro;
@@ -101,6 +102,9 @@ namespace Trilhas.Controllers.Mappers
 
         public EventoCoordenadorViewModel MapearCoordenadorViewModel(Pessoa coordenador)
         {
+            if(coordenador is null)
+                return null;
+
             EventoCoordenadorViewModel vm = new EventoCoordenadorViewModel(coordenador.Id);
             vm.Nome = coordenador.NomeSocial ?? coordenador.Nome;
 
@@ -143,10 +147,10 @@ namespace Trilhas.Controllers.Mappers
                     Entidade = evento.EntidadeDemandante.Sigla,
                     Evento = evento.Curso.Sigla + " - " + evento.Curso.Titulo,
                     CargaHoraria = evento.Curso.CargaHorariaTotal().ToString(),
-                    DataInicio = evento.Agendas.Last().DataHoraInicio,
-                    DataFim = evento.Agendas.Last().DataHoraFim,
+                    DataInicio = evento.Agendas.LastOrDefault()?.DataHoraInicio,
+                    DataFim = evento.Agendas.LastOrDefault()?.DataHoraFim,
                     Municipio = evento.Curso.Modalidade == EnumModalidade.EAD ? "EAD" : evento.Local.Municipio.NomeMunicipio + "-" + evento.Local.Municipio.Uf,
-                    Docente = evento.Coordenador.NomeSocial ?? evento.Coordenador.Nome,
+                    Docente = evento.Coordenador != null ? evento.Coordenador.NomeSocial ?? evento.Coordenador.Nome : string.Empty,
                     ListaDeInscricaoId = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Id : 0,
                     Inscritos = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue).Count() : 0,
                     Aprovados = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && x.Situacao == EnumSituacaoCursista.CERTIFICADO).Count() : 0,
