@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Trilhas.Data;
+using Trilhas.Data.Migrations;
 using Trilhas.Data.Model.Cadastro;
 using Trilhas.Data.Model.Exceptions;
 using Trilhas.SqlDto;
@@ -191,7 +192,7 @@ namespace Trilhas.Services
 
         public int PesquisarQuantidadeDocenteSqlQuery(string nomeDocente, long cursoId, int? modalidadeCurso, DateTime? dataInicio, DateTime? dataFim, bool excluidos = false, int start = -1, int count = -1)
         {
-            return QueryDocentes(nomeDocente, cursoId, modalidadeCurso, dataInicio, dataFim, excluidos).Count();
+            return QueryDocentes(nomeDocente, cursoId, modalidadeCurso, dataInicio, dataFim, excluidos).AsEnumerable().Count();
         }
 
         public List<GridDocenteDto> PesquisarDocenteSqlQuery(string nomeDocente, long cursoId, int? modalidadeCurso, DateTime? dataInicio, DateTime? dataFim, bool excluidos = false, int start = -1, int count = -1)
@@ -213,38 +214,16 @@ namespace Trilhas.Services
 
         public IQueryable<GridDocenteDto> QueryDocentes(string nomeDocente, long cursoId, int? modalidadeCurso, DateTime? dataInicio, DateTime? dataFim, bool excluidos)
         {
-            SqlParameter docente = new SqlParameter("@nomeDocente", "%" + nomeDocente + "%");
-            SqlParameter exibirExcluidos = new SqlParameter("@exibirExcluidos", Convert.ToInt32(excluidos));
-            SqlParameter curso = new SqlParameter("@cursoId", cursoId);
-            SqlParameter dtInicio = new SqlParameter("@dataInicio", dataInicio.HasValue ? dataInicio.Value.ToString("yyyy-MM-dd") : "");
-            SqlParameter dtFim = new SqlParameter("@dataFim", dataFim.HasValue ? dataFim.Value.ToString("yyyy-MM-dd") : "");
-            SqlParameter modalidade = new SqlParameter("@modalidade", modalidadeCurso.HasValue ? modalidadeCurso.Value.ToString() : "");
+            var docente = "%" + nomeDocente + "%";
+            var exibirExcluidos = Convert.ToInt32(excluidos);
+            var curso = cursoId;
+            var dtInicio = dataInicio.HasValue ? dataInicio.Value.ToString("yyyy-MM-dd") : "";
+            var dtFim = dataFim.HasValue ? dataFim.Value.ToString("yyyy-MM-dd") : "";
+            var modalidade = modalidadeCurso.HasValue ? modalidadeCurso.Value.ToString() : "";
 
-            string sql = $@"select f.id, f.nome, f.cpf, f.email, count(f.QuantidadeEvento) as QuantidadeEvento, sum(f.cargahorariatotal) as CargaHorariaTotal, f.Excluido from 
-                                (select d.Id, coalesce(p.NomeSocial, p.Nome) as Nome, p.cpf, p.Email, e.Id as QuantidadeEvento, 
-                                    (select coalesce(sum(s.CargaHoraria), 0) from (select m.CargaHoraria as CargaHoraria
-		                                    from modulos m join EventoHorario h on (m.id = h.ModuloId)
-		                                    where h.EventoId = e.Id
-                                                and (@dataInicio = '' or h.DataHoraInicio >= @dataInicio)
-                                                and (@dataFim = '' or h.DataHoraFim <= @dataFim)
-		                                    group by m.id, m.CargaHoraria
-                                    ) as s) as CargaHorariaTotal,
-                                        case  when d.deletionTime is null then 0 else 1 end as Excluido
-                                    from dbo.Docentes d
-                                    left join dbo.Pessoas p on d.PessoaId = p.Id
-                                    left join dbo.Habilitacao b on b.DocenteId = d.Id
-                                    left join dbo.EventoHorario eh on d.Id = eh.DocenteId
-                                    left join dbo.Eventos e on eh.EventoId = e.Id
-                                    left join dbo.SolucoesEducacionais se on se.Id = e.CursoId
-                                where e.DeletionTime is null
-                                    and (p.Nome like @nomeDocente or p.NomeSocial like @nomeDocente)
-                                    and (@exibirExcluidos = 1 or d.DeletionTime is null)
-                                    and (@cursoId = 0 or (b.cursoId = @cursoId or se.id = @cursoId))
-                                    and (@modalidade = '' or se.modalidade = @modalidade)
-                                group by d.Id, p.NomeSocial, p.Nome, p.cpf, p.Email, d.deletionTime, e.id) as f
-                            group by f.id, f.Nome, f.cpf, f.email, f.Excluido";
+            var query = _context.GridDocenteDto.FromSqlInterpolated($"GridDocente {docente}, {exibirExcluidos}, {curso}, {dtInicio}, {dtFim}, {modalidade}");
 
-            return _context.GridDocenteDto.FromSqlRaw(sql, docente, exibirExcluidos, curso, dtInicio, dtFim, modalidade);
+            return (IQueryable<GridDocenteDto>)query;
         }
     }
 }

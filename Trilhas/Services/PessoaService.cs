@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using Trilhas.Data;
 using Trilhas.Data.Model.Cadastro;
@@ -349,13 +348,15 @@ namespace Trilhas.Services
             var entidade = entidadeId.HasValue ? entidadeId.Value : 0;
             var uf = "%" + ufNome + "%";
             var municipio = municipioId.HasValue ? municipioId.Value : 0;
-            var dtInicio = dataInicio.HasValue ? dataInicio.Value.Year.ToString() + '-' + dataInicio.Value.Month.ToString() + '-' + dataInicio.Value.Day.ToString() : "";
-            var dtFim = dataFim.HasValue ? dataFim.Value.Year.ToString() + '-' + dataFim.Value.Month.ToString() + '-' + dataFim.Value.Day.ToString() : "";
+            object dtInicio = dataInicio.HasValue ? dataInicio.Value : DBNull.Value;
+            object dtFim = dataFim.HasValue ? dataFim.Value : DBNull.Value;
             var desistentes = Convert.ToInt32(exibirDesistentes);
 
-            var query = _context.GridCursistaDto.FromSqlInterpolated($"GridCursista {cursista}, {curso}, {modalidade}, {entidade}, '{uf}', {municipio}, '{dtInicio}', '{dtFim}', {desistentes}");
+            if (dataInicio.HasValue) { dtInicio = dataInicio.Value; }
 
-            return query;
+            var query = _context.GridCursistaDto.FromSqlInterpolated($"GridCursista {cursista}, {curso}, {modalidade}, {entidade}, '{uf}', {municipio}, {dtInicio}, {dtFim}, {desistentes}");
+
+            return (IQueryable<GridCursistaDto>)query;
         }
     }
 }
