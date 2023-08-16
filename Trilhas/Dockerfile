@@ -19,4 +19,5 @@ RUN dotnet publish "Trilhas.csproj" -c Release -o /app/publish /p:UseAppHost=fal
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN sed -i 's/DEFAULT@SECLEVEL=2/DEFAULT@SECLEVEL=1/g' /etc/ssl/openssl.cnf
 ENTRYPOINT ["dotnet", "Trilhas.dll"]
