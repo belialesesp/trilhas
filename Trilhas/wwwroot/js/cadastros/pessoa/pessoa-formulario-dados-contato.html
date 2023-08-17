@@ -11,7 +11,7 @@
 
     <!--TIPO CONTATO -->
     <div class="form-group col-md-5">
-        <label for="tipoContato">Tipo Contato:</label>
+        <label for="tipoContato"><span class="asterisco">*</span>Tipo Contato:</label>
         <div class="input-group">
             <select id="tipoContato"
                     name="tipoContato"
@@ -29,7 +29,7 @@
 
     <!--NUMERO CONTATO-->
     <div class="form-group col-md-5">
-        <label for="numeroContato">Número:</label>
+        <label for="numeroContato"><span class="asterisco">*</span>Número:</label>
         <input type="text" min="0" id="numeroContato" name="numeroContato" class="form-control" autocomplete="off"
                ng-class="{'is-invalid': !vm.contato.numero && vm.submitedFormContato}"
                ng-enter="vm.adicionarContato($event)"

@@ -331,11 +331,11 @@ namespace Trilhas.Services
 
         private IQueryable<Local> PesquisarLocal(string nome, int capacidade, string endereco, bool exibirExcluidos, int start = -1, int count = -1)
         {
-            IQueryable<Local> result = _context.Locais;
-               // .Include(x => x.Municipio)
-               // .Include(x => x.Contatos)
-               // .Include(x => x.Recursos)
-               // .Include(x => x.Salas);
+            IQueryable<Local> result = _context.Locais
+                .Include(x => x.Municipio)
+                .Include(x => x.Contatos)
+                .Include(x => x.Recursos)
+                .Include(x => x.Salas);
 
             if (!exibirExcluidos)
             {
@@ -351,7 +351,6 @@ namespace Trilhas.Services
             }
             if (!string.IsNullOrEmpty(endereco))
             {
-                //List<Municipio> municipios = _context.Municipios.Where(x => x.NomeMunicipio.Contains(endereco)).ToList();
                 result = result.Where(x => (x.Bairro.ToUpper().Contains(endereco.Trim().ToUpper()))
                             || (x.Municipio.NomeMunicipio.ToUpper().Contains(endereco.Trim().ToUpper()))
                             || (x.Logradouro.ToUpper().Contains(endereco.Trim().ToUpper()))

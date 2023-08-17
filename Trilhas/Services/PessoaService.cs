@@ -323,7 +323,7 @@ namespace Trilhas.Services
 
         public List<GridCursistaDto> PesquisarCursistasSqlQuery(long? cursistaId, long? cursoId, long? modalidadeCurso, long? entidadeId, string ufNome, long? municipioId, DateTime? dataInicio, DateTime? dataFim, bool exibirDesistentes, int start = -1, int count = -1)
         {
-            var query = QueryCursistas(cursistaId, cursoId, modalidadeCurso, entidadeId, ufNome, municipioId, dataInicio, dataFim, exibirDesistentes);
+            var query = QueryCursistas(cursistaId, cursoId, modalidadeCurso, entidadeId, ufNome, municipioId, dataInicio, dataFim, exibirDesistentes).AsEnumerable();
 
             query = query.OrderBy(x => x.Nome);
 
@@ -348,13 +348,11 @@ namespace Trilhas.Services
             var entidade = entidadeId.HasValue ? entidadeId.Value : 0;
             var uf = "%" + ufNome + "%";
             var municipio = municipioId.HasValue ? municipioId.Value : 0;
-            object dtInicio = dataInicio.HasValue ? dataInicio.Value : DBNull.Value;
-            object dtFim = dataFim.HasValue ? dataFim.Value : DBNull.Value;
+            var dtInicio = dataInicio.HasValue ? dataInicio.Value.ToString("yyyy-MM-dd") : "";
+            var dtFim = dataFim.HasValue ? dataFim.Value.ToString("yyyy-MM-dd") : "";
             var desistentes = Convert.ToInt32(exibirDesistentes);
 
-            if (dataInicio.HasValue) { dtInicio = dataInicio.Value; }
-
-            var query = _context.GridCursistaDto.FromSqlInterpolated($"GridCursista {cursista}, {curso}, {modalidade}, {entidade}, '{uf}', {municipio}, {dtInicio}, {dtFim}, {desistentes}");
+            var query = _context.GridCursistaDto.FromSqlInterpolated($"GridCursista {cursista}, {curso}, {modalidade}, {entidade}, {uf}, {municipio}, {dtInicio}, {dtFim}, {desistentes}");
 
             return (IQueryable<GridCursistaDto>)query;
         }

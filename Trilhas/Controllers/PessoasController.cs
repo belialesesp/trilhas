@@ -83,12 +83,23 @@ namespace Trilhas.Controllers
         [HttpGet]
 		public IActionResult BuscarCursistas(long? cursista, long? curso, long? modalidade, long? entidade, string uf, long? municipio, DateTime? dataInicio, DateTime? dataFim, bool desistentes, int start = -1, int count = -1)
 		{
-			List<GridCursistaDto> cursistas = _pessoaService.PesquisarCursistasSqlQuery(cursista, curso, modalidade, entidade, uf, municipio, dataInicio, dataFim, desistentes, start, count);
+			var cursistas = _pessoaService.PesquisarCursistasSqlQuery(cursista, curso, modalidade, entidade, uf, municipio, dataInicio, dataFim, desistentes, start, count);
 
 			var vm = _mapper.MapearCursistasViewModel(cursistas);
 
-			return Json(vm);
-		}
+            var x = vm.AsQueryable();
+
+            if (start > 0)
+            {
+                x = x.Skip(start);
+            }
+            if (count > 0)
+            {
+                x = x.Take(count);
+            }
+
+            return Json(x.ToList());
+        }
 
 		[HttpGet]
 		public IActionResult QuantidadeCursistaGrid(long? cursista, long? curso, long? modalidade, long? entidade, string uf, long? municipio, DateTime? dataInicio, DateTime? dataFim, bool desistentes, int start = -1, int count = -1)
