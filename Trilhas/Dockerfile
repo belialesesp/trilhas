@@ -1,11 +1,11 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM registry.prodest.es.gov.br/microsoft/dotnet/aspnet:2.1 AS base
+FROM registry.prodest.es.gov.br/microsoft/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
-FROM registry.prodest.es.gov.br/microsoft/dotnet/sdk:2.1 AS build
+FROM registry.prodest.es.gov.br/microsoft/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Trilhas/Trilhas.csproj", "Trilhas/"]
 RUN dotnet restore "Trilhas/Trilhas.csproj"
@@ -19,4 +19,5 @@ RUN dotnet publish "Trilhas.csproj" -c Release -o /app/publish /p:UseAppHost=fal
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN sed -i 's/DEFAULT@SECLEVEL=2/DEFAULT@SECLEVEL=1/g' /etc/ssl/openssl.cnf
 ENTRYPOINT ["dotnet", "Trilhas.dll"]
