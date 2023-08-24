@@ -207,7 +207,7 @@ namespace Trilhas.Services
 
             if (!PodeExcluirPessoa(pessoa))
             {
-                throw new ConstraintException("Existem alguma entidade vinculadas à Pessoa.");
+                throw new ConstraintException("Essa Pessoa está associada à outra entidade e não pode ser removida.");
             }
 
             _minioService.ExcluirImagemPessoa("pessoa-" + id);
