@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
+    [Authorize(Roles = "Administrador,Secretaria,Coordenador")]
     public class RecursosController : DefaultController
     {
         private readonly RecursoService _recursoService;
