@@ -22,6 +22,9 @@ namespace Trilhas.Controllers
 
         public IActionResult Index()
         {
+            if(!User.IsInRole("Administrador") && User.IsInRole("Secretaria") && User.IsInRole("Gestor") && User.IsInRole("Coordenador"))
+                return BadRequest(ModelState);
+
             return View();
         }
 

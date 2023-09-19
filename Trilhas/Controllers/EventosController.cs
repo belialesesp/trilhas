@@ -228,15 +228,6 @@ namespace Trilhas.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
-        //public IActionResult AlterarFrequencia(long inscritoId, double frequencia)
-        //{
-        //    var inscrito = _eventoService.RecuperarInscricao(inscritoId);
-        //    inscrito.Frequencia = frequencia;
-        //    _eventoService.AlterarFrequencia(inscrito, inscrito.ListaDeInscricao.Evento);
-        //    return JsonFormResponse(inscritoId);
-        //}
 
         [HttpPost]
         [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
