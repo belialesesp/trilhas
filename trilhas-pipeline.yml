@@ -1,81 +1,48 @@
 trigger:
  branches:
    include:
-     - develop
-     - staging
-    #  - main
-
-variables:
- BuildConfiguration: Release
- BuildPlatform: any cpu
- system.debug: true
- NODE_TLS_REJECT_UNAUTHORIZED: '0'
-
+   - develop
+   - staging
+    
 resources:
- repositories:
- - repository: templates
-   type: git
-   name: DevopsTools/prodest-build-deploy-templates
-
+  repositories:
+  - repository: templates
+    type: git
+    name: DevopsTools/prodest-build-deploy-templates
+    
 stages:
-
-- stage: BuildStage
-  jobs:
-  - template: buildDotnetCore.yml@templates
-    parameters: 
-     projetos: |
-       **/Trilhas.csproj
-
-- stage: Desenvolvimento
-  displayName: Desenvolvimento
-  dependsOn: BuildStage
+- stage: DEV
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
- 
-  jobs: 
+  jobs:
+  - template: buildOCP.yml@templates
+    parameters: 
+      namespace: npr-esesp-trilhadeaprendizagem-dev
+      app_name: trilhadeaprendizagem
+      gitops_repo: https://devops.es.gov.br/DefaultCollection/GESUP/_git/esesp-trilhadeaprendizagem-gitops
+      build_context: .
+      dockerfile_folder: src/Api
+      group: "esesp-trilhadeaprendizagem-dev"
 
-  - template: deployDotnetCore.yml@templates
-    parameters:
-     displayName: DeployTrilhas
-     deployment: DeployTrilhas
-     environment: IISDesenvolvimento
-     group: esesp-trilhas-dev
-     arquivo: Trilhas.zip
-     sistema: trilhas
-     orgao: esesp
-     diretorioraiz: D:\Sites\$(Orgao)\$(Sistema)
-
-- stage: Homologacao
-  displayName: Homologacao
-  dependsOn: BuildStage
+- stage: HOM
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/staging')
+  jobs:
+  - template: buildOCP.yml@templates
+    parameters: 
+      namespace: npr-esesp-trilhadeaprendizagem-hom
+      app_name: trilhadeaprendizagem
+      gitops_repo: https://devops.es.gov.br/DefaultCollection/GESUP/_git/esesp-trilhadeaprendizagem-gitops
+      build_context: .
+      dockerfile_folder: src/Api
+      group: "esesp-trilhadeaprendizagem-hom"
 
-  jobs: 
-
-  - template: deployDotnetCore.yml@templates
-    parameters:
-     displayName: DeployTrilhas
-     deployment: DeployTrilhas
-     environment: IISHomologacao
-     group: esesp-trilhas-hom
-     arquivo: Trilhas.zip
-     sistema: trilhas
-     orgao: esesp
-     diretorioraiz: D:\Sites\$(Orgao)\$(Sistema)
-
-- stage: Producao
-  displayName: Producao
-  dependsOn: BuildStage
+- stage: PROD
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
-
-  jobs: 
-
-  - template: deployDotnetCore.yml@templates
-    parameters:
-     displayName: DeployTrilhas
-     deployment: DeployTrilhas
-     environment: IISProducaoMinor
-     group: esesp-trilhas-prod
-     arquivo: Trilhas.zip
-     sistema: trilhas
-     orgao: esesp
-     diretorioraiz: D:\Sites\$(Orgao)\$(Sistema)
+  jobs:
+  - template: buildOCP.yml@templates
+    parameters: 
+      namespace: pr-esesp-trilhadeaprendizagem
+      app_name: trilhadeaprendizagem
+      gitops_repo: https://devops.es.gov.br/DefaultCollection/GESUP/_git/esesp-trilhadeaprendizagem-gitops
+      build_context: .
+      dockerfile_folder: src/Api
+      group: "esesp-trilhadeaprendizagem-prod"
