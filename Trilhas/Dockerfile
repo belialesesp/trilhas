@@ -6,6 +6,7 @@ EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
 FROM registry.prodest.es.gov.br/microsoft/dotnet/sdk:6.0 AS build
+RUN dotnet nuget disable source nuget.org && dotnet nuget add source https://nexus-cicd-tools.apps.pr.k8s.es.gov.br/repository/nuget.org-proxy/index.json -n nexus
 WORKDIR /src
 COPY ["Trilhas/Trilhas.csproj", "Trilhas/"]
 RUN dotnet restore "Trilhas/Trilhas.csproj"
