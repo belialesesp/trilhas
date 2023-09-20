@@ -20,7 +20,7 @@ stages:
       app_name: trilhadeaprendizagem
       gitops_repo: https://devops.es.gov.br/DefaultCollection/GESUP/_git/esesp-trilhadeaprendizagem-gitops
       build_context: .
-      dockerfile_folder: src/Api
+      dockerfile_folder: Trilhas
       group: "esesp-trilhas-dev"
 
 - stage: HOM
@@ -32,7 +32,7 @@ stages:
       app_name: trilhadeaprendizagem
       gitops_repo: https://devops.es.gov.br/DefaultCollection/GESUP/_git/esesp-trilhadeaprendizagem-gitops
       build_context: .
-      dockerfile_folder: src/Api
+      dockerfile_folder: Trilhas
       group: "esesp-trilhas-hom"
 
 - stage: PROD
@@ -44,5 +44,5 @@ stages:
       app_name: trilhadeaprendizagem
       gitops_repo: https://devops.es.gov.br/DefaultCollection/GESUP/_git/esesp-trilhadeaprendizagem-gitops
       build_context: .
-      dockerfile_folder: src/Api
+      dockerfile_folder: Trilhas
       group: "esesp-trilhas-prod"
