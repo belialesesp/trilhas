@@ -21,7 +21,7 @@ stages:
       gitops_repo: https://devops.es.gov.br/DefaultCollection/GESUP/_git/esesp-trilhadeaprendizagem-gitops
       build_context: .
       dockerfile_folder: src/Api
-      group: "esesp-trilhadeaprendizagem-dev"
+      group: "esesp-trilhas-dev"
 
 - stage: HOM
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/staging')
@@ -33,7 +33,7 @@ stages:
       gitops_repo: https://devops.es.gov.br/DefaultCollection/GESUP/_git/esesp-trilhadeaprendizagem-gitops
       build_context: .
       dockerfile_folder: src/Api
-      group: "esesp-trilhadeaprendizagem-hom"
+      group: "esesp-trilhas-hom"
 
 - stage: PROD
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
@@ -45,4 +45,4 @@ stages:
       gitops_repo: https://devops.es.gov.br/DefaultCollection/GESUP/_git/esesp-trilhadeaprendizagem-gitops
       build_context: .
       dockerfile_folder: src/Api
-      group: "esesp-trilhadeaprendizagem-prod"
+      group: "esesp-trilhas-prod"
