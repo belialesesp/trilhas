@@ -58,7 +58,7 @@
                                     <a class="dropdown-item" asp-controller="home" asp-action="VisualizarCertificados">
                                         Visualizar Certificados
                                     </a>
-                                    @if (User.IsInRole("Administrador"))
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Secretaria") || User.IsInRole("Gestor") || User.IsInRole("Coordenador"))
                                     {
                                         <a class="dropdown-item" asp-controller="admin" asp-action="index">
                                             Administração
