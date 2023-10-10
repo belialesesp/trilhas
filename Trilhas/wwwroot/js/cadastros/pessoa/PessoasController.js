@@ -23,7 +23,7 @@ function PessoasController($stateParams, $state, $http, $q, paginationService, s
 		'nome': null,
 		'email': null,
 		'cpf': null,
-		'numeroFuncioanl': null,
+		'numeroFuncional': null,
 		'excluidos': false
 	};
 

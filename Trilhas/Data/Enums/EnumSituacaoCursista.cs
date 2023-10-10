@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Trilhas.Data.Model.Eventos
+namespace Trilhas.Data.Enums
 {
     public enum EnumSituacaoCursista
     {

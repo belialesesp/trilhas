@@ -98,7 +98,7 @@ namespace Trilhas.Services
                 .Include(x => x.Entidade)
                 .Include(x => x.Sexo)
                 .Include(x => x.Escolaridade)
-                .Include(x => x.Contatos).ThenInclude(a => a.TipoContato)
+                .Include(x => x.Contatos).ThenInclude(a => a.TipoPessoaContato)
                 .Include(x => x.Deficiencia)
                 .FirstOrDefault(x => x.Id == id && (!x.DeletionTime.HasValue || incluirExcluidos));
 
@@ -310,7 +310,7 @@ namespace Trilhas.Services
         public PessoaContato RecuperarPessoaContato(long idPessoaContato)
         {
             return _context.PessoaContato
-                .Include(x => x.TipoContato)
+                .Include(x => x.TipoPessoaContato)
                 //.Include(x => x.Pessoa)
                 .Where(x => x.Id == idPessoaContato)
                 .FirstOrDefault();

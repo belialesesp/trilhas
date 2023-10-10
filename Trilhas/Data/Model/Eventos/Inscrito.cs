@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using Trilhas.Data.Enums;
 using Trilhas.Data.Model.Cadastro;
 
 namespace Trilhas.Data.Model.Eventos

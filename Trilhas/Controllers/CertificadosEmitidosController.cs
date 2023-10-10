@@ -15,77 +15,22 @@ using Trilhas.Services;
 namespace Trilhas.Controllers
 {
     [Authorize(Roles = "Administrador,Secretaria")]
-    public class CertificadosController : DefaultController
+    public class CertificadosEmitidosController : DefaultController
     {
         private readonly CertificadoService _service;
-        private readonly CertificadoEmitidoService _certificadoEmitidoService;
-        private readonly EventoService _eventoService;
         private readonly CertificadoMapper _mapper;
 
-        public CertificadosController(
-            UserManager<IdentityUser> userManager, 
-            CertificadoService service, 
-            EventoService eventoService, 
-            CertificadoEmitidoService certificadoEmitidoService)
-            : base(userManager)
+        public CertificadosEmitidosController(UserManager<IdentityUser> userManager, CertificadoService service) : base(userManager)
         {
             _service = service;
-            _eventoService = eventoService;
-            _certificadoEmitidoService = certificadoEmitidoService;
             _mapper = new CertificadoMapper();
         }
 
-        public IActionResult Index(long inscricaoId, long docenteId, long eventoId)
+        public IActionResult Index()
         {
             EmissaoCertificadoViewModel vm;
 
-            if (inscricaoId > 0)
-            {
-                var inscricao = _eventoService.RecuperarInscricao(inscricaoId);
-
-                if (inscricao == null)
-                {
-                    return this.BadRequest();
-                }
-
-                Certificado certificado = null;
-
-                if (inscricao.Situacao == EnumSituacaoCursista.CERTIFICADO)
-                {
-                    if (inscricao.ListaDeInscricao.Evento.Certificado != null)
-                    {
-                        certificado = inscricao.ListaDeInscricao.Evento.Certificado;
-                    }
-                }
-                else if (inscricao.Situacao == EnumSituacaoCursista.DECLARADO)
-                {
-                    certificado = inscricao.ListaDeInscricao.Evento.DeclaracaoCursista;
-                }
-
-                if (certificado == null)
-                {
-                    return new EmptyResult();
-                }
-
-                vm = _mapper.MapearEmissaoCertificado(inscricao, certificado.Dados);
-
-                _certificadoEmitidoService.GerarCertificadoEmitido(RecuperarUsuarioId(), vm.Dados, inscricao.Cursista);
-            }
-            else
-            {
-                var evento = _eventoService.RecuperarEventoCompleto(eventoId);
-                var docente = evento.Horarios.Select(x => x.Docente).FirstOrDefault(x => x.Id == docenteId);
-                Certificado declaracaoDocente = evento.DeclaracaoDocente;
-
-                if (declaracaoDocente == null)
-                {
-                    return new EmptyResult();
-                }
-
-                vm = _mapper.MapearEmissaoDeclaracaoDocente(docente, evento, declaracaoDocente.Dados);
-            }
-
-            return View(vm);
+            return View();
         }
 
 

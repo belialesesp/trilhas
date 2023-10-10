@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Trilhas.Data;
 using Trilhas.Data.Enums;
-using Trilhas.Data.Model;
-using Trilhas.Data.Model.Eventos;
+using Trilhas.Data.Model.Certificados;
 using Trilhas.Data.Model.Exceptions;
 
 namespace Trilhas.Services
@@ -14,7 +13,7 @@ namespace Trilhas.Services
     {
         private ApplicationDbContext _context;
 
-        public CertificadoService(ApplicationDbContext context, EstacaoService estacaoService, MinioService minioService)
+        public CertificadoService(ApplicationDbContext context)
         {
             _context = context;
         }

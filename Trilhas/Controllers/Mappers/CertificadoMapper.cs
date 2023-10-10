@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Trilhas.Data.Enums;
 using Trilhas.Data.Model;
 using Trilhas.Data.Model.Cadastro;
+using Trilhas.Data.Model.Certificados;
 using Trilhas.Data.Model.Eventos;
 using Trilhas.Models.Certificado;
 using Trilhas.Models.Relatorio;
