@@ -1,6 +1,6 @@
 ﻿using Trilhas.Data.Enums;
 
-namespace Trilhas.Data.Model
+namespace Trilhas.Data.Model.Certificados
 {
     public class Certificado : DefaultEntity
     {

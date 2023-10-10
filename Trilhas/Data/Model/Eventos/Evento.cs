@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using Trilhas.Data.Enums;
 using Trilhas.Data.Model.Cadastro;
+using Trilhas.Data.Model.Certificados;
 using Trilhas.Data.Model.Exceptions;
 using Trilhas.Data.Model.Trilhas;
 

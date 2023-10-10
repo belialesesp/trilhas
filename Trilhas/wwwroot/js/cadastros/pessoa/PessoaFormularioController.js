@@ -127,6 +127,7 @@ function PessoaFormularioController($state, $stateParams, $q, $http, $scope, Ser
         };
 
         spinnerService.show('loader');
+        console.log('Pessoa: ', vm.pessoa);
 
         return $http.post('/pessoas/salvar', vm.pessoa).then(success, error).finally(onComplete);
     };

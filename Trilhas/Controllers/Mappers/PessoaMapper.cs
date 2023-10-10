@@ -121,8 +121,8 @@ namespace Trilhas.Controllers.Mappers
             {
                 vm.Add(new PessoaContatoViewModel(localContato.Id)
                 {
-                    Tipo = new TipoContatoViewModel { Nome = localContato.TipoContato.Nome },
-                    TipoContatoId = localContato.TipoContato.Id,
+                    TipoContato = new TipoContatoViewModel { Nome = localContato.TipoPessoaContato.Nome },
+                    TipoContatoId = localContato.TipoPessoaContato.Id,
                     Numero = localContato.Numero
                 });
             }

@@ -376,9 +376,6 @@ namespace Trilhas.Controllers
                 if (contato.Id.HasValue && contato.Id.Value > 0)
                 {
                     contatoAux = RecuperarPessoaContato(contato.Id.Value) ?? new PessoaContato();
-                    //    // não tem edição na tela, o usuario exclui e cria denovo, aqui é só oq sera mantido, então não precisa alterar essas datas
-                    //    //contatoAux.LastModifierUserId = this.RecuperarUsuarioId();
-                    //    //contatoAux.LastModificationTime = DateTime.Now;
                 }
                 else
                 {
@@ -405,36 +402,7 @@ namespace Trilhas.Controllers
             }
 
             return listaContatos;
-
-
-            //List<PessoaContato> listaContatos = new List<PessoaContato>();
-            //PessoaContato contatoAux;
-            //foreach(var contato in contatos)
-            //{
-            //	if(!pessoa.Contatos.Any(x => x.Id == contato.Id))
-            //	{
-            //		listaContatos.Add(new PessoaContato {
-            //			Pessoa = pessoa,
-            //			Numero = contato.Numero,
-            //			TipoContato = RecuperarTipoPessoaContato(contato.Id)
-            //		});
-            //	} else
-            //	{
-            //		contatoAux = RecuperarPessoaContato(contato.Id);
-            //		listaContatos.Add(new PessoaContato() {
-            //			TipoContato = contatoAux.TipoContato,
-            //			Numero = contatoAux.Numero
-            //		});
-            //	}
-            //}
-            //return listaContatos;
         }
-
-        //private TipoPessoaContato RecuperarTipoPessoaContato(long tipoPessoaContatoId)
-        //{
-        //    TipoPessoaContato tipoPessoaContato = _pessoaService.RecuperarTipoPessoaContato(tipoPessoaContatoId);
-        //    return tipoPessoaContato;
-        //}
 
         private PessoaContato RecuperarPessoaContato(long idPessoaCantato)
         {

@@ -1,26 +1,22 @@
-﻿<div ng-app="trilhasapp" ng-controller="CertificadosController as vm">
+﻿<div ng-app="trilhasapp" ng-controller="RecursosController as vm">
+
     <div class="content-header">
-        <h5>Eventos <em class="fa fa-angle-right"></em> Certificados</h5>
+        <h5>Eventos <em class="fa fa-angle-right"></em> Certificados Emitidos</h5>
         <div class="line"></div>
     </div>
-
-    <a ui-sref="certificados-cadastro" class="btn btn-primary">
-        <em class="fas fa-plus-circle"></em> Adicionar Certificado
-    </a>
-    <a ui-sref="certificados-declaracaoCursista-cadastro" class="btn btn-success">
-        <em class="fas fa-plus-circle"></em> Adicionar Declaração Cursista
-    </a>
-    <a ui-sref="certificados-declaracaoDocente-cadastro" class="btn btn-warning">
-        <em class="fas fa-plus-circle"></em> Adicionar Declaração Docente
-    </a>
-
     <form name="form">
-        <fieldset class="query-form mt-2">
+        <fieldset class="query-form">
             <div class="row">
                 <!--NOME-->
-                <div class="form-group col-md-8 col-sm-12">
-                    <input class="form-control w-100" id="nome" type="text" placeholder="Nome" ng-model="vm.query.nome" autocomplete="off" capitalize autofocus />
+                <div class="form-group col-md-4 col-sm-12">
+                    <input class="form-control w-100" id="nome" type="text" placeholder="Recurso Operacional" ng-model="vm.query.nome" autocomplete="off" capitalize autofocus />
                 </div>
+
+                <!--DESCRICÃO-->
+                <div class="form-group col-md-4 col-sm-12">
+                    <input class="form-control w-100" id="descricao" type="text" placeholder="Descrição" ng-model="vm.query.descricao" autocomplete="off" capitalize />
+                </div>
+
                 <!--EXCLUIDOS-->
                 <div class="form-group col-md-2 col-sm-12">
                     <div class="custom-control custom-checkbox">
@@ -28,16 +24,16 @@
                         <label class="custom-control-label" for="excluidos">Exibir excluídos</label>
                     </div>
                 </div>
+
                 <!--FILTRO-->
                 <div class="form-group col-md-2 col-sm-12">
                     <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrar()"><em class="fas fa-filter"></em> Filtrar</button>
                 </div>
-
             </div>
         </fieldset>
     </form>
 
-    <div class="row" ng-if="vm.certificados">
+    <div class="row" ng-if="vm.certificadosEmitidos">
         <div class="col-12">
             <table class="table table-striped-custom table-hover">
                 <caption ng-if="vm.pager.totalItems > 0">
@@ -64,43 +60,26 @@
                 </caption>
                 <thead class="thead-dark">
                     <tr>
-                        <th style="width:7%">ID</th>
-                        <th>Nome</th>
-                        <th style="width:20%">Tipo</th>
-                        <th style="width:10%" class="text-center">Padrão</th>
-                        <th style="width:12%" class="table-actions">Ações</th>
+                        <th style="width: 7%">ID</th>
+                        <th>Recurso Operacional</th>
+                        <th style="width: 30%" class="d-none d-md-table-cell">Descrição</th>
+                        <th style="width: 12%" class="text-right">Custo</th>
+                        <th style="width: 10%" class="table-actions">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="certificado in vm.certificados">
+                    <tr ng-repeat="certificado in vm.certificadosEmitidos">
                         <td ng-class="{strike: certificado.excluido}">{{certificado.id}}</td>
-                        <td ng-class="{strike: certificado.excluido}">{{certificado.nome}}</td>
-                        <td ng-class="{strike: certificado.excluido}">{{certificado.tipoCertificadoDescricao}}</td>
-                        <td ng-class="{strike: certificado.excluido}" class="text-center">
-                            <em ng-class="{'fa fa-check': certificado.padrao}"></em>
-                        </td>
+                        <td ng-class="{strike: certificado.excluido}">{{recurso.nome}}</td>
+                        <td class="d-none d-md-table-cell" ng-class="{strike: recurso.excluido}">{{recurso.descricao}}</td>
+                        <td class="text-right" ng-class="{strike: recurso.excluido}">{{recurso.custo | currency : 'R$' : 2 }}</td>
                         <td class="table-actions">
-                            <span ng-if="!certificado.excluido">
-                                <a href="/certificados/preview?id={{certificado.id}}" target="_blank"
+                            <span ng-if="!recurso.excluido">
+                                <a ui-sref="recursos-edicao({'id': {{recurso.id}} })"
                                    tooltip
                                    data-placement="top"
-                                   title="Pré-visualizar Certificado"><span class="fas fa-eye"></span></a>
-                                <a ui-sref="certificados-edicao({'id': {{certificado.id}} })"
-                                   tooltip
-                                   data-placement="top"
-                                   title="Editar"
-                                   ng-if="certificado.tipoCertificado == 0"><span class="fa fa-pencil-alt"></span></a>
-                                <a ui-sref="certificados-declaracaoCursista-edicao({'id': {{certificado.id}} })"
-                                   tooltip
-                                   data-placement="top"
-                                   title="Editar"
-                                   ng-if="certificado.tipoCertificado == 1"><span class="fa fa-pencil-alt"></span></a>
-                                <a ui-sref="certificados-declaracaoDocente-edicao({'id': {{certificado.id}} })"
-                                   tooltip
-                                   data-placement="top"
-                                   title="Editar"
-                                   ng-if="certificado.tipoCertificado == 2"><span class="fa fa-pencil-alt"></span></a>
-                                <a ui-sref="" ng-click="vm.marcarExclusao(certificado.id)"
+                                   title="Editar"><span class="fa fa-pencil-alt"></span></a>
+                                <a ui-sref="" ng-click="vm.marcarExclusao(recurso.id)"
                                    tooltip
                                    data-toggle="modal"
                                    data-placement="top"
@@ -109,7 +88,7 @@
                             </span>
                         </td>
                     </tr>
-                    <tr ng-if="vm.certificados.length == 0">
+                    <tr ng-if="vm.certificadosEmitidos.length == 0">
                         <td colspan="5">Nenhum registro encontrado.</td>
                     </tr>
                 </tbody>
@@ -118,6 +97,4 @@
     </div>
 
     <confirm-component confirmation-callback="vm.excluir"></confirm-component>
-
 </div>
-

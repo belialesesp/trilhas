@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using Trilhas.Data.Model;
 using Trilhas.Data.Model.Cadastro;
+using Trilhas.Data.Model.Certificados;
 using Trilhas.Data.Model.Eventos;
 using Trilhas.Data.Model.Trilhas;
 using Trilhas.Data.Seed;
@@ -15,11 +14,6 @@ namespace Trilhas.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //optionsBuilder.UseLazyLoadingProxies();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -86,7 +80,7 @@ namespace Trilhas.Data
         public DbSet<ItemDaTrilha> ItensDaTrilha { get; set; }
         public DbSet<RegistroDePresenca> RegistrosDePresenca { get; set; }
         public DbSet<Certificado> Certificados { get; set; }
-
+        public DbSet<CertificadoEmitido> CertificadosEmitidos { get; set; }
 
         #region Dto retorno query sql
         public DbSet<GridDocenteDto> GridDocenteDto { get; set; }

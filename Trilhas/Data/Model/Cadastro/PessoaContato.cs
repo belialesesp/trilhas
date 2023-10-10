@@ -10,7 +10,7 @@ namespace Trilhas.Data.Model.Cadastro
 		public string Numero { get; set; }
 
         [ForeignKey("TipoPessoaContatoId")]
-        public TipoPessoaContato TipoContato { get; set; }
+        public TipoPessoaContato TipoPessoaContato { get; set; }
         public long TipoPessoaContatoId { get; set; }
     }
 }
