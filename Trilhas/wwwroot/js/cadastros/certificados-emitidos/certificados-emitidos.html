@@ -1,22 +1,16 @@
-﻿<div ng-app="trilhasapp" ng-controller="RecursosController as vm">
+﻿<div ng-app="trilhasapp" ng-controller="CertificadosEmitidosController as vm">
 
     <div class="content-header">
         <h5>Eventos <em class="fa fa-angle-right"></em> Certificados Emitidos</h5>
         <div class="line"></div>
     </div>
     <form name="form">
-        <fieldset class="query-form">
+        <fieldset class="query-form mt-2">
             <div class="row">
                 <!--NOME-->
-                <div class="form-group col-md-4 col-sm-12">
-                    <input class="form-control w-100" id="nome" type="text" placeholder="Recurso Operacional" ng-model="vm.query.nome" autocomplete="off" capitalize autofocus />
+                <div class="form-group col-md-8 col-sm-12">
+                    <input class="form-control w-100" id="nome" type="text" placeholder="Nome" ng-model="vm.query.nome" autocomplete="off" capitalize autofocus />
                 </div>
-
-                <!--DESCRICÃO-->
-                <div class="form-group col-md-4 col-sm-12">
-                    <input class="form-control w-100" id="descricao" type="text" placeholder="Descrição" ng-model="vm.query.descricao" autocomplete="off" capitalize />
-                </div>
-
                 <!--EXCLUIDOS-->
                 <div class="form-group col-md-2 col-sm-12">
                     <div class="custom-control custom-checkbox">
@@ -24,11 +18,11 @@
                         <label class="custom-control-label" for="excluidos">Exibir excluídos</label>
                     </div>
                 </div>
-
                 <!--FILTRO-->
                 <div class="form-group col-md-2 col-sm-12">
                     <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrar()"><em class="fas fa-filter"></em> Filtrar</button>
                 </div>
+
             </div>
         </fieldset>
     </form>
@@ -61,25 +55,17 @@
                 <thead class="thead-dark">
                     <tr>
                         <th style="width: 7%">ID</th>
-                        <th>Recurso Operacional</th>
-                        <th style="width: 30%" class="d-none d-md-table-cell">Descrição</th>
-                        <th style="width: 12%" class="text-right">Custo</th>
+                        <th>Nome</th>
                         <th style="width: 10%" class="table-actions">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="certificado in vm.certificadosEmitidos">
                         <td ng-class="{strike: certificado.excluido}">{{certificado.id}}</td>
-                        <td ng-class="{strike: certificado.excluido}">{{recurso.nome}}</td>
-                        <td class="d-none d-md-table-cell" ng-class="{strike: recurso.excluido}">{{recurso.descricao}}</td>
-                        <td class="text-right" ng-class="{strike: recurso.excluido}">{{recurso.custo | currency : 'R$' : 2 }}</td>
+                        <td ng-class="{strike: certificado.excluido}">{{certificado.nome}}</td>
                         <td class="table-actions">
-                            <span ng-if="!recurso.excluido">
-                                <a ui-sref="recursos-edicao({'id': {{recurso.id}} })"
-                                   tooltip
-                                   data-placement="top"
-                                   title="Editar"><span class="fa fa-pencil-alt"></span></a>
-                                <a ui-sref="" ng-click="vm.marcarExclusao(recurso.id)"
+                            <span ng-if="!certificado.excluido">
+                                <a ui-sref="" ng-click="vm.marcarExclusao(certificado.id)"
                                    tooltip
                                    data-toggle="modal"
                                    data-placement="top"
@@ -89,7 +75,7 @@
                         </td>
                     </tr>
                     <tr ng-if="vm.certificadosEmitidos.length == 0">
-                        <td colspan="5">Nenhum registro encontrado.</td>
+                        <td colspan="3">Nenhum registro encontrado.</td>
                     </tr>
                 </tbody>
             </table>

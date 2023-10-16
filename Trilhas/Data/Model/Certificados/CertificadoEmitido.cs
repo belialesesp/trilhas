@@ -3,7 +3,7 @@ using Trilhas.Data.Model.Cadastro;
 
 namespace Trilhas.Data.Model.Certificados
 {
-    public class CertificadoEmitido : DefaultEntity
+    public class CertificadoEmitido : NotModifierEntity
     {
         [ForeignKey("PessoaId")]
         public Pessoa Pessoa { get; set; }

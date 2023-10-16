@@ -3,160 +3,58 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Trilhas.Controllers.Mappers;
-using Trilhas.Data.Enums;
 using Trilhas.Data.Model.Certificados;
-using Trilhas.Data.Model.Eventos;
 using Trilhas.Data.Model.Exceptions;
-using Trilhas.Models.Certificado;
 using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Administrador,Secretaria")]
+	[Authorize]
     public class CertificadosEmitidosController : DefaultController
     {
-        private readonly CertificadoService _service;
-        private readonly CertificadoMapper _mapper;
+        private readonly CertificadoEmitidoService _service;
+        private readonly CertificadoEmitidoMapper _mapper;
 
-        public CertificadosEmitidosController(UserManager<IdentityUser> userManager, CertificadoService service) : base(userManager)
+        public CertificadosEmitidosController(UserManager<IdentityUser> userManager, CertificadoEmitidoService service) : base(userManager)
         {
             _service = service;
-            _mapper = new CertificadoMapper();
+            _mapper = new CertificadoEmitidoMapper();
         }
 
-        public IActionResult Index()
+        public IActionResult Validar()
         {
-            EmissaoCertificadoViewModel vm;
+            //EmissaoCertificadoViewModel vm;
+
+            //List<CertificadoEmitido> certificados = _service.RecuperarCertificados("", true);
+
+            // vm = _mapper.MapearGridCertificado(certificados);
 
             return View();
         }
 
-
-        public IActionResult Preview(long id)
-        {
-            Certificado certificado = _service.RecuperarCertificado(id, null);
-
-            EmissaoCertificadoViewModel vm = _mapper.MaperPreviewCertificado(certificado);
-
-            return View(vm);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Administrador,Secretaria")]
-        public IActionResult Salvar([FromBody] SalvarCertificadoViewModel vm)
-        {
-            try
-            {
-                ValidarCadastroCertificado(vm);
-
-                Certificado certificado;
-
-                if (vm.Id > 0)
-                {
-                    certificado = AtualizarCertificado(vm);
-                }
-                else
-                {
-                    certificado = CriarCertificado(vm);
-                }
-
-                AtualizarCertificadoPadrao(vm);
-
-                _service.SalvarCertificado(RecuperarUsuarioId(), certificado);
-
-                return JsonFormResponse(vm);
-            }
-            catch (TrilhasException tex)
-            {
-                return JsonErrorFormResponse(tex);
-            }
-            catch (Exception ex)
-            {
-                return JsonErrorFormResponse(ex, "Ocorreu um erro ao salvar o registro.");
-            }
-        }
-
-        private void AtualizarCertificadoPadrao(SalvarCertificadoViewModel vm)
-        {
-            var certificadoPadrao = _service.RecuperarCertificadoPadrao(vm.TipoCertificado);
-
-            if (certificadoPadrao == null || certificadoPadrao.Id == vm.Id)
-            {
-                vm.Padrao = true;
-                return;
-            }
-
-            if (vm.Padrao && certificadoPadrao.Id != vm.Id)
-            {
-                certificadoPadrao.Padrao = false;
-            }
-        }
-
-        public Certificado AtualizarCertificado(SalvarCertificadoViewModel vm)
-        {
-            Certificado certificado = _service.RecuperarCertificado(vm.Id, null);
-            certificado.Nome = vm.Nome;
-            certificado.Dados = vm.Dados;
-            certificado.Padrao = vm.Padrao;
-            certificado.TipoCertificado = vm.TipoCertificado;
-
-            return certificado;
-        }
-
-        public Certificado CriarCertificado(SalvarCertificadoViewModel vm)
-        {
-            Certificado certificado = new Certificado
-            {
-                Nome = vm.Nome,
-                Dados = vm.Dados,
-                Padrao = vm.Padrao,
-                TipoCertificado = vm.TipoCertificado
-            };
-
-            return certificado;
-        }
-
         [HttpGet]
-        public IActionResult Buscar(string nome, bool excluidos, EnumTipoCertificado? tipoCertificado, int start = -1, int count = -1)
+		[Authorize(Roles = "Administrador,Secretaria")]
+		public IActionResult Buscar(string nome, bool excluidos, int start = -1, int count = -1)
         {
-            List<Certificado> certificados = _service.RecuperarCertificados(nome, excluidos, tipoCertificado, start, count);
+            List<CertificadoEmitido> certificados = _service.RecuperarCertificados(nome, excluidos);
 
-            var vm = _mapper.MapearGridCertificado(certificados);
+            var vm = _mapper.MapearGridCertificadoEmitido(certificados);
 
             return Json(vm);
         }
 
         [HttpGet]
-        public IActionResult Quantidade(string nome, bool exibirExcluidos, EnumTipoCertificado? tipoCertificado, int start = -1, int count = -1)
+		[Authorize(Roles = "Administrador,Secretaria")]
+		public IActionResult Quantidade(string nome, bool exibirExcluidos)
         {
-            int quantidade = _service.QuantidadeDeCertificados(nome, exibirExcluidos, tipoCertificado);
+            int quantidade = _service.QuantidadeDeCertificados(nome, exibirExcluidos);
             return Json(quantidade);
         }
 
-        [HttpGet]
-        public IActionResult Recuperar(long id, EnumTipoCertificado? tipoCertificado)
-        {
-            try
-            {
-                Certificado certificado = _service.RecuperarCertificado(id, tipoCertificado);
-
-                if (certificado == null)
-                    throw new Exception("Certificado não encontrado");
-
-                var vm = _mapper.MapearCeritificado(certificado);
-
-                return Json(vm);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         [HttpDelete]
-        public IActionResult Excluir(long id)
+		[Authorize(Roles = "Administrador,Secretaria")]
+		public IActionResult Excluir(long id)
         {
             try
             {
@@ -172,23 +70,6 @@ namespace Trilhas.Controllers
             }
 
             return new EmptyResult();
-        }
-
-        private void ValidarCadastroCertificado(SalvarCertificadoViewModel vm)
-        {
-            if (string.IsNullOrWhiteSpace(vm.Nome))
-            {
-                ModelState.AddModelError("Nome", "Preencha o nome do Certificado.");
-            }
-            if (string.IsNullOrWhiteSpace(vm.Dados))
-            {
-                ModelState.AddModelError("Dados", "Preencha o conteúdo do Certificado.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                throw new Exception("Preencha o formulário corretamente.");
-            }
         }
     }
 }

@@ -82,8 +82,9 @@ namespace Trilhas
 			services.AddScoped<ListaPresencaService>();
 			services.AddScoped<DocenteService>();
 			services.AddScoped<CertificadoService>();
+            services.AddScoped<CertificadoEmitidoService>();
 
-			services.AddAuthentication(options => {
+            services.AddAuthentication(options => {
 				options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 				options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 				options.DefaultChallengeScheme = "oidc";

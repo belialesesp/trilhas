@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using Trilhas.Data;
-using Trilhas.Data.Migrations;
 using Trilhas.Data.Model.Cadastro;
 using Trilhas.Data.Model.Exceptions;
 using Trilhas.SqlDto;
