@@ -16,7 +16,6 @@ function CertificadosEmitidosController($stateParams, $state, $http, $q, paginat
     ];
 
     vm.certificadosEmitidos = null;
-
     vm.registroParaExcluir = null;
 
     vm.query = {
@@ -88,7 +87,7 @@ function CertificadosEmitidosController($stateParams, $state, $http, $q, paginat
     var buscar = function () {
 
         var success = function (response) {
-            vm.certificados = response.data;
+            vm.certificadosEmitidos = response.data;
         };
 
         var error = function (response) {

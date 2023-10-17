@@ -33,7 +33,7 @@ namespace Trilhas.Controllers.Mappers
             return certificadoVm;
         }
 
-        public CertificadoViewModel MapearCeritificado(Certificado certificado)
+        public CertificadoViewModel MapearCertificado(Certificado certificado)
         {
             CertificadoViewModel vm = new CertificadoViewModel(certificado.Id)
             {

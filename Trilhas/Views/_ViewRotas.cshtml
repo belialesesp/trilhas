@@ -194,10 +194,13 @@ angular.module('trilhasapp')
         url: '/declaracaoCursista/:id',
         templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
     })
-
     .state('pendente', {
         url: '/pendente',
         templateUrl: '/js/em-construcao.html'
+    })
+    .state('certificadosEmitidos', {
+        url: '/certificadosEmitidos?nome&excluidos&page&pageSize',
+        templateUrl: '/js/cadastros/certificados-emitidos/certificados-emitidos.html'
     });
 
 

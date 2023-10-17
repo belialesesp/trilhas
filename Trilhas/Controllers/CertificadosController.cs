@@ -200,7 +200,7 @@ namespace Trilhas.Controllers
                 if (certificado == null)
                     throw new Exception("Certificado não encontrado");
 
-                var vm = _mapper.MapearCeritificado(certificado);
+                var vm = _mapper.MapearCertificado(certificado);
 
                 return Json(vm);
             }
