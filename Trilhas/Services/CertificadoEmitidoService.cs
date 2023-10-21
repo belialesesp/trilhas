@@ -34,7 +34,7 @@ namespace Trilhas.Services
                 CreatorUserId = userId,
                 Pessoa = cursista,
                 CodigoAutenticacao = CodigoAutenticacaoEletronica(),
-                Hash = arquivo.GetBase64(),
+                Hash = dados,
             };
 
             SalvarCertificadoEmitido(certificado);
