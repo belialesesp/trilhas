@@ -10,7 +10,7 @@ using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-	[Authorize]
+    [Authorize]
     public class CertificadosEmitidosController : DefaultController
     {
         private readonly CertificadoEmitidoService _service;
@@ -20,17 +20,6 @@ namespace Trilhas.Controllers
         {
             _service = service;
             _mapper = new CertificadoEmitidoMapper();
-        }
-
-        public IActionResult Validar()
-        {
-            //EmissaoCertificadoViewModel vm;
-
-            //List<CertificadoEmitido> certificados = _service.RecuperarCertificados("", true);
-
-            // vm = _mapper.MapearGridCertificado(certificados);
-
-            return View();
         }
 
         [HttpGet]

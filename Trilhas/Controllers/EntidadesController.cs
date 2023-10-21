@@ -3,17 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using Trilhas.Controllers.Mappers;
-using Trilhas.Data.Model;
 using Trilhas.Data.Model.Cadastro;
 using Trilhas.Data.Model.Exceptions;
 using Trilhas.Models.Cadastros;
-using Trilhas.Models.Cadastros.Pessoa;
-using Trilhas.Models.Cadastros.TipoEntidade;
 using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    public class EntidadesController : DefaultController
+	public class EntidadesController : DefaultController
     {
         private readonly EntidadeService _entidadeService;
         private readonly CadastroService _cadastroService;

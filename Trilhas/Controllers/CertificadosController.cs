@@ -7,14 +7,13 @@ using System.Linq;
 using Trilhas.Controllers.Mappers;
 using Trilhas.Data.Enums;
 using Trilhas.Data.Model.Certificados;
-using Trilhas.Data.Model.Eventos;
 using Trilhas.Data.Model.Exceptions;
 using Trilhas.Models.Certificado;
 using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Administrador,Secretaria")]
+    [Authorize]
     public class CertificadosController : DefaultController
     {
         private readonly CertificadoService _service;
@@ -35,6 +34,7 @@ namespace Trilhas.Controllers
             _mapper = new CertificadoMapper();
         }
 
+        [Authorize(Roles = "Administrador,Secretaria")]
         public IActionResult Index(long inscricaoId, long docenteId, long eventoId)
         {
             EmissaoCertificadoViewModel vm;
@@ -88,7 +88,7 @@ namespace Trilhas.Controllers
             return View(vm);
         }
 
-
+        [Authorize(Roles = "Administrador,Secretaria")]
         public IActionResult Preview(long id)
         {
             Certificado certificado = _service.RecuperarCertificado(id, null);
@@ -174,6 +174,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrador,Secretaria")]
         public IActionResult Buscar(string nome, bool excluidos, EnumTipoCertificado? tipoCertificado, int start = -1, int count = -1)
         {
             List<Certificado> certificados = _service.RecuperarCertificados(nome, excluidos, tipoCertificado, start, count);
@@ -184,6 +185,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrador,Secretaria")]
         public IActionResult Quantidade(string nome, bool exibirExcluidos, EnumTipoCertificado? tipoCertificado, int start = -1, int count = -1)
         {
             int quantidade = _service.QuantidadeDeCertificados(nome, exibirExcluidos, tipoCertificado);
@@ -191,6 +193,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrador,Secretaria")]
         public IActionResult Recuperar(long id, EnumTipoCertificado? tipoCertificado)
         {
             try
@@ -211,6 +214,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Administrador,Secretaria")]
         public IActionResult Excluir(long id)
         {
             try
@@ -244,6 +248,28 @@ namespace Trilhas.Controllers
             {
                 throw new Exception("Preencha o formulário corretamente.");
             }
+        }
+
+        public IActionResult Validar()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult Consultar([FromBody] ConsultaCertificadoViewModel request)
+        {
+            bool valido = false;
+            string mensagem = "Não há certificado válido para este código de autenticação.";
+
+            var certificado = _certificadoEmitidoService.RecuperarCertificado(request.CodigoAutenticidade);
+
+            if (certificado != null)
+            {
+                valido = true;
+                mensagem = "Certificado válido - Autenticidade verificada com sucesso!";
+            }
+
+            return Json(new { Valido = valido, Mensagem = mensagem });
         }
     }
 }

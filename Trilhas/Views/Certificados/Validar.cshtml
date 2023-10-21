@@ -1,0 +1,155 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trilhas de Aprendizagem – ESESP</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css">
+    <link rel="stylesheet" href="~/lib/popup-master/assets/css/popup.css" />
+    <link rel="stylesheet" href="~/css/usuario.css">
+    <style>
+        .cert-valid {
+            color: green;
+        }
+
+        .cert-invalid {
+            color: red;
+        }
+    </style>
+    <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="~/lib/popup-master/assets/js/jquery.popup.js"></script>
+    <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#response").text("");
+
+            $("#btnSubmit").click(function (e) {
+                $("#response").text("");
+
+                var codigoAutenticidade = $("#codigoAutenticidade").val();
+
+                if (codigoAutenticidade === '' || codigoAutenticidade === undefined) {
+                    return;
+                }
+
+                var request = {
+                    "CodigoAutenticidade": codigoAutenticidade
+                };
+
+                $.ajax({
+                    url: "/Certificados/Consultar",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(request)
+                })
+                .done(function (data) {
+                    if (data.valido === true) {
+                        $("#response").removeClass("cert-invalid");
+                        $("#response").addClass("cert-valid");
+                    } else {
+                        $("#response").removeClass("cert-valid");
+                        $("#response").addClass("cert-invalid");
+                    }
+
+                    $("#response").text(data.mensagem);
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                        $("#response").removeClass("cert-valid");
+                        $("#response").addClass("cert-invalid");
+                    if (jqXHR.status === 404) {
+                        $("#response").text("Página não encontrada");
+                    } else {
+                        $("#response").text("Ocorreu um erro na solicitação: " + errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <app>
+        <app-navbar>
+            <header>
+                <nav class="navbar navbar-expand-md navbar-dark fixed-top nav-trilhas">
+                    <div class="container">
+                        <h1 class="navbar-brand mb-0 mt-1">
+                            <a itemprop="url" title="Logo ESESP">
+                                <img alt="Logo ESESP" src="~/images/usuario/marca-esesp-branca.svg" width="32px">
+                            </a>
+                        </h1>
+                        <a class="navbar-brand" href="/home/Index">
+                            Trilhas de <span class="d-block d-sm-none"><br></span> Aprendizagem
+                        </a>
+                        <ul class="navbar-nav ml-auto"></ul>
+                    </div>
+                </nav>
+            </header>
+        </app-navbar>
+        <main role="main">
+            <router-outlet></router-outlet>
+            <app-main _nghost-c2="">
+                <section class="section-oferta-1">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-9 suporte-escuro">
+                                <h4 class=" mt-5 pb-0 mb-5 w-600">Validação e autenticidade de certificado.</h4>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <div class="container">
+                    <div class="row">
+                        <fieldset class="edit-form mt-5">
+                            <div class="row">
+                                <div class="form-group col-9">
+                                    <label><span class="asterisco"></span>Código de Autenticidade:</label>
+                                    <input type="text" id="codigoAutenticidade" name="codigoAutenticidade" class="form-control" />
+                                </div>
+                                <div class="form-group col-3 pt-1">
+                                    <label class="mt-3"><span class="asterisco"></span></label>
+                                    <button id="btnSubmit" class="btn btn-primary"><em class="fa fa-check"></em> Validar</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <span id="response"></span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </app-main>
+        </main>
+
+        <!--RODAPÉ-->
+        <app-footer _nghost-c0="">
+            <section class="section-footer">
+                <footer class="mt-4">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-2 col-4 text-center">
+                                <img src="~/images/usuario/principal/Brasao_Governo_320.png" width="76%">
+                            </div>
+                            <div class="col-md-10 text-right small mt-4">
+                                <p>Projeto Trilhas de Aprendizagem ESESP<br> Rua Francisco Fundão, 155 – Morada de Camburi <br> CEP: 29062-545 - Vitória / ES</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right small"> @DateTime.Now.Year.ToString() • Desenvolvido pelo Grupo de Aprendizagem, na ESESP. </div>
+                        </div>
+                    </div>
+                </footer>
+            </section>
+        </app-footer>
+    </app>
+</body>
+</html>
