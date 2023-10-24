@@ -62,7 +62,7 @@ namespace Trilhas.Controllers.Mappers
             return vm;
         }
 
-        public EmissaoCertificadoViewModel MapearEmissaoCertificado(Inscrito inscrito, string dados)
+        public EmissaoCertificadoViewModel MapearEmissaoCertificado(Inscrito inscrito, string codigoAutenticacao, string dados)
         {
             EmissaoCertificadoViewModel vm = new EmissaoCertificadoViewModel();
 
@@ -79,6 +79,7 @@ namespace Trilhas.Controllers.Mappers
             dados = dados.Replace("[#DATA_INICIAL]", inscrito.ListaDeInscricao.Evento.Agenda().DataHoraInicio.ToString("dd/MM/yyyy"));
             dados = dados.Replace("[#DATA_FINAL]", inscrito.ListaDeInscricao.Evento.Agenda().DataHoraFim.ToString("dd/MM/yyyy"));
             dados = dados.Replace("[#NOME_CURSISTA]", inscrito.Cursista.NomeSocial ?? inscrito.Cursista.Nome);
+            dados = dados.Replace("[#CODIGO_AUTENTICACAO]", codigoAutenticacao);
 
             dados = dados.Replace("[#LOCAL]", inscrito.ListaDeInscricao.Evento.Local != null ? inscrito.ListaDeInscricao.Evento.Local.Nome : string.Empty);
 

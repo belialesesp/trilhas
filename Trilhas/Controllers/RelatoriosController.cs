@@ -33,7 +33,7 @@ namespace Trilhas.Controllers
 				return this.BadRequest();
 			}
 
-			EmissaoCertificadoViewModel vm = _mapper.MapearEmissaoCertificado(inscricao, inscricao.ListaDeInscricao.Evento.Certificado.Dados);
+			EmissaoCertificadoViewModel vm = _mapper.MapearEmissaoCertificado(inscricao, "", inscricao.ListaDeInscricao.Evento.Certificado.Dados);
 
 			return View(vm);
 		}

@@ -345,6 +345,27 @@
                         toolbar: 'eventos'
                     });
 
+                    editor.addCommand('cmdNumeroAutenticacao', {
+                        exec: function (editor) {
+                            var $form = editor.element.$.form;
+                            if ($form) {
+                                try {
+                                    editor.updateElement();
+                                    editor.insertHtml('<span>[#NUMERO_AUTENTICACAO]</span>');
+                                }
+                                catch (e) {
+                                    alert(e);
+                                }
+                            }
+                        }
+                    });
+
+                    editor.ui.addButton('numero-autenticacao', {
+                        label: 'NUMERO_AUTENTICACAO',
+                        command: 'cmdNumeroAutenticacao',
+                        toolbar: 'eventos'
+                    });
+
                     CKEDITOR.config.toolbar = [ //jshint ignore:line
                         { name: 'basicstyles', items: ['Bold', 'Italic', 'Strike', 'Underline'] },
                         { name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
@@ -358,7 +379,7 @@
                         { name: 'clipboard', items: ['Undo', 'Redo'] },
                         { name: 'document', items: ['PageBreak', 'Source'] },
                         '/',
-                        { name: 'eventos', items: ['nome-curso', 'nome-cursista', 'nome-docente', 'local', 'data-atual', 'data-inicial', 'data-final', 'carga-horaria', 'conteudo-programatico'] }
+                        { name: 'eventos', items: ['nome-curso', 'nome-cursista', 'nome-docente', 'local', 'data-atual', 'data-inicial', 'data-final', 'carga-horaria', 'conteudo-programatico', 'codigo-autenticacao'] }
                     ];
 
                     CKEDITOR.config.allowedContent = true;

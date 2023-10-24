@@ -67,9 +67,11 @@ namespace Trilhas.Controllers
                     return new EmptyResult();
                 }
 
-                vm = _mapper.MapearEmissaoCertificado(inscricao, certificado.Dados);
+                var condigoAutenticacao = _service.CodigoAutenticacaoEletronica();
 
-                _certificadoEmitidoService.GerarCertificadoEmitido(RecuperarUsuarioId(), vm.Dados, inscricao.Cursista);
+                vm = _mapper.MapearEmissaoCertificado(inscricao, condigoAutenticacao, certificado.Dados);
+
+                _certificadoEmitidoService.GerarCertificadoEmitido(RecuperarUsuarioId(), condigoAutenticacao, vm.Dados, inscricao.Cursista);
             }
             else
             {

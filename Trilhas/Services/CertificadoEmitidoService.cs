@@ -19,7 +19,7 @@ namespace Trilhas.Services
             _context = context;
         }
 
-        public void GerarCertificadoEmitido(string userId, string dados, Pessoa cursista)
+        public void GerarCertificadoEmitido(string userId, string codigoAutenticacao, string dados, Pessoa cursista)
         {
             var arquivo = new Arquivo
             {
@@ -33,7 +33,7 @@ namespace Trilhas.Services
                 CreationTime = DateTime.Now,
                 CreatorUserId = userId,
                 Pessoa = cursista,
-                CodigoAutenticacao = CodigoAutenticacaoEletronica(),
+                CodigoAutenticacao = codigoAutenticacao,
                 Hash = dados,
             };
 
@@ -60,26 +60,6 @@ namespace Trilhas.Services
 
             return certificado;
         }
-
-        private string CodigoAutenticacaoEletronica()
-        {
-            int numero = new Random().Next(1000, 9999);
-            int hora = DateTime.Now.Hour;
-            int minuto = DateTime.Now.Minute;
-            int segundo = DateTime.Now.Second;
-            int data = Convert.ToInt32(DateTime.Now.ToString("yyMMdd"));
-
-            string aux = data.ToString("X").PadLeft(5, '0');
-
-            hora = hora * 3600 + minuto * 60 + segundo;
-
-            string aux2 = hora.ToString("X").PadLeft(5, '0');
-
-            string aux3 = numero.ToString("X").PadLeft(4, '0');
-
-            return aux3 + aux + aux2;
-        }
-
 
         /// <summary>
         /// Recupera Cetificado Emitido por Código de Autenticação
