@@ -182,6 +182,10 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
             { reload: true });
     };
 
+    vm.imprimir = function () {
+        window.print();
+    }
+
     var consultar = function (page) {
 
         page = parseInt(page);
