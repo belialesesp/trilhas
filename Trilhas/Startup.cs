@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Configuration;
 using Trilhas.Configurations;
 using Trilhas.Data;
 using Trilhas.Services;
@@ -50,6 +49,7 @@ namespace Trilhas
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 			services.AddSettings(Configuration);
+			services.AddHttpClients();
 			services.AddServices();
 
             var sp = services.BuildServiceProvider();

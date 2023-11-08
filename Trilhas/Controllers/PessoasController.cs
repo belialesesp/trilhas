@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Trilhas.Controllers.Mappers;
 using Trilhas.Data.Model;
 using Trilhas.Data.Model.Cadastro;
 using Trilhas.Data.Model.Exceptions;
 using Trilhas.Models.Cadastros.Pessoa;
 using Trilhas.Services;
-using Trilhas.SqlDto;
+using Trilhas.Services.Interfaces;
 
 namespace Trilhas.Controllers
 {
@@ -23,13 +24,15 @@ namespace Trilhas.Controllers
         private readonly CadastroService _cadastroService;
         private readonly PessoaService _pessoaService;
         private readonly EntidadeService _entidadeService;
+        private readonly ISiahresService _siarhesService;
         private readonly PessoaMapper _mapper;
 
-        public PessoasController(UserManager<IdentityUser> userManager, CadastroService service, PessoaService pessoaService, EntidadeService entidadeService) : base(userManager)
+        public PessoasController(UserManager<IdentityUser> userManager, CadastroService service, PessoaService pessoaService, EntidadeService entidadeService, ISiahresService siarhesService) : base(userManager)
         {
             _pessoaService = pessoaService;
             _entidadeService = entidadeService;
             _cadastroService = service;
+            _siarhesService = siarhesService;
             _mapper = new PessoaMapper();
         }
 
@@ -56,6 +59,14 @@ namespace Trilhas.Controllers
             List<Pessoa> pessoas = _pessoaService.PesquisarPessoas(nome, null, cpf, numeroFuncional, 0, 0, false, start, count);
 
             var vm = _mapper.MapearPessoasModalViewModel(pessoas);
+
+            return Json(vm);
+        }
+
+        [HttpGet("pessoas/atualizar/{cpf}")]
+        public async Task<IActionResult> Atualizar(string cpf)
+        {
+            var vm = await _siarhesService.BuscarDadosPessoais(cpf);
 
             return Json(vm);
         }

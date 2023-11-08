@@ -3,8 +3,8 @@ using Trilhas.Models.Cadastros.Pessoa;
 
 namespace Trilhas.Services.Interfaces
 {
-    public interface ISiarhesService
+    public interface ISiahresService
     {
-        Task<PessoaSiarhesViewModel> BuscarDadosPessoais(long cpf);
+        Task<PessoaSiarhesViewModel> BuscarDadosPessoais(string cpf);
     }
 }

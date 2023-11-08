@@ -14,6 +14,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Trilhas.Data.Model;
 using Trilhas.Services;
+using Trilhas.Services.Interfaces;
 using Trilhas.Settings;
 
 namespace Trilhas.Configurations
@@ -110,10 +111,16 @@ namespace Trilhas.Configurations
             });
         }
 
+        public static void AddHttpClients(this IServiceCollection services)
+        {
+            services.AddHttpClient<ISiahresService, SiahresService>();
+        }   
+
         public static void AddServices(this IServiceCollection services)
         {
             services.AddSingleton<MinioService>();
             services.AddSingleton<OpenIdService>();
+            services.AddScoped<ISiahresService, SiahresService>();
             services.AddScoped<TrilhasService>();
             services.AddScoped<CadastroService>();
             services.AddScoped<EixoService>();
@@ -135,6 +142,7 @@ namespace Trilhas.Configurations
         {
             services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
             services.Configure<OpenIdSettings>(configuration.GetSection("OpenIdSettings"));
+            services.Configure<SiahresSettings>(configuration.GetSection("SiahresSettings"));
         }
     }
 }
