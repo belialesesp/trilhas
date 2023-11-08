@@ -212,7 +212,7 @@
                 </div>
                 <!--FILTRO-->
                 <div class="form-group col-md-2 col-sm-12">
-                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrar()"><em class="fas fa-filter"></em> Filtrar</button>
+                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrarRelatorio()"><em class="fas fa-filter"></em> Filtrar</button>
                 </div>
             </div>
         </fieldset>
@@ -257,7 +257,6 @@
                         <th style="width: 3%" class="text-right">Dec</th>
                         <th style="width: 3%" class="text-right">Des</th>
                         <th style="width: 8%">Situação</th>
-                        <th style="width: 9%" class="table-actions">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -274,36 +273,7 @@
                         <td class="text-right" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.declarados}}</td>
                         <td class="text-right" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.desistentes}}</td>
                         <td ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.situacao}}</td>
-                        <td class="table-actions">
-                            <span ng-if="evento.situacao != 'CANCELADO'">
-                                <!--<a ng-href="/eventos/downloadListaInscritosEvento?id={{evento.id}}" target="_blank"
-                                tooltip
-                                data-placement="top"
-                                title="Download Lista de Inscrição"><span class="fa fa-file-csv"></span></a>-->
 
-                                <a ui-sref="eventos-encerramento({'id': {{evento.id}} })" ng-if="evento.situacao == 'FINALIZADO'"
-                                   tooltip
-                                   data-placement="top"
-                                   title="Resultados"><span class="fas fa-clipboard-check" aria-hidden="true"></span></a>
-
-                                <a ui-sref="eventos-lista-inscricao({'id': {{evento.listaDeInscricaoId}} })"
-                                   tooltip
-                                   data-placement="top"
-                                   title="Lista de Inscrição"><span class="fa fa-address-card"></span></a>
-
-                                <a ui-sref="eventos-edicao({'id': {{evento.id}} })"
-                                   tooltip
-                                   data-placement="top"
-                                   title="Editar"><span class="fa fa-pencil-alt"></span></a>
-
-                                <!--<a ui-sref="" ng-click="vm.marcarExclusao(evento.id)"
-                                tooltip
-                                data-toggle="modal"
-                                data-placement="top"
-                                title="Excluir"
-                                data-target="#confirm-dialog"><span class="fa fa-trash"></span></a>-->
-                            </span>
-                        </td>
                     </tr>
                     <tr ng-if="vm.eventos.length == 0">
                         <td colspan="12">Nenhum registro encontrado.</td>
@@ -350,6 +320,10 @@
             </table>
         </fieldset>
     </footer>
+
+    <div class="form-group col-md-2 col-sm-12">
+        <button class="btn btn-info btn-sm btn-block"><em class="fas fa-print"></em>Imprimir</button>
+    </div>
 
     <confirm-component confirmation-callback="vm.excluir"></confirm-component>
 

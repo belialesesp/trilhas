@@ -150,6 +150,38 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
             { reload: true });
     };
 
+    vm.filtrarRelatorio = function (page) {
+
+        if (!page && vm.pager.currentPage) {
+            page = vm.pager.currentPage;
+        }
+        if (page < 1 || (page > vm.pager.totalPages && vm.pager.totalPages > 0)) {
+            page = 1;
+        }
+
+        $state.go('eventosRelatoriocapacitadosPorPeriodo',
+            {
+                'cursoId': vm.query.cursoId,
+                'modalidade': vm.query.modalidade,
+                'entidadeDemandanteId': vm.query.entidadeDemandanteId,
+                'uf': vm.query.uf,
+                'municipioId': vm.query.municipioId,
+                'docenteId': vm.query.docenteId,
+                'cursistaId': vm.query.cursistaId,
+                'dataInicio': vm.query.dataInicio,
+                'dataFim': vm.query.dataFim,
+                'cancelados': vm.query.cancelados,
+                'naoIniciados': vm.query.naoIniciados,
+                'andamentos': vm.query.andamentos,
+                'concluidos': vm.query.concluidos,
+                'page': page,
+                'pageSize': vm.pageSize,
+                'inscricao': vm.query.inscricao,
+                'finalizados': vm.query.finalizados
+            },
+            { reload: true });
+    };
+
     var consultar = function (page) {
 
         page = parseInt(page);
