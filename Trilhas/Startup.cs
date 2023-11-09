@@ -26,6 +26,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Trilhas.Data;
 using Trilhas.Data.Model;
+using Trilhas.Helper;
 using Trilhas.Services;
 using Trilhas.Settings;
 
@@ -68,6 +69,8 @@ namespace Trilhas
 
 			// SERVICES 
 			services.AddSingleton<MinioService>();
+			services.AddSingleton<FileHelper>();
+			services.AddSingleton<ExcelRelatorioHelper>();
 			services.AddScoped<TrilhasService>();
 			services.AddScoped<CadastroService>();
 			services.AddScoped<EixoService>();

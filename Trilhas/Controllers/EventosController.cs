@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BundlerMinifier;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ using Trilhas.Data.Model.Cadastro;
 using Trilhas.Data.Model.Eventos;
 using Trilhas.Data.Model.Exceptions;
 using Trilhas.Data.Model.Trilhas;
+using Trilhas.Helper;
 using Trilhas.Models;
 using Trilhas.Models.Evento;
 using Trilhas.Services;
@@ -31,6 +33,7 @@ namespace Trilhas.Controllers
         private readonly IConfiguration _configuration;
         private readonly EventoMapper _mapper;
         private readonly CertificadoService _certificadoService;
+        private readonly ExcelRelatorioHelper _excelRelatorioHelper;
 
         public EventosController(UserManager<IdentityUser> userManager,
             EventoService eventoService,
@@ -41,7 +44,8 @@ namespace Trilhas.Controllers
             PessoaService pessoaService,
             DocenteService docenteService,
             IConfiguration configuration,
-            CertificadoService certificadoService
+            CertificadoService certificadoService,
+            ExcelRelatorioHelper excelRelatorioHelper
             ) : base(userManager)
         {
             _eventoService = eventoService;
@@ -53,7 +57,7 @@ namespace Trilhas.Controllers
             _docenteService = docenteService;
             _certificadoService = certificadoService;
             _configuration = configuration;
-
+            _excelRelatorioHelper = excelRelatorioHelper;
             _mapper = new EventoMapper();
         }
 
@@ -115,6 +119,38 @@ namespace Trilhas.Controllers
 
             return Json(vm);
         }
+
+        [HttpGet]
+        public IActionResult ExportarRelatorioCapacitadosPorPeriodoExcel(long cursoId,
+                                    EnumModalidade? modalidade,
+                                    long entidadeDemandanteId,
+                                    long municipioId,
+                                    long docenteId,
+                                    long cursistaId,
+                                    DateTime dataInicio,
+                                    DateTime dataFim,
+                                    bool naoIniciados,
+                                    bool andamentos,
+                                    bool concluidos,
+                                    bool cancelados,
+                                    bool inscricao,
+                                    string curso,
+                                    string entidadeDemandante,
+                                    bool finalizados,
+                                    string docente, int start = -1, int count = -1)
+        {
+            if (dataFim == DateTime.MinValue)
+            {
+                dataFim = DateTime.MaxValue;
+            }
+
+            List<Evento> eventos = _eventoService.PesquisarEventos(cursoId, curso, modalidade, entidadeDemandanteId, entidadeDemandante, municipioId, docenteId, docente, cursistaId, dataInicio, dataFim, naoIniciados, andamentos, concluidos, cancelados, inscricao, finalizados, start, count);
+
+            var relatorio =  _excelRelatorioHelper.GerarPlanilhaRelatorio(eventos);
+
+            return File(relatorio.FileByte, "application/vnd.ms-excel", relatorio.FileName);
+        }
+
 
         [HttpGet]
         [Authorize(Roles = "Administrador,Secretaria,Gestor")]
