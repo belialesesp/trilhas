@@ -21,7 +21,7 @@ namespace Trilhas.Helper
 
         public DownloadFileContract GerarPlanilhaRelatorio(List<Evento> eventos)
         {
-            string filePathName = _fileHelper.GetAppDataPath() + "RelCapacitadosPorPerido";
+            string filePathName = _fileHelper.GetAppDataPath() + "RelCapacitadosPorPerido.xlsx";
 
             if (File.Exists(filePathName))
                 File.Delete(filePathName);

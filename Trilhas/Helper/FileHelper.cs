@@ -19,7 +19,7 @@ namespace Trilhas.Helper
 
         public  string GetAppDataPath()
         {
-            var path = string.Concat(Path.Combine(_env.ContentRootPath, "App_Data/Files"), "\\");
+            var path = string.Concat(Path.Combine(_env.ContentRootPath, "App_Data\\Files"), "\\");
             return path;
         }
 
@@ -28,12 +28,14 @@ namespace Trilhas.Helper
             var downloadFile = new DownloadFileContract();
             try
             {
-                downloadFile.FileByte = File.ReadAllBytes(filePathTemp);
-                downloadFile.FileName = "RelatorioCapacitadosPorPerido" + DateTime.Now.ToString("ddmmyyyyhhmmss") ;
-                downloadFile.FilePathTemp = filePathTemp;
 
+                downloadFile.FileByte = File.ReadAllBytes(filePathTemp);
+                downloadFile.FileString =  Convert.ToBase64String(downloadFile.FileByte);
+                downloadFile.FileName = "RelatorioCapacitadosPorPerido" + DateTime.Now.ToString("ddmmyyyyhhmmss") + ".xlsx";
+                downloadFile.FilePathTemp = filePathTemp;
+                
                 ExcluirArquivo(filePathTemp);
-            
+
             }
             catch (Exception ex)
             {

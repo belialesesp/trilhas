@@ -148,7 +148,8 @@ namespace Trilhas.Controllers
 
             var relatorio =  _excelRelatorioHelper.GerarPlanilhaRelatorio(eventos);
 
-            return File(relatorio.FileByte, "application/vnd.ms-excel", relatorio.FileName);
+            //return File(relatorio.FileByte, "application/vnd.ms-excel", relatorio.FileName);
+            return new ObjectResult(relatorio);
         }
 
 

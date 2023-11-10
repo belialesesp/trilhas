@@ -6,6 +6,8 @@
 
         public byte[] FileByte { get; set; }
 
+        public string FileString { get; set; }
+
         public string FilePathTemp { get; set; }
 
 

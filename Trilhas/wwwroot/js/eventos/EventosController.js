@@ -204,6 +204,46 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
         return $http.get("/eventos/quantidade", { params: vm.query }).then(success, error);
     };
 
+    vm.consultarEExportarExcel = function () {
+
+        var successBaixarArquivo = function (response) {
+
+            var bin = atob(response.data.fileString);
+            var ab = s2ab(bin); // from example above
+            var blob = new Blob([ab], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' });
+
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = response.data.fileName;
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+
+        };
+
+        var errorBaixarArquivo = function (response) {
+            toastr["error"]("Ocorreu um erro ao consultar os registros.");
+        };
+
+
+        return $http.get("/eventos/exportarRelatorioCapacitadosPorPeriodoExcel", { params: vm.query }).then(successBaixarArquivo, errorBaixarArquivo).finally(onComplete);
+
+
+
+
+    }
+
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+
     var buscar = function () {
 
         var success = function (response) {
