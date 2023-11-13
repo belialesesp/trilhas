@@ -226,16 +226,16 @@
                         <div class="row col-12 text-center pr-1">
                             <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vm.pager.pages.length">
                                 <li class="page-item" ng-class="{disabled:vm.pager.currentPage == 1}">
-                                    <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage - 1)"><<</a>
+                                    <a class="page-link" ng-click="vm.filtrarRelatorio(vm.pager.currentPage - 1)"><<</a>
                                 </li>
                                 <li class="page-item" ng-repeat="page in vm.pager.pages" ng-class="{active:vm.pager.currentPage == page}">
-                                    <a class="page-link" ng-click="vm.filtrar(page)">{{page}}</a>
+                                    <a class="page-link" ng-click="vm.filtrarRelatorio(page)">{{page}}</a>
                                 </li>
                                 <li class="page-item" ng-class="{disabled:vm.pager.currentPage == vm.pager.totalPages}">
-                                    <a class="page-link" ng-click="vm.filtrar(vm.pager.currentPage + 1)">>></a>
+                                    <a class="page-link" ng-click="vm.filtrarRelatorio(vm.pager.currentPage + 1)">>></a>
                                 </li>
                                 <li class="page-item" style="padding-left: 15px;">
-                                    <select ng-model="vm.pageSize" class="page-link" ng-change="vm.filtrar(page)"
+                                    <select ng-model="vm.pageSize" class="page-link" ng-change="vm.filtrarRelatorio(page)"
                                             ng-options="size.qtd as size.desc for size in vm.listPageSize"></select>
                                 </li>
                             </ul>
@@ -321,19 +321,25 @@
         </fieldset>
     </footer>
 
-    <div class="form-group col-md-2 col-sm-12">
-        <button class="btn btn-info btn-sm btn-block" ng-click="vm.imprimir()"><em class="fas fa-print"></em>Imprimir</button>
+
+    <div class="row">
+
+        <div class="form-group col-md-2 col-sm-12">
+            <button class="btn btn-info btn-sm btn-block" ng-click="vm.imprimir()"><em class="fas fa-print"></em>Imprimir</button>
+        </div>
+
+
+        <div class="form-group col-md-2 col-sm-12">
+            <button class="btn btn-info btn-sm btn-block" ng-click="vm.consultarEExportarExcel()"><em class="fa fa-file-excel"></em>Gerar Planilha</button>
+        </div>
+
     </div>
 
-    <div class="form-group col-md-2 col-sm-12">
-        <button class="btn btn-info btn-sm btn-block" ng-click="vm.consultarEExportarExcel()"><em class="fas fa-print"></em>Gerar Planilha</button>
+        <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+
+        <!--MODAL-->
+        <ng-include src="'/js/eventos/modal/evento-modal-curso.html'"></ng-include>
+        <ng-include src="'/js/eventos/modal/evento-modal-entidade.html'"></ng-include>
+        <ng-include src="'/js/eventos/modal/evento-modal-docente.html'"></ng-include>
+        <ng-include src="'/js/eventos/modal/evento-modal-cursista.html'"></ng-include>
     </div>
-
-    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
-
-    <!--MODAL-->
-    <ng-include src="'/js/eventos/modal/evento-modal-curso.html'"></ng-include>
-    <ng-include src="'/js/eventos/modal/evento-modal-entidade.html'"></ng-include>
-    <ng-include src="'/js/eventos/modal/evento-modal-docente.html'"></ng-include>
-    <ng-include src="'/js/eventos/modal/evento-modal-cursista.html'"></ng-include>
-</div>

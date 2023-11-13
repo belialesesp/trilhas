@@ -5,21 +5,21 @@ using System.Linq;
 using Trilhas.Data.Enums;
 using Trilhas.Data.Model.Eventos;
 using Trilhas.Extensions;
+using Trilhas.Helper;
 using Trilhas.Helper.Contract;
 
-namespace Trilhas.Helper
+namespace Trilhas.Services
 {
-    public class ExcelRelatorioHelper
+    public class RelatorioService
     {
         private readonly FileHelper _fileHelper;
-        
-        public ExcelRelatorioHelper(FileHelper fileHelper)
-        {
-                _fileHelper = fileHelper;   
+
+        public RelatorioService(FileHelper fileHelper) {
+
+            _fileHelper = fileHelper;
         }
 
-
-        public DownloadFileContract GerarPlanilhaRelatorio(List<Evento> eventos)
+        public DownloadFileContract GerarPlanilhaRelatorioCapacitadosPorPeriodo(List<Evento> eventos)
         {
             string filePathName = _fileHelper.GetAppDataPath() + "RelCapacitadosPorPerido.xlsx";
 
@@ -33,6 +33,11 @@ namespace Trilhas.Helper
                 int line = 1;
                 GenerateHeader(planilha);
                 line++;
+                var ch = 0;
+                var qtdInscritos = 0;
+                var qtdAprovados = 0;
+                var qtdDeclarados = 0;
+                var qtdDesistentes = 0;
 
                 foreach (var evento in eventos)
                 {
@@ -45,15 +50,32 @@ namespace Trilhas.Helper
                     planilha.Cell("D" + line).Value = evento.Curso.CargaHorariaTotal().ToString();
                     planilha.Cell("E" + line).Value = evento.Agendas.LastOrDefault()?.DataHoraInicio.ToString("dd/MM/yyyy")  +  " - " + evento.Agendas.LastOrDefault()?.DataHoraFim.ToString("dd/MM/yyyy");
                     planilha.Cell("F" + line).Value = evento.Curso.Modalidade == EnumModalidade.EAD ? "EAD" : evento.Local.Municipio.NomeMunicipio + "-" + evento.Local.Municipio.Uf;
-                    planilha.Cell("G" + line).Value =evento.Curso.Modalidade.GetDescription();
+                    planilha.Cell("G" + line).Value = evento.Curso.Modalidade.GetDescription();
                     planilha.Cell("H" + line).Value = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue).Count() : 0;
                     planilha.Cell("I" + line).Value = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && x.Situacao == EnumSituacaoCursista.CERTIFICADO).Count() : 0;
                     planilha.Cell("J" + line).Value = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && x.Situacao == EnumSituacaoCursista.DECLARADO).Count() : 0;
                     planilha.Cell("K" + line).Value = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && x.Situacao == EnumSituacaoCursista.DESISTENTE).Count() : 0;
                     planilha.Cell("L" + line).Value = situacaoDisplay;
 
+                    qtdInscritos = qtdInscritos + (evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue).Count() : 0);
+                    qtdAprovados = qtdAprovados + (evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && x.Situacao == EnumSituacaoCursista.CERTIFICADO).Count() : 0);
+                    qtdDeclarados = qtdDeclarados  + (evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && x.Situacao == EnumSituacaoCursista.DECLARADO).Count() : 0);
+                    qtdDesistentes = qtdDesistentes + (evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && x.Situacao == EnumSituacaoCursista.DESISTENTE).Count() : 0);
+
                     line++;
+
+                    ch += evento.Curso.CargaHorariaTotal();
                 }
+
+                line++;
+
+                planilha.Cell("A" + line).Value = "TOTAIS";
+                planilha.Cell("H" + line).Value = qtdInscritos;
+                planilha.Cell("I" + line).Value = qtdAprovados;
+                planilha.Cell("J" + line).Value = qtdDeclarados;
+                planilha.Cell("K" + line).Value = qtdDesistentes;
+                planilha.Cell("D" + line).Value = ch;
+
                 workbook.SaveAs(filePathName);
 
                 return _fileHelper.ObterBytesDoArquivoParaDownload(filePathName);
@@ -77,6 +99,7 @@ namespace Trilhas.Helper
 
 
         }
+
 
     }
 }

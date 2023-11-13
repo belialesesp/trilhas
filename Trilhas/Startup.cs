@@ -70,7 +70,7 @@ namespace Trilhas
 			// SERVICES 
 			services.AddSingleton<MinioService>();
 			services.AddSingleton<FileHelper>();
-			services.AddSingleton<ExcelRelatorioHelper>();
+			services.AddScoped<RelatorioService>();
 			services.AddScoped<TrilhasService>();
 			services.AddScoped<CadastroService>();
 			services.AddScoped<EixoService>();

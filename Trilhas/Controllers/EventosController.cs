@@ -33,7 +33,7 @@ namespace Trilhas.Controllers
         private readonly IConfiguration _configuration;
         private readonly EventoMapper _mapper;
         private readonly CertificadoService _certificadoService;
-        private readonly ExcelRelatorioHelper _excelRelatorioHelper;
+        private readonly RelatorioService _relatorioService;
 
         public EventosController(UserManager<IdentityUser> userManager,
             EventoService eventoService,
@@ -45,7 +45,7 @@ namespace Trilhas.Controllers
             DocenteService docenteService,
             IConfiguration configuration,
             CertificadoService certificadoService,
-            ExcelRelatorioHelper excelRelatorioHelper
+            RelatorioService relatorioService
             ) : base(userManager)
         {
             _eventoService = eventoService;
@@ -57,7 +57,7 @@ namespace Trilhas.Controllers
             _docenteService = docenteService;
             _certificadoService = certificadoService;
             _configuration = configuration;
-            _excelRelatorioHelper = excelRelatorioHelper;
+            _relatorioService = relatorioService;
             _mapper = new EventoMapper();
         }
 
@@ -144,14 +144,12 @@ namespace Trilhas.Controllers
                 dataFim = DateTime.MaxValue;
             }
 
-            List<Evento> eventos = _eventoService.PesquisarEventos(cursoId, curso, modalidade, entidadeDemandanteId, entidadeDemandante, municipioId, docenteId, docente, cursistaId, dataInicio, dataFim, naoIniciados, andamentos, concluidos, cancelados, inscricao, finalizados, start, count);
+            List<Evento> eventos = _eventoService.PesquisarEventos(cursoId, curso, modalidade, entidadeDemandanteId, entidadeDemandante, municipioId, docenteId, docente, cursistaId, dataInicio, dataFim, naoIniciados, andamentos, concluidos, cancelados, inscricao, finalizados, -1, -1);
 
-            var relatorio =  _excelRelatorioHelper.GerarPlanilhaRelatorio(eventos);
-
-            //return File(relatorio.FileByte, "application/vnd.ms-excel", relatorio.FileName);
+            var relatorio = _relatorioService.GerarPlanilhaRelatorioCapacitadosPorPeriodo(eventos);
+                        
             return new ObjectResult(relatorio);
         }
-
 
         [HttpGet]
         [Authorize(Roles = "Administrador,Secretaria,Gestor")]
