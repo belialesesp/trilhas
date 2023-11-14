@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Trilhas.Services
 
         public DownloadFileContract GerarPlanilhaRelatorioCapacitadosPorPeriodo(List<Evento> eventos)
         {
-            string filePathName = _fileHelper.GetAppDataPath() + "RelCapacitadosPorPerido.xlsx";
+            string filePathName = _fileHelper.GetAppDataPath() + "RelCapacitadosPorPerido" + DateTime.Now.ToString("yyyyMMddHHmmss")  + ".xlsx";
 
             if (File.Exists(filePathName))
                 File.Delete(filePathName);

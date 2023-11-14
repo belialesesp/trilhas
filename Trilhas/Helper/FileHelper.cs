@@ -31,7 +31,7 @@ namespace Trilhas.Helper
 
                 downloadFile.FileByte = File.ReadAllBytes(filePathTemp);
                 downloadFile.FileString =  Convert.ToBase64String(downloadFile.FileByte);
-                downloadFile.FileName = "RelatorioCapacitadosPorPerido" + DateTime.Now.ToString("ddmmyyyyhhmmss") + ".xlsx";
+                downloadFile.FileName = "RelatorioCapacitadosPorPerido.xlsx";
                 downloadFile.FilePathTemp = filePathTemp;
                 
                 ExcluirArquivo(filePathTemp);
