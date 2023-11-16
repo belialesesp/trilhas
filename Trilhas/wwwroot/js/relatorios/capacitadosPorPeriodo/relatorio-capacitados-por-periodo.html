@@ -322,24 +322,21 @@
     </footer>
 
 
-    <div class="row">
-
-        <div class="form-group col-md-2 col-sm-12">
+    <div class="row rodape-button"> 
+        <div class="form-group col-md-2 col-4 ">
             <button class="btn btn-info btn-sm btn-block" ng-click="vm.imprimir()"><em class="fas fa-print"></em>Imprimir</button>
         </div>
 
-
-        <div class="form-group col-md-2 col-sm-12">
+        <div class="form-group col-md-2 col-4">
             <button class="btn btn-info btn-sm btn-block" ng-click="vm.consultarEExportarExcel()"><em class="fa fa-file-excel"></em>Gerar Planilha</button>
         </div>
-
     </div>
 
-        <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
 
-        <!--MODAL-->
-        <ng-include src="'/js/eventos/modal/evento-modal-curso.html'"></ng-include>
-        <ng-include src="'/js/eventos/modal/evento-modal-entidade.html'"></ng-include>
-        <ng-include src="'/js/eventos/modal/evento-modal-docente.html'"></ng-include>
-        <ng-include src="'/js/eventos/modal/evento-modal-cursista.html'"></ng-include>
-    </div>
+    <!--MODAL-->
+    <ng-include src="'/js/eventos/modal/evento-modal-curso.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-entidade.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-docente.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-cursista.html'"></ng-include>
+</div>

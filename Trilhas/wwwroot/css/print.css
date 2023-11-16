@@ -110,6 +110,11 @@
         display: none;
     }
 
+    .rodape-button {
+        display: none;
+    }
+
+
     #btn-form {
         display: none;
     }

@@ -277,9 +277,10 @@
                         <td class="table-actions">
                             <span ng-if="evento.situacao != 'CANCELADO'">
                                 <!--<a ng-href="/eventos/downloadListaInscritosEvento?id={{evento.id}}" target="_blank"
-            tooltip
-            data-placement="top"
-            title="Download Lista de Inscrição"><span class="fa fa-file-csv"></span></a>-->
+
+                                    tooltip
+                                    data-placement="top"
+                                    title="Download Lista de Inscrição"><span class="fa fa-file-csv"></span></a>-->
 
                                 <a ui-sref="eventos-encerramento({'id': {{evento.id}} })" ng-if="evento.situacao == 'FINALIZADO'"
                                    tooltip
