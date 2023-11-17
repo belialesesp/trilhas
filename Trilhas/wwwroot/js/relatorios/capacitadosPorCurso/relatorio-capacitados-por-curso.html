@@ -1,0 +1,342 @@
+﻿<div ng-app="trilhasapp" ng-controller="EventosController as vm">
+
+    <div id="tb-relatorio">
+        <table>
+            <tr id="l_1">
+                <td id="c1_1" rowspan="2"><img id="LogoES" src="/images/logoES.png" alt="Brasão do Espírito Santo"></td>
+                <td><strong>GOVERNO DO ESTADO DO ESPÍRITO SANTO </strong></td>
+                <td id="c1_3" rowspan="2"><strong>Emissão: {{vm.dataAtual | date: 'dd/MM/yyyy HH:mm'}}</strong><br />
+            </tr>
+            <tr id="l_2">
+                <td><strong>ESCOLA DE SERVIÇO PÚBLICO DO ESPÍRITO SANTO </strong></td>
+            </tr>
+            <tr id="l_3">
+                <td colspan="3">Relatório Capacitados por Curso</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="content-header">
+        <h5>Relatório Capacitados por Curso</h5>
+        <div class="line"></div>
+    </div>
+
+    <!--<a ui-sref="eventos-agendamento" id="btn-form" class="btn btn-primary"><em class="fas fa-plus-circle"></em> Adicionar</a>-->
+
+    <form name="form">
+        <fieldset class="query-form">
+            <div class="row">
+                <!--CURSO-->
+                <div class="form-group col-md-9 col-sm-12">
+                    <div class="input-group">
+                        <input type="text" id="evento" name="evento" class="form-control" autocomplete="off" readonly placeholder="Curso"
+                               value="{{vm.eventoTitulo}}" />
+                        <div class="input-group-append">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#modalBuscarSolucao">
+                                <em class="fa fa-search"></em>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-primary" title="Limpar Filtro"
+                                    ng-click="vm.eventoTitulo = ''; vm.query.cursoId = null">
+                                <em class="fa fa-eraser"></em>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--TIPO CURSO-->
+                <!--<div class="form-group col-md-3 col-sm-12">
+                    <select id="tipoCurso" name="tipoCurso" class="form-control w-100" ng-model="vm.query.tipoCurso"
+                            ng-options="tipo.id as tipo.descricao for tipo in vm.tiposCurso">
+                        <option value="">-- Tipo Curso --</option>
+                    </select>
+                </div>-->
+                <!--MODALIDADE-->
+                <div class="form-group col-md-3">
+                    <select id="modalidade"
+                            name="modalidade"
+                            class="form-control"
+                            ng-model="vm.query.modalidade"
+                            ng-options="modalidade.codigo as modalidade.nome for modalidade in vm.modalidades">
+                        <option value=""> -- Modalidade -- </option>
+                    </select>
+                </div>
+
+                <!--ENTIDADE-->
+                <div class="form-group col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input type="text" id="entidade" name="entidade" class="form-control" autocomplete="off" readonly placeholder="Entidade Demandante"
+                               value="{{vm.entidadeNome}}" />
+                        <div class="input-group-append">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#modalBuscarEntidade">
+                                <em class="fa fa-search"></em>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-primary" title="Limpar Filtro"
+                                    ng-click="vm.entidadeNome = ''; vm.query.entidadeDemandanteId = null">
+                                <em class="fa fa-eraser"></em>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--DOCENTE-->
+                <div class="form-group col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input type="text" id="docente" name="docente" class="form-control" autocomplete="off" readonly placeholder="Docente"
+                               value="{{vm.docenteNome}}" />
+                        <div class="input-group-append">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#modalBuscarDocente">
+                                <em class="fa fa-search"></em>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-primary" title="Limpar Filtro"
+                                    ng-click="vm.docenteNome = ''; vm.query.docenteId = null">
+                                <em class="fa fa-eraser"></em>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--CURSISTA-->
+                <div class="form-group col-12">
+                    <div class="input-group">
+                        <input type="text" id="cursista" name="cursista" class="form-control" autocomplete="off" readonly placeholder="Cursista"
+                               value="{{vm.cursistaNome}}" />
+                        <div class="input-group-append">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#modalBuscarCursista">
+                                <em class="fa fa-search"></em>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-primary" title="Limpar Filtro"
+                                    ng-click="vm.cursistaNome = ''; vm.query.cursistaId = null">
+                                <em class="fa fa-eraser"></em>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--UF-->
+                <div class="form-group col-md-2">
+                    <div class="input-group">
+                        <select id="uf"
+                                name="uf"
+                                class="form-control"
+                                ng-options="uf for uf in vm.ufs"
+                                ng-change="vm.carregarMunicipios()"
+                                ng-model="vm.query.uf">
+                            <option value=""> -- UF -- </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!--MUNICIPIO-->
+                <div class="form-group col-md-4">
+                    <div class="input-group">
+                        <select id="cidade"
+                                name="cidade"
+                                class="form-control text-center"
+                                ng-options="municipio.id as municipio.nomeMunicipio for municipio in vm.municipios"
+                                ng-model="vm.query.municipioId"
+                                ng-disabled="!vm.query.uf">
+                            <option value=""> -- Selecione uma Cidade -- </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!--DATA INICIO-->
+                <div class="form-group col-md-3">
+                    <input type="date" id="dataInicio" name="dataInicio" class="form-control formatarPlaceholderData" required autocomplete="off"
+                           placeholder="Data Início do Evento"
+                           ng-model="vm.query.dataInicio" max="9999-12-31" />
+                </div>
+
+                <!--DATA FIM-->
+                <div class="form-group col-md-3">
+                    <input type="date" id="dataFim" name="dataFim" class="form-control formatarPlaceholderData" required autocomplete="off"
+                           placeholder="Data Fim do Evento"
+                           ng-model="vm.query.dataFim" max="9999-12-31" />
+                </div>
+
+                <!--SITUAÇÃO-->
+                <div class="col-md-10">
+                    <label class="col-form-label mr-3" for="situacao">Situação:</label>
+                    <div class="form-check form-check-inline">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="naoIniciados" ng-model="vm.query.naoIniciados" checked />
+                            <label class="custom-control-label" for="naoIniciados">Agendado</label>
+                        </div>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="inscricao" ng-model="vm.query.inscricao" checked />
+                            <label class="custom-control-label" for="inscricao">Inscrição</label>
+                        </div>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="andamentos" ng-model="vm.query.andamentos" checked />
+                            <label class="custom-control-label" for="andamentos">Em Andamento</label>
+                        </div>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="concluidos" ng-model="vm.query.concluidos" checked />
+                            <label class="custom-control-label" for="concluidos">Encerrados</label>
+                        </div>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="finalizados" ng-model="vm.query.finalizados" checked />
+                            <label class="custom-control-label" for="finalizados">Finalizados</label>
+                        </div>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="cancelados" ng-model="vm.query.cancelados" />
+                            <label class="custom-control-label" for="cancelados">Cancelados</label>
+                        </div>
+                    </div>
+                </div>
+                <!--FILTRO-->
+                <div class="form-group col-md-2 col-sm-12">
+                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrarRelatorio()"><em class="fas fa-filter"></em> Filtrar</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <div class="row" ng-if="vm.eventos">
+        <div class="col-md-12">
+            <table class="table table-striped-custom table-hover">
+                <caption ng-if="vm.pager.totalItems > 0">
+                    <nav aria-label="Page navigation">
+                        <div class="row col-12 text-center pr-1">
+                            <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vm.pager.pages.length">
+                                <li class="page-item" ng-class="{disabled:vm.pager.currentPage == 1}">
+                                    <a class="page-link" ng-click="vm.filtrarRelatorio(vm.pager.currentPage - 1)"><<</a>
+                                </li>
+                                <li class="page-item" ng-repeat="page in vm.pager.pages" ng-class="{active:vm.pager.currentPage == page}">
+                                    <a class="page-link" ng-click="vm.filtrarRelatorio(page)">{{page}}</a>
+                                </li>
+                                <li class="page-item" ng-class="{disabled:vm.pager.currentPage == vm.pager.totalPages}">
+                                    <a class="page-link" ng-click="vm.filtrarRelatorio(vm.pager.currentPage + 1)">>></a>
+                                </li>
+                                <li class="page-item" style="padding-left: 15px;">
+                                    <select ng-model="vm.pageSize" class="page-link" ng-change="vm.filtrarRelatorio(page)"
+                                            ng-options="size.qtd as size.desc for size in vm.listPageSize"></select>
+                                </li>
+                            </ul>
+                            <div class="offset-2 col-3 text-right pr-0">Exibindo: <strong>{{vm.pager.startIndex + 1}} - {{vm.pager.endIndex + 1}}</strong> de <strong>{{vm.pager.totalItems}}</strong> registro(s)</div>
+                        </div>
+                    </nav>
+                </caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width:5%">ID</th>
+                        <th>Curso</th>
+                        <th style="width: 7%" class="d-none d-md-table-cell">Entidade</th>
+                        <th style="width: 5%" class="text-right d-none d-md-table-cell">C/H</th>
+                        <th style="width: 15%">Período</th>
+                        <th style="width: 12%" class="d-none d-md-table-cell">Município</th>
+                        <th style="width: 12%" class="d-none d-md-table-cell">Modalidade</th>
+                        <th style="width: 3%" class="text-right">Ins</th>
+                        <th style="width: 3%" class="text-right">Apr</th>
+                        <th style="width: 3%" class="text-right">Dec</th>
+                        <th style="width: 3%" class="text-right">Des</th>
+                        <th style="width: 8%">Situação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="evento in vm.eventos.listaEventos">
+                        <td ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.id}}</td>
+                        <td ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.evento}}</td>
+                        <td class="d-none d-md-table-cell" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.entidade}}</td>
+                        <td class="text-right d-none d-md-table-cell" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.cargaHoraria}}</td>
+                        <td class="" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.dataInicio | date : 'dd/MM/yyyy'}} - {{evento.dataFim | date : 'dd/MM/yyyy'}}</td>
+                        <td class="d-none d-md-table-cell" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.municipio ? evento.municipio : 'EAD'}}</td>
+                        <td class="d-none d-md-table-cell" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.modalidade}}</td>
+                        <td class="text-right" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.inscritos}}</td>
+                        <td class="text-right" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.aprovados}}</td>
+                        <td class="text-right" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.declarados}}</td>
+                        <td class="text-right" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.desistentes}}</td>
+                        <td ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.situacao}}</td>
+
+                    </tr>
+                    <tr ng-if="vm.eventos.length == 0">
+                        <td colspan="12">Nenhum registro encontrado.</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="font-weight-bold no-print">
+                        <td colspan="3">TOTAIS</td>
+                        <td class="text-right">{{vm.eventos.totalCargaHoraria}}</td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{vm.eventos.totalInscritos}}</td>
+                        <td class="text-right">{{vm.eventos.totalAprovados}}</td>
+                        <td class="text-right">{{vm.eventos.totalDeclarados}}</td>
+                        <td class="text-right">{{vm.eventos.totalDesistentes}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="12">
+                            <small>INS = Inscritos, APR = Aprovados, DEC = Declarados, DES = Desistentes</small>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <fieldset class="print">
+            <table style="width:100%">
+                <tr>
+                    <td>
+                        <strong>TOTAL DE SERVIDORES INSCRITOS: </strong>{{vm.eventos.totalInscritos}}
+                        <br />
+                        <strong>TOTAL DE SERVIDORES APROVADOS: </strong>{{vm.eventos.totalAprovados}}
+                    </td>
+                    <td class="text-right">
+                        <strong>TOTAL DE SERVIDORES DECLARADOS: </strong>{{vm.eventos.totalDeclarados}}
+                        <br />
+                        <strong>TOTAL DE SERVIDORES DESISTENTES: </strong>{{vm.eventos.totalDesistentes}}
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </footer>
+
+
+    <div class="row rodape-button">
+        <div class="form-group col-md-2 col-4 ">
+            <button class="btn btn-info btn-sm btn-block" ng-click="vm.imprimir()"><em class="fas fa-print"></em>Imprimir</button>
+        </div>
+
+        <div class="form-group col-md-2 col-4">
+            <button class="btn btn-info btn-sm btn-block" ng-click="vm.consultarEExportarExcel()"><em class="fa fa-file-excel"></em>Gerar Planilha</button>
+        </div>
+    </div>
+
+    <confirm-component confirmation-callback="vm.excluir"></confirm-component>
+
+    <!--MODAL-->
+    <ng-include src="'/js/eventos/modal/evento-modal-curso.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-entidade.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-docente.html'"></ng-include>
+    <ng-include src="'/js/eventos/modal/evento-modal-cursista.html'"></ng-include>
+</div>
