@@ -76,6 +76,20 @@ function PessoaFormularioController($state, $stateParams, $q, $http, $scope, Ser
         });
     };
 
+    vm.atualizarPessoa = async function (cpf) {
+        try
+        {
+            const response = await $http.get(`/pessoas/atualizar/${cpf}`);
+            
+            if (vm.pessoa.storageError) {
+                toastr["warning"](`${vm.pessoa.storageError}<br/><a href="/admin/storagestatus" target="_blank">Mais detalhes...</a>`);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar pessoa:', error);
+        }
+    };
+
+
     vm.salvarVoltar = function () {
         vm.inseriroNovoAposSalvar = false;
     };
@@ -274,20 +288,6 @@ function PessoaFormularioController($state, $stateParams, $q, $http, $scope, Ser
         vm.pessoa.imagem = undefined;
     };
 
-    //vm.filtrarEntidade = function () {
-    //    var success = function (response) {
-    //        vm.entidades = response.data;
-    //    };
-
-    //    var error = function (response) {
-    //        toastr["error"]("Ocorreu um erro ao consultar os registros.");
-    //        console.log(response.data);
-    //    };
-
-    //    return $http.get("/entidades/buscar", { params: vm.queryEntidade })
-    //        .then(success, error);
-    //};
-
     vm.validarDataNascimento = function (form) {
         if (vm.pessoa.dataNascimento >= new Date()) {
             form.dataNascimento.$setValidity('invalid', false);
@@ -295,13 +295,6 @@ function PessoaFormularioController($state, $stateParams, $q, $http, $scope, Ser
             form.dataNascimento.$setValidity('invalid', true);
         }
     };
-
-    //vm.queryEntidade = {
-    //    'nome': $stateParams.nome,
-    //    'tipoEntidadeId': $stateParams.tipoEntidadeId,
-    //    'uf': $stateParams.uf,
-    //    'municipioId': $stateParams.municipio,
-    //};
 
     $scope.selecionarEntidade = function (entidade) {
         if (entidade) {
