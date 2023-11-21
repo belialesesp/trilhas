@@ -25,6 +25,7 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
 
     $scope.ufs = [];
     $scope.municipios = [];
+    $scope.entidades = [];
 
     vm.query = {
         'cursoId': null,
@@ -47,7 +48,8 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
     vm.init = function () {
         var promises = [
             vm.carregarUfs(),
-            vm.carregarModalidades()
+            vm.carregarModalidades(),
+            vm.carregarEntidades()
         ];
 
         if ($stateParams.cursoId
@@ -167,6 +169,49 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
         }
 
         $state.go('eventosRelatoriocapacitadosPorPeriodo',
+            {
+                'cursoId': vm.query.cursoId,
+                'modalidade': vm.query.modalidade,
+                'entidadeDemandanteId': vm.query.entidadeDemandanteId,
+                'uf': vm.query.uf,
+                'municipioId': vm.query.municipioId,
+                'docenteId': vm.query.docenteId,
+                'cursistaId': vm.query.cursistaId,
+                'dataInicio': vm.query.dataInicio,
+                'dataFim': vm.query.dataFim,
+                'cancelados': vm.query.cancelados,
+                'naoIniciados': vm.query.naoIniciados,
+                'andamentos': vm.query.andamentos,
+                'concluidos': vm.query.concluidos,
+                'page': page,
+                'pageSize': vm.pageSize,
+                'inscricao': vm.query.inscricao,
+                'finalizados': vm.query.finalizados
+            },
+            { reload: true });
+    };
+
+    vm.filtrarRelatorioCapacitadosPorCurso = function (page) {
+        debugger;
+        if (vm.query.dataInicio > vm.query.dataFim) {
+
+            toastr["warning"]("Data Início não pode ser maior que Data Fim.");
+
+            return false;
+        }
+
+        if (!page && vm.pager.currentPage) {
+            page = vm.pager.currentPage;
+        }
+        if (page < 1 || (page > vm.pager.totalPages && vm.pager.totalPages > 0)) {
+            page = 1;
+        }
+        vm.query.naoIniciados = false;
+        vm.query.andamentos = false;
+        vm.query.concluidos = false;
+        vm.query.inscricao = false;
+
+        $state.go('eventosRelatoriocapacitadosPorCurso',
             {
                 'cursoId': vm.query.cursoId,
                 'modalidade': vm.query.modalidade,
@@ -360,6 +405,8 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
         });
     };
 
+  
+
     //ENTIDADE
     $scope.selecionarEntidade = function (entidade) {
         if (entidade) {
@@ -373,6 +420,14 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
     var carregarEntidade = function () {
         return $http.get('/entidades/RecuperarBasico/' + vm.query.entidadeDemandanteId).then(function (response) {
             vm.entidadeNome = response.data.sigla + ' - ' + response.data.nome;
+        });
+    };
+
+    vm.carregarEntidades = function () {
+        return $http.get('/entidades/buscar').then(function (response) {
+            debugger;
+
+            vm.entidades = response.data;
         });
     };
 

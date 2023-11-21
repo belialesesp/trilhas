@@ -137,10 +137,17 @@ angular.module('trilhasapp')
         url: '/eventos?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
 		templateUrl: '/js/eventos/eventos.html'
 	})
+
    .state('eventosRelatoriocapacitadosPorPeriodo', {
         url: '/eventos-relatorio-capacitados-por-periodo?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
         templateUrl: '/js/relatorios/capacitadosPorPeriodo/relatorio-capacitados-por-periodo.html'
     })
+
+    .state('eventosRelatoriocapacitadosPorCurso', {
+        url: '/eventos-relatorio-capacitados-por-curso?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+        templateUrl: '/js/relatorios/capacitadosPorCurso/relatorio-capacitados-por-curso.html'
+    })
+
 	.state('eventos-agendamento', {
 		url: '/evento',
 		templateUrl: '/js/eventos/evento-formulario.html'
@@ -161,6 +168,11 @@ angular.module('trilhasapp')
 		url: '/evento/encerramento/:id',
 		templateUrl: '/js/eventos/finalizar/evento-finalizar.html'
 	})
+
+    .state('eventos-encerramento-rel-capacitados-por-curso', {
+        url: '/evento/encerramento/:id',
+        templateUrl: '/js/relatorios/capacitadosPorCurso/eventos-finalizar-print-capacitados-por-curso.html'
+    })
 
     .state('eventosListaPresenca', {
         url: '/eventosListaPresenca',

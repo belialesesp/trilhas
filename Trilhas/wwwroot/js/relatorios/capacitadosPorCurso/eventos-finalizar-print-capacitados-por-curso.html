@@ -1,0 +1,173 @@
+﻿<div ng-app="trilhasapp" ng-controller="EventoFinalizarController as vm">
+
+    <div id="tb-relatorio" class="print">
+        <table>
+            <tr id="l_1">
+                <td id="c1_1" rowspan="2"><img id="LogoES" src="/images/logoES.png" alt="Brasão do Espírito Santo"></td>
+                <td><strong>GOVERNO DO ESTADO DO ESPÍRITO SANTO </strong></td>
+                <td id="c1_3" rowspan="2"><strong>Emissão: {{vm.dataAtual | date: 'dd/MM/yyyy HH:mm'}}</strong><br />
+            </tr>
+            <tr id="l_2">
+                <td><strong>ESCOLA DE SERVIÇO PÚBLICO DO ESPÍRITO SANTO </strong></td>
+            </tr>
+            <tr id="l_3">
+                <td colspan="3"><strong>Relatório Capacitados por Curso </strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="tb-relatorio" class="print">
+        <table>
+            <tr>
+                <td class="padding-td"><strong>Curso: </strong>{{vm.evento.nome}}</td>
+            </tr>
+            <tr>
+                <td class="padding-td"><strong>Entidade Demandante: </strong>{{vm.evento.entidade}}</td>
+            </tr>
+            <tr>
+                <td class="padding-td">
+                    <strong>Período de inscrição: </strong>{{vm.evento.dataInicioInscricao | date : 'dd/MM/yyyy'}} - {{vm.evento.dataFimInscricao | date : 'dd/MM/yyyy'}}
+                    <strong style="padding-left:9%">Período de realização: </strong>{{vm.evento.dataInicio | date : 'dd/MM/yyyy'}} - {{vm.evento.dataFim | date : 'dd/MM/yyyy'}}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="content-header no-print">
+        <h5>Evento <em class="fa fa-angle-right"></em> Resultados</h5>
+        <div class="line"></div>
+    </div>
+
+    <div class="sumario row no-print">
+        <div class="col-12">
+            <strong>Curso: </strong>{{vm.evento.nome}}
+        </div>
+        <div class="col-12">
+            <strong>Entidade Demandante: </strong>{{vm.evento.entidade}}
+        </div>
+        <div class="col-12">
+            <strong>Período de inscrição: </strong>{{vm.evento.dataInicioInscricao | date : 'dd/MM/yyyy'}} - {{vm.evento.dataFimInscricao | date : 'dd/MM/yyyy'}}
+        </div>
+        <div class="col-12">
+            <strong>Período de realização: </strong>{{vm.evento.dataInicio | date : 'dd/MM/yyyy'}} - {{vm.evento.dataFim | date : 'dd/MM/yyyy'}}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped-custom table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width:12%">Nr. Funcional</th>
+                        <th style="width:12%">CPF</th>
+                        <th>Docente</th>
+                        <th style="width:13%" class="table-actions"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="docente in vm.evento.docentes">
+                        <td>{{docente.numeroFuncional}}</td>
+                        <td>{{docente.cpf}}</td>
+                        <td>{{docente.nome}}</td>
+
+                        <td class="text-center">
+                            <a href="/certificados/index?docenteId={{docente.id}}&eventoId={{vm.evento.id}}"
+                               ng-if="vm.evento.possuiCertificado"
+                               title="Gerar Declaração"
+                               target="_blank"><em class="fas fa-user-graduate"></em>Declaração</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped-custom table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width:10%">Nr. Funcional</th>
+                        <th style="width:10%">CPF</th>
+                        <th style="width:35%">Cursista</th>
+                        <th style="width:10%">Situação</th>
+                        <th style="width:10%">Frequência</th>
+                        <th style="width:10%" class="table-actions"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="inscrito in vm.evento.inscritos">
+                        <td>{{inscrito.cursista.numeroFuncional}}</td>
+                        <td>{{inscrito.cursista.cpf}}</td>
+                        <td>{{inscrito.cursista.nome}}</td>
+                        <td>{{inscrito.situacao}}</td>
+                        <td>{{inscrito.frequencia}}%</td>
+                        <td class="text-center">
+                            <a ui-sref=""
+                               ng-if="inscrito.penalidade && !inscrito.penalidade.cancelada"
+                               tooltip data-toggle="modal"
+                               data-placement="top"
+                               data-target="#modalCancelarPenalidade"
+                               title="Penalidade"
+                               ng-click="vm.visualizarPenalidade(inscrito.penalidade)"><em class="fas fa-exclamation-triangle"></em>Penalidade</a>
+                            <a href="/certificados/index?inscricaoId={{inscrito.id}}"
+                               ng-if="(!inscrito.penalidade || inscrito.penalidade.cancelada) && vm.evento.possuiCertificado && inscrito.situacao == 'CERTIFICADO'"
+                               title="Gerar Certificado"
+                               target="_blank"><em class="fas fa-user-graduate"></em>Certificado</a>
+                            <a href="/certificados/index?inscricaoId={{inscrito.id}}"
+                               ng-if="(!inscrito.penalidade ||inscrito.penalidade.cancelada) && ((!vm.evento.possuiCertificado && inscrito.situacao != 'DESISTENTE') || inscrito.situacao == 'DECLARADO')"
+                               title="Gerar Declaração"
+                               target="_blank"><em class="fas fa-user-graduate"></em>Declaração</a>
+                        </td>
+                    </tr>
+                    <tr ng-if="vm.evento.inscritos.length == 0">
+                        <td colspan="7">Nenhum Cursista Inscrito no evento.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <fieldset class="actions-form no-print">
+        <div class="row">
+            <div class="left-buttons col-md-6 col-sm-12">
+                <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+            </div>
+        </div>
+
+
+
+    </fieldset>
+
+    <br>
+
+    <div class="row no-print">
+        <div class="form-group col-md-2 col-4 ">
+            <button class="btn btn-info btn-sm btn-block" ng-click="vm.imprimir()"><em class="fas fa-print"></em>Imprimir</button>
+        </div>
+
+        <div class="form-group col-md-2 col-4">
+            <button class="btn btn-info btn-sm btn-block" ng-click="vm.consultarEExportarExcel()"><em class="fa fa-file-excel"></em>Gerar Planilha</button>
+        </div>
+    </div>
+
+
+    <footer>
+        <fieldset class="print">
+            <table style="width:100%">
+                <tr>
+                    <td><strong>TOTAL DE SERVIDORES INSCRITOS: </strong>{{vm.evento.totalInscritos}}</td>
+                    <td><strong>TOTAL DE SERVIDORES CERTIFICADOS: </strong>{{vm.evento.totalCertificados}}</td>
+                </tr>
+                <tr>
+                    <td><strong>TOTAL DE SERVIDORES DECLARADOS: </strong>{{vm.evento.totalDeclarados}}</td>
+                    <td><strong>TOTAL DE SERVIDORES REPROVADOS: </strong>{{vm.evento.totalReprovados}}</td>
+                </tr>
+            </table>
+        </fieldset>
+    </footer>
+
+
+
+    <ng-include src="'/js/eventos/finalizar/modal/cancelarPenalidade-modal.html'"></ng-include>
+</div>

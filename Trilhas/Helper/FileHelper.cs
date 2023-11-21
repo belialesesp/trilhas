@@ -23,7 +23,7 @@ namespace Trilhas.Helper
             return path;
         }
 
-        public DownloadFileContract ObterBytesDoArquivoParaDownload(string filePathTemp)
+        public DownloadFileContract ObterBytesDoArquivoParaDownload(string filePathTemp, string _nomeRelatorio)
         {
             var downloadFile = new DownloadFileContract();
             try
@@ -31,7 +31,7 @@ namespace Trilhas.Helper
 
                 downloadFile.FileByte = File.ReadAllBytes(filePathTemp);
                 downloadFile.FileString =  Convert.ToBase64String(downloadFile.FileByte);
-                downloadFile.FileName = "RelatorioCapacitadosPorPerido.xlsx";
+                downloadFile.FileName = _nomeRelatorio; 
                 downloadFile.FilePathTemp = filePathTemp;
                 
                 ExcluirArquivo(filePathTemp);

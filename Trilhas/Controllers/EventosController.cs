@@ -151,6 +151,22 @@ namespace Trilhas.Controllers
             return new ObjectResult(relatorio);
         }
 
+
+
+        [HttpGet]
+        public IActionResult ExportarRelatorioCapacitadosPorCursoExcel(long id)
+        {
+            Evento evento = _eventoService.RecuperarEventoCompleto(id);
+
+
+            var vm = _mapper.MapearEventoFinalizadoViewModel(evento);
+
+
+            var relatorio = _relatorioService.GerarPlanilhaRelatorioCapacitadosPorCurso(vm);
+
+            return new ObjectResult(relatorio);
+        }
+
         [HttpGet]
         [Authorize(Roles = "Administrador,Secretaria,Gestor")]
         public IActionResult BuscarCursistas(long eventoId, string nome, long entidadeId, string cpf, int start = -1, int count = -1)

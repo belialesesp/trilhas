@@ -49,11 +49,11 @@
 
                 <!--TIPO CURSO-->
                 <!--<div class="form-group col-md-3 col-sm-12">
-                    <select id="tipoCurso" name="tipoCurso" class="form-control w-100" ng-model="vm.query.tipoCurso"
-                            ng-options="tipo.id as tipo.descricao for tipo in vm.tiposCurso">
-                        <option value="">-- Tipo Curso --</option>
-                    </select>
-                </div>-->
+        <select id="tipoCurso" name="tipoCurso" class="form-control w-100" ng-model="vm.query.tipoCurso"
+                ng-options="tipo.id as tipo.descricao for tipo in vm.tiposCurso">
+            <option value="">-- Tipo Curso --</option>
+        </select>
+    </div>-->
                 <!--MODALIDADE-->
                 <div class="form-group col-md-3">
                     <select id="modalidade"
@@ -66,23 +66,15 @@
                 </div>
 
                 <!--ENTIDADE-->
-                <div class="form-group col-md-6 col-sm-12">
+                <div class="form-group col-md-6">
                     <div class="input-group">
-                        <input type="text" id="entidade" name="entidade" class="form-control" autocomplete="off" readonly placeholder="Entidade Demandante"
-                               value="{{vm.entidadeNome}}" />
-                        <div class="input-group-append">
-                            <button type="button"
-                                    class="btn btn-primary"
-                                    data-toggle="modal"
-                                    data-target="#modalBuscarEntidade">
-                                <em class="fa fa-search"></em>
-                            </button>
-                            <button type="button"
-                                    class="btn btn-outline-primary" title="Limpar Filtro"
-                                    ng-click="vm.entidadeNome = ''; vm.query.entidadeDemandanteId = null">
-                                <em class="fa fa-eraser"></em>
-                            </button>
-                        </div>
+                        <select id="entidade"
+                                name="entidade"
+                                class="form-control"
+                                ng-options="entidade.id as entidade.nome for entidade in vm.entidades"
+                                ng-model="vm.query.entidadeDemandanteId">
+                            <option value=""> -- Entidade -- </option>
+                        </select>
                     </div>
                 </div>
 
@@ -173,46 +165,18 @@
                 <!--SITUAÇÃO-->
                 <div class="col-md-10">
                     <label class="col-form-label mr-3" for="situacao">Situação:</label>
+            
                     <div class="form-check form-check-inline">
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="naoIniciados" ng-model="vm.query.naoIniciados" checked />
-                            <label class="custom-control-label" for="naoIniciados">Agendado</label>
-                        </div>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="inscricao" ng-model="vm.query.inscricao" checked />
-                            <label class="custom-control-label" for="inscricao">Inscrição</label>
-                        </div>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="andamentos" ng-model="vm.query.andamentos" checked />
-                            <label class="custom-control-label" for="andamentos">Em Andamento</label>
-                        </div>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="concluidos" ng-model="vm.query.concluidos" checked />
-                            <label class="custom-control-label" for="concluidos">Encerrados</label>
-                        </div>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="finalizados" ng-model="vm.query.finalizados" checked />
+                            <input type="checkbox" class="custom-control-input" ng-disabled="true" id="finalizados" ng-model="vm.query.finalizados" checked />
                             <label class="custom-control-label" for="finalizados">Finalizados</label>
                         </div>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="cancelados" ng-model="vm.query.cancelados" />
-                            <label class="custom-control-label" for="cancelados">Cancelados</label>
-                        </div>
-                    </div>
+
                 </div>
                 <!--FILTRO-->
                 <div class="form-group col-md-2 col-sm-12">
-                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrarRelatorio()"><em class="fas fa-filter"></em> Filtrar</button>
+                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrarRelatorioCapacitadosPorCurso()"><em class="fas fa-filter"></em> Filtrar</button>
                 </div>
             </div>
         </fieldset>
@@ -226,16 +190,16 @@
                         <div class="row col-12 text-center pr-1">
                             <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vm.pager.pages.length">
                                 <li class="page-item" ng-class="{disabled:vm.pager.currentPage == 1}">
-                                    <a class="page-link" ng-click="vm.filtrarRelatorio(vm.pager.currentPage - 1)"><<</a>
+                                    <a class="page-link" ng-click="vm.filtrarRelatorioCapacitadosPorCurso(vm.pager.currentPage - 1)"><<</a>
                                 </li>
                                 <li class="page-item" ng-repeat="page in vm.pager.pages" ng-class="{active:vm.pager.currentPage == page}">
-                                    <a class="page-link" ng-click="vm.filtrarRelatorio(page)">{{page}}</a>
+                                    <a class="page-link" ng-click="vm.filtrarRelatorioCapacitadosPorCurso(page)">{{page}}</a>
                                 </li>
                                 <li class="page-item" ng-class="{disabled:vm.pager.currentPage == vm.pager.totalPages}">
-                                    <a class="page-link" ng-click="vm.filtrarRelatorio(vm.pager.currentPage + 1)">>></a>
+                                    <a class="page-link" ng-click="vm.filtrarRelatorioCapacitadosPorCurso(vm.pager.currentPage + 1)">>></a>
                                 </li>
                                 <li class="page-item" style="padding-left: 15px;">
-                                    <select ng-model="vm.pageSize" class="page-link" ng-change="vm.filtrarRelatorio(page)"
+                                    <select ng-model="vm.pageSize" class="page-link" ng-change="vm.filtrarRelatorioCapacitadosPorCurso(page)"
                                             ng-options="size.qtd as size.desc for size in vm.listPageSize"></select>
                                 </li>
                             </ul>
@@ -257,6 +221,7 @@
                         <th style="width: 3%" class="text-right">Dec</th>
                         <th style="width: 3%" class="text-right">Des</th>
                         <th style="width: 8%">Situação</th>
+                        <th style="width: 9%" class="table-actions">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -274,6 +239,16 @@
                         <td class="text-right" ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.desistentes}}</td>
                         <td ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.situacao}}</td>
 
+                        <td class="table-actions">
+                            <span ng-if="evento.situacao != 'CANCELADO'">
+                                <a ui-sref="eventos-encerramento-rel-capacitados-por-curso({'id': {{evento.id}} })" ng-if="evento.situacao == 'FINALIZADO'"
+                                   tooltip
+                                   data-placement="top"
+                                   title="Resultados"><span class="fas fa-clipboard-check" aria-hidden="true"></span></a>
+                            </span>
+                        </td>
+                        
+
                     </tr>
                     <tr ng-if="vm.eventos.length == 0">
                         <td colspan="12">Nenhum registro encontrado.</td>
@@ -285,12 +260,14 @@
                         <td class="text-right">{{vm.eventos.totalCargaHoraria}}</td>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td class="text-right">{{vm.eventos.totalInscritos}}</td>
                         <td class="text-right">{{vm.eventos.totalAprovados}}</td>
                         <td class="text-right">{{vm.eventos.totalDeclarados}}</td>
                         <td class="text-right">{{vm.eventos.totalDesistentes}}</td>
                         <td></td>
-                        <td></td>
+                        
+
                     </tr>
                     <tr>
                         <td colspan="12">
@@ -322,15 +299,6 @@
     </footer>
 
 
-    <div class="row rodape-button">
-        <div class="form-group col-md-2 col-4 ">
-            <button class="btn btn-info btn-sm btn-block" ng-click="vm.imprimir()"><em class="fas fa-print"></em>Imprimir</button>
-        </div>
-
-        <div class="form-group col-md-2 col-4">
-            <button class="btn btn-info btn-sm btn-block" ng-click="vm.consultarEExportarExcel()"><em class="fa fa-file-excel"></em>Gerar Planilha</button>
-        </div>
-    </div>
 
     <confirm-component confirmation-callback="vm.excluir"></confirm-component>
 
