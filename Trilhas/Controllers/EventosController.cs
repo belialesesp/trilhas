@@ -282,6 +282,31 @@ namespace Trilhas.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
+        public IActionResult DesomologarEvento(long eventoId)
+        {
+            try
+            {
+                Evento evento = _eventoService.RecuperarEventoCompleto(eventoId);
+
+                if (evento != null)
+                {
+                    _eventoService.DesomologarEvento(RecuperarUsuarioId(), evento);
+                }
+
+                return JsonFormResponse(eventoId);
+            }
+            catch (TrilhasException tex)
+            {
+                return JsonErrorFormResponse(tex);
+            }
+            catch (Exception ex)
+            {
+                return JsonErrorFormResponse(ex, "Ocorreu um erro ao desomologar o Evento.");
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
         public IActionResult SalvarPenalidade([FromBody] PenalidadeViewModel penalidade)
         {
             try

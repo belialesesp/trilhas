@@ -87,6 +87,8 @@
                     <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
                 </div>
                 <div class="right-buttons col-md-6 col-sm-12">
+
+                    <button ng-if="vm.evento.situacao == 'Finalizado'" type="button" class="btn btn-danger" data-toggle="modal" ng-click="vm.desomologarEvento()"><em class="fas fa-ban"></em> Desomologar Evento</button>
                     <a ng-if="vm.evento.listaDeInscricaoId" ui-sref="eventos-lista-inscricao({'id': {{vm.evento.listaDeInscricaoId}} })" class="btn btn-success" tooltip data-placement="top" title="Lista de Inscrição"><span class="fa fa-address-card"></span>Lista de Inscrição</a>
                     <button ng-if="vm.podeCancelar()" type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalMotivoExclusao"><em class="fas fa-ban"></em> Cancelar Evento</button>
                     <button ng-if="vm.evento.situacao == 'Encerrado'" type="button" class="btn btn-primary" ng-click="vm.finalizarEvento()"><em class="fas fa-clipboard-check"></em> Homologar Evento</button>
