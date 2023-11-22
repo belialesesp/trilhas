@@ -70,12 +70,7 @@
                         <td>{{docente.cpf}}</td>
                         <td>{{docente.nome}}</td>
 
-                        <td class="text-center">
-                            <a href="/certificados/index?docenteId={{docente.id}}&eventoId={{vm.evento.id}}"
-                               ng-if="vm.evento.possuiCertificado"
-                               title="Gerar Declaração"
-                               target="_blank"><em class="fas fa-user-graduate"></em>Declaração</a>
-                        </td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -102,23 +97,7 @@
                         <td>{{inscrito.cursista.nome}}</td>
                         <td>{{inscrito.situacao}}</td>
                         <td>{{inscrito.frequencia}}%</td>
-                        <td class="text-center">
-                            <a ui-sref=""
-                               ng-if="inscrito.penalidade && !inscrito.penalidade.cancelada"
-                               tooltip data-toggle="modal"
-                               data-placement="top"
-                               data-target="#modalCancelarPenalidade"
-                               title="Penalidade"
-                               ng-click="vm.visualizarPenalidade(inscrito.penalidade)"><em class="fas fa-exclamation-triangle"></em>Penalidade</a>
-                            <a href="/certificados/index?inscricaoId={{inscrito.id}}"
-                               ng-if="(!inscrito.penalidade || inscrito.penalidade.cancelada) && vm.evento.possuiCertificado && inscrito.situacao == 'CERTIFICADO'"
-                               title="Gerar Certificado"
-                               target="_blank"><em class="fas fa-user-graduate"></em>Certificado</a>
-                            <a href="/certificados/index?inscricaoId={{inscrito.id}}"
-                               ng-if="(!inscrito.penalidade ||inscrito.penalidade.cancelada) && ((!vm.evento.possuiCertificado && inscrito.situacao != 'DESISTENTE') || inscrito.situacao == 'DECLARADO')"
-                               title="Gerar Declaração"
-                               target="_blank"><em class="fas fa-user-graduate"></em>Declaração</a>
-                        </td>
+                        <td class="text-center"></td>
                     </tr>
                     <tr ng-if="vm.evento.inscritos.length == 0">
                         <td colspan="7">Nenhum Cursista Inscrito no evento.</td>

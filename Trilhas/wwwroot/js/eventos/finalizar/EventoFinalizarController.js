@@ -6,6 +6,7 @@ EventoFinalizarController.$inject = ['$stateParams', '$q', '$http', 'spinnerServ
 
 function EventoFinalizarController($stateParams, $q, $http, spinnerService, $scope) {
     var vm = this;
+    spinnerService.show('loader');
 
     vm.eventoListaInscrito = {};
 	vm.dataAtual = new Date();
@@ -15,6 +16,7 @@ function EventoFinalizarController($stateParams, $q, $http, spinnerService, $sco
         var promises = [];
 
         if ($stateParams.id) {
+            spinnerService.showAll();
             vm.carregarEvento($stateParams.id);
         }
 
@@ -26,8 +28,10 @@ function EventoFinalizarController($stateParams, $q, $http, spinnerService, $sco
     };
 
     vm.carregarEvento = function (id) {
+        spinnerService.show('loader');
         return $http.get('/eventos/encerramento/' + id).then(function (response) {
             vm.evento = response.data;
+            spinnerService.close('loader');
         });
     };
 
@@ -38,8 +42,6 @@ function EventoFinalizarController($stateParams, $q, $http, spinnerService, $sco
     vm.imprimir = function () {
         window.print();
     }
-
-
 
     vm.consultarEExportarExcel = function () {
 
@@ -84,6 +86,6 @@ function EventoFinalizarController($stateParams, $q, $http, spinnerService, $sco
         for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
         return buf;
     }
-
+    debugger;
     vm.init();
 }

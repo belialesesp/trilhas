@@ -192,10 +192,16 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
     };
 
     vm.filtrarRelatorioCapacitadosPorCurso = function (page) {
-        debugger;
+
         if (vm.query.dataInicio > vm.query.dataFim) {
 
             toastr["warning"]("Data Início não pode ser maior que Data Fim.");
+
+            return false;
+        }
+
+        if (!vm.query.cursoId) {
+            toastr["warning"]("É obrigatório informar o curso.");
 
             return false;
         }
@@ -404,8 +410,6 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
             vm.eventoTitulo = response.data.titulo;
         });
     };
-
-  
 
     //ENTIDADE
     $scope.selecionarEntidade = function (entidade) {

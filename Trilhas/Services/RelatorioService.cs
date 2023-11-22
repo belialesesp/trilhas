@@ -132,13 +132,13 @@ namespace Trilhas.Services
 
 
                 line++;
+                line++;
 
                 planilha.Cell("A" + line).Value = "Nr. Funcional";
                 planilha.Cell("B" + line).Value = "CPF";
                 planilha.Cell("C" + line).Value = "Docente";
 
 
-                line++;
                 line++;
                 foreach (var docente in evento.Docentes)
                 {

@@ -29,7 +29,7 @@
                 <!--CURSO-->
                 <div class="form-group col-md-9 col-sm-12">
                     <div class="input-group">
-                        <input type="text" id="evento" name="evento" class="form-control" autocomplete="off" readonly placeholder="Curso"
+                        <input type="text" id="evento" name="evento" ng-required="true" class="form-control" autocomplete="off" readonly placeholder="Curso "
                                value="{{vm.eventoTitulo}}" />
                         <div class="input-group-append">
                             <button type="button"
@@ -150,14 +150,14 @@
 
                 <!--DATA INICIO-->
                 <div class="form-group col-md-3">
-                    <input type="date" id="dataInicio" name="dataInicio" class="form-control formatarPlaceholderData" required autocomplete="off"
+                    <input type="date" id="dataInicio" name="dataInicio" class="form-control formatarPlaceholderData"  autocomplete="off"
                            placeholder="Data Início do Evento"
                            ng-model="vm.query.dataInicio" max="9999-12-31" />
                 </div>
 
                 <!--DATA FIM-->
                 <div class="form-group col-md-3">
-                    <input type="date" id="dataFim" name="dataFim" class="form-control formatarPlaceholderData" required autocomplete="off"
+                    <input type="date" id="dataFim" name="dataFim" class="form-control formatarPlaceholderData"  autocomplete="off"
                            placeholder="Data Fim do Evento"
                            ng-model="vm.query.dataFim" max="9999-12-31" />
                 </div>
@@ -244,10 +244,10 @@
                                 <a ui-sref="eventos-encerramento-rel-capacitados-por-curso({'id': {{evento.id}} })" ng-if="evento.situacao == 'FINALIZADO'"
                                    tooltip
                                    data-placement="top"
-                                   title="Resultados"><span class="fas fa-clipboard-check" aria-hidden="true"></span></a>
+                                   title="Resultados"><span class="fas fa-print" aria-hidden="true"></span></a>
                             </span>
+
                         </td>
-                        
 
                     </tr>
                     <tr ng-if="vm.eventos.length == 0">
