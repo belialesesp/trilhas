@@ -241,7 +241,7 @@
 
                         <td class="table-actions">
                             <span ng-if="evento.situacao != 'CANCELADO'">
-                                <a ui-sref="eventos-encerramento-rel-capacitados-por-curso({'id': {{evento.id}} })" ng-if="evento.situacao == 'FINALIZADO'"
+                                <a ui-sref="eventosRelatoriocapacitadosPorCurso-FinalizarPrint({'id': {{evento.id}} })" ng-if="evento.situacao == 'FINALIZADO'"
                                    tooltip
                                    data-placement="top"
                                    title="Resultados"><span class="fas fa-print" aria-hidden="true"></span></a>
