@@ -810,12 +810,5 @@ namespace Trilhas.Services
 
             return eventos;
         }
-
-        //public DownloadFileContract ExportarRelatorioCapacitadosPorPeriodo(List<Evento> eventos, string tempFolder)
-        //{
-
-
-
-        //}
     }
 }
