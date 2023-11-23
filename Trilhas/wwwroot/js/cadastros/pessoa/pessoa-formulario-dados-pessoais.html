@@ -19,19 +19,6 @@
     </div>
     <div class="col-md-10 col-sm-12">
         <div class="row">
-            <!--<div class="form-group col-md-2">
-                <label for="botaoPesquisar">&nbsp;</label>
-                <button type="button"
-                        id="botaoPesquisar"
-                        name="botaoPesquisar"
-                        class="btn btn-primary form-control"
-                        data-toggle="modal"
-                        data-target="#modalBuscarPessoa"
-                        title="Buscar Pessoa"
-                        ng-disabled="true">
-                    Pesquisar <em class="fa fa-search"></em>
-                </button>
-            </div>-->
             <!--NUMERO FUNCIONAL-->
             <div class="form-group col-md-5">
                 <label for="numeroFuncional">Número Funcional:</label>
@@ -48,6 +35,17 @@
                     <div ng-message="required" class="invalid-feedback d-block">Campo obrigatório</div>
                     <div ng-show="form.cpf.$error.cpf" class="invalid-feedback d-block">CPF Inválido</div>
                 </div>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="btnAtualizar">&nbsp;</label>
+                <button type="button"
+                        id="btnAtualizar"
+                        name="btnAtualizar"
+                        class="btn btn-primary form-control"
+                        title="Atualizar dados pessoais"
+                        ng-click="vm.atualizarPessoa(vm.pessoa.cpf)">
+                    Atualizar <em class="fa fa-sync"></em>
+                </button>
             </div>
 
             <!--NOME-->

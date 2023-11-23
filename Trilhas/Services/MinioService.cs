@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Trilhas.Data;
 using Trilhas.Settings;
