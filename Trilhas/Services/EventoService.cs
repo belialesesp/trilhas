@@ -9,6 +9,7 @@ using Trilhas.Data.Enums;
 using Trilhas.Data.Model.Cadastro;
 using Trilhas.Data.Model.Eventos;
 using Trilhas.Data.Model.Exceptions;
+using Trilhas.Helper.Contract;
 using Trilhas.Models.Relatorio;
 
 namespace Trilhas.Services

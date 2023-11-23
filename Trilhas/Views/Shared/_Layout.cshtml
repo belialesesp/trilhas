@@ -241,6 +241,17 @@
                                 </li>
                             </ul>
                         </li>
+                        <li>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" data-target="#relatorios">Relatórios</a>
+                            <ul class="list-unstyled collapse" id="relatorios">
+                                <li>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorPeriodo" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorPeriodo'}">Capacitados por Período</a>
+                                </li>
+
+                                
+                            </ul>
+                        </li>
+
                     </ul>
                 }
                 else if (User.IsInRole("Coordenador"))

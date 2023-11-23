@@ -150,6 +150,49 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
             { reload: true });
     };
 
+    vm.filtrarRelatorio = function (page) {
+
+        if (vm.query.dataInicio > vm.query.dataFim) {
+
+            toastr["warning"]("Data Início não pode ser maior que Data Fim.");
+
+            return false;
+        }
+
+        if (!page && vm.pager.currentPage) {
+            page = vm.pager.currentPage;
+        }
+        if (page < 1 || (page > vm.pager.totalPages && vm.pager.totalPages > 0)) {
+            page = 1;
+        }
+
+        $state.go('eventosRelatoriocapacitadosPorPeriodo',
+            {
+                'cursoId': vm.query.cursoId,
+                'modalidade': vm.query.modalidade,
+                'entidadeDemandanteId': vm.query.entidadeDemandanteId,
+                'uf': vm.query.uf,
+                'municipioId': vm.query.municipioId,
+                'docenteId': vm.query.docenteId,
+                'cursistaId': vm.query.cursistaId,
+                'dataInicio': vm.query.dataInicio,
+                'dataFim': vm.query.dataFim,
+                'cancelados': vm.query.cancelados,
+                'naoIniciados': vm.query.naoIniciados,
+                'andamentos': vm.query.andamentos,
+                'concluidos': vm.query.concluidos,
+                'page': page,
+                'pageSize': vm.pageSize,
+                'inscricao': vm.query.inscricao,
+                'finalizados': vm.query.finalizados
+            },
+            { reload: true });
+    };
+
+    vm.imprimir = function () {
+        window.print();
+    }
+
     var consultar = function (page) {
 
         page = parseInt(page);
@@ -167,6 +210,50 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
 
         return $http.get("/eventos/quantidade", { params: vm.query }).then(success, error);
     };
+
+    vm.consultarEExportarExcel = function () {
+
+        if (vm.query.dataInicio > vm.query.dataFim) {
+
+            toastr["warning"]("Data Início não pode ser maior que Data Fim.");
+
+            return false;
+        }
+
+        var successBaixarArquivo = function (response) {
+
+            var bin = atob(response.data.fileString);
+            var ab = s2ab(bin); // from example above
+            var blob = new Blob([ab], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' });
+
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = response.data.fileName;
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+            toastr["success"]("Planilha Criada com Sucesso.");
+        };
+
+        var errorBaixarArquivo = function (response) {
+            toastr["error"]("Ocorreu um erro ao consultar os registros.");
+        };
+
+        spinnerService.show('loader');
+        return $http.get("/eventos/exportarRelatorioCapacitadosPorPeriodoExcel", { params: vm.query }).then(successBaixarArquivo, errorBaixarArquivo).finally(onComplete);
+
+    }
+
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
 
     var buscar = function () {
 
@@ -320,6 +407,11 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
             vm.cursistaNome = response.data.nome;
         });
     };
+
+    var onComplete = function () {
+        spinnerService.close('loader');
+    };
+
 
     vm.init();
 }
