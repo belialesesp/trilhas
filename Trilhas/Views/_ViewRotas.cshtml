@@ -148,6 +148,11 @@ angular.module('trilhasapp')
         templateUrl: '/js/relatorios/capacitadosPorCurso/relatorio-capacitados-por-curso.html'
     })
 
+    .state('eventosRelatoriocapacitadosPorEntidade', {
+        url: '/eventos-relatorio-capacitados-por-entidade?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+        templateUrl: '/js/relatorios/capacitadosPorEntidade/relatorio-capacitados-por-entidade.html'
+    })
+
 	.state('eventos-agendamento', {
 		url: '/evento',
 		templateUrl: '/js/eventos/evento-formulario.html'
