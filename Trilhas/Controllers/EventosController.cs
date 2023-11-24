@@ -151,6 +151,22 @@ namespace Trilhas.Controllers
             return new ObjectResult(relatorio);
         }
 
+
+
+        [HttpGet]
+        public IActionResult ExportarRelatorioCapacitadosPorCursoExcel(long id)
+        {
+            Evento evento = _eventoService.RecuperarEventoCompleto(id);
+
+
+            var vm = _mapper.MapearEventoFinalizadoViewModel(evento);
+
+
+            var relatorio = _relatorioService.GerarPlanilhaRelatorioCapacitadosPorCurso(vm);
+
+            return new ObjectResult(relatorio);
+        }
+
         [HttpGet]
         [Authorize(Roles = "Administrador,Secretaria,Gestor")]
         public IActionResult BuscarCursistas(long eventoId, string nome, long entidadeId, string cpf, int start = -1, int count = -1)
@@ -263,6 +279,31 @@ namespace Trilhas.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
+        public IActionResult DesomologarEvento(long eventoId)
+        {
+            try
+            {
+                Evento evento = _eventoService.RecuperarEventoCompleto(eventoId);
+
+                if (evento != null)
+                {
+                    _eventoService.DesomologarEvento(RecuperarUsuarioId(), evento);
+                }
+
+                return JsonFormResponse(eventoId);
+            }
+            catch (TrilhasException tex)
+            {
+                return JsonErrorFormResponse(tex);
+            }
+            catch (Exception ex)
+            {
+                return JsonErrorFormResponse(ex, "Ocorreu um erro ao desomologar o Evento.");
+            }
+        }
 
         [HttpPost]
         [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]

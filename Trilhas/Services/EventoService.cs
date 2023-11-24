@@ -693,6 +693,15 @@ namespace Trilhas.Services
 
             _context.SaveChanges();
         }
+        public void DesomologarEvento(string userId, Evento evento)
+        {
+            evento.DesomologarEvento();
+
+            evento.LastModificationTime = DateTime.Now;
+            evento.LastModifierUserId = userId;
+
+            _context.SaveChanges();
+        }
 
         public void AlterarFrequencia(Evento evento, long cursistaId)
         {

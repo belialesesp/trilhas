@@ -134,6 +134,16 @@ namespace Trilhas.Data.Model.Eventos
             Finalizado = true;
         }
 
+        public void DesomologarEvento()
+        {
+            if (Situacao() != SituacaoEvento.Finalizado)
+            {
+                throw new TrilhasException("O Evento ainda não está finalizado.");
+            }
+
+            Finalizado = false;
+        }
+
         public void CalcularFrequencias(long cursistaId = 0)
         {
             var inscritos = ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && (cursistaId == 0 || x.Cursista.Id == cursistaId));

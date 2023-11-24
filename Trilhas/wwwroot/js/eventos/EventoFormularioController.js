@@ -193,6 +193,25 @@ function EventoFormularioController($state, $stateParams, $http, $q, $scope, Ser
         }
     };
 
+    vm.desomologarEvento = function () {
+
+        if (confirm('Tem certeza que deseja Desomologar o Evento?')) {
+
+            var success = function (response) {
+                toastr["success"]("Evento Desomologado.");
+                $state.go('eventos-encerramento', { 'id': response.data });
+            };
+
+            var error = function (response) {
+                ServerErrorsService.handleServerErrors(response, form);
+                toastr["error"](response.data.message, "Erro");
+                console.log(response.data.internalMessage);
+            };
+
+            return $http.post('/eventos/desomologarEvento?eventoId=' + vm.evento.id).then(success, error).finally(onComplete);
+        }
+    };
+
     vm.resultados = function () {
         $state.go('eventos-encerramento', { 'id': vm.evento.id });
     };

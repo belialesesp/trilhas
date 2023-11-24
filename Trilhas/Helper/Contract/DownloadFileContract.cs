@@ -9,5 +9,9 @@
         public string FileString { get; set; }
 
         public string FilePathTemp { get; set; }
+
+
+        public DownloadFileContract() { }
+
     }
 }

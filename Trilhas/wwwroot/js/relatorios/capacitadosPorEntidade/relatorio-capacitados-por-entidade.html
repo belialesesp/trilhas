@@ -11,13 +11,13 @@
                 <td><strong>ESCOLA DE SERVIÇO PÚBLICO DO ESPÍRITO SANTO </strong></td>
             </tr>
             <tr id="l_3">
-                <td colspan="3">Relatório Capacitados por Período</td>
+                <td colspan="3">Relatório Capacitados por Entidade</td>
             </tr>
         </table>
     </div>
 
     <div class="content-header">
-        <h5>Relatório Capacitados por Período</h5>
+        <h5>Relatório Capacitados por Entidade</h5>
         <div class="line"></div>
     </div>
 
@@ -30,7 +30,7 @@
                 <div class="form-group col-md-9 col-sm-12">
                     <div class="input-group">
                         <input type="text" id="evento" name="evento" class="form-control" autocomplete="off" readonly placeholder="Curso"
-                               value="{{vm.eventoTitulo}}" />
+                               value="{{vm.eventoTitulo}}"/>
                         <div class="input-group-append">
                             <button type="button"
                                     class="btn btn-primary"
@@ -68,8 +68,8 @@
                 <!--ENTIDADE-->
                 <div class="form-group col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input type="text" id="entidade" name="entidade" class="form-control" required value="{{vm.entidadeNome}}" autocomplete="off"  readonly placeholder="Entidade Demandante" />
 
+                        <input type="text" id="entidade" name="entidade" class="form-control" autocomplete="off" readonly placeholder="Entidade Demandante" required value="{{vm.entidadeNome}}" />
                         <div class="input-group-append">
                             <button type="button"
                                     class="btn btn-primary"
@@ -79,7 +79,7 @@
                             </button>
                             <button type="button"
                                     class="btn btn-outline-primary" title="Limpar Filtro"
-                                    ng-click="vm.entidadeNome = ''; vm.query.entidadeCursoId = null">
+                                    ng-click="vm.entidadeNome = ''; vm.query.entidadeDemandanteId = null">
                                 <em class="fa fa-eraser"></em>
                             </button>
                         </div>
@@ -158,14 +158,14 @@
 
                 <!--DATA INICIO-->
                 <div class="form-group col-md-3">
-                    <input type="date" id="dataInicio" name="dataInicio" class="form-control formatarPlaceholderData" required autocomplete="off"
+                    <input type="date" id="dataInicio" name="dataInicio" class="form-control formatarPlaceholderData"  autocomplete="off"
                            placeholder="Data Início do Evento"
                            ng-model="vm.query.dataInicio" max="9999-12-31" />
                 </div>
 
                 <!--DATA FIM-->
                 <div class="form-group col-md-3">
-                    <input type="date" id="dataFim" name="dataFim" class="form-control formatarPlaceholderData" required autocomplete="off"
+                    <input type="date" id="dataFim" name="dataFim" class="form-control formatarPlaceholderData"  autocomplete="off"
                            placeholder="Data Fim do Evento"
                            ng-model="vm.query.dataFim" max="9999-12-31" />
                 </div>
@@ -211,9 +211,11 @@
                     </div>
                 </div>
                 <!--FILTRO-->
+
                 <div class="form-group col-md-2 col-sm-12">
-                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrarRelatorio()"><em class="fas fa-filter"></em> Filtrar</button>
+                    <button class="btn btn-info btn-sm btn-block" ng-click="vm.filtrarRelatorioCapacitadosPorEntidade()"><em class="fas fa-filter"></em> Filtrar</button>
                 </div>
+
             </div>
         </fieldset>
     </form>
@@ -226,13 +228,13 @@
                         <div class="row col-12 text-center pr-1">
                             <ul class="pagination pagination-sm justify-content-center offset-5 col-2" ng-if="vm.pager.pages.length">
                                 <li class="page-item" ng-class="{disabled:vm.pager.currentPage == 1}">
-                                    <a class="page-link" ng-click="vm.filtrarRelatorio(vm.pager.currentPage - 1)"><<</a>
+                                    <a class="page-link" ng-click="vm.filtrarRelatorioCapacitadosPorEntidade(vm.pager.currentPage - 1)"><<</a>
                                 </li>
                                 <li class="page-item" ng-repeat="page in vm.pager.pages" ng-class="{active:vm.pager.currentPage == page}">
-                                    <a class="page-link" ng-click="vm.filtrarRelatorio(page)">{{page}}</a>
+                                    <a class="page-link" ng-click="vm.filtrarRelatorioCapacitadosPorEntidade(page)">{{page}}</a>
                                 </li>
                                 <li class="page-item" ng-class="{disabled:vm.pager.currentPage == vm.pager.totalPages}">
-                                    <a class="page-link" ng-click="vm.filtrarRelatorio(vm.pager.currentPage + 1)">>></a>
+                                    <a class="page-link" ng-click="vm.filtrarRelatorioCapacitadosPorEntidade(vm.pager.currentPage + 1)">>></a>
                                 </li>
                                 <li class="page-item" style="padding-left: 15px;">
                                     <select ng-model="vm.pageSize" class="page-link" ng-change="vm.filtrarRelatorio(page)"
@@ -322,7 +324,7 @@
     </footer>
 
 
-    <div class="row rodape-button"> 
+    <div class="row rodape-button">
         <div class="form-group col-md-2 col-4 ">
             <button class="btn btn-info btn-sm btn-block" ng-click="vm.imprimir()"><em class="fas fa-print"></em>Imprimir</button>
         </div>
