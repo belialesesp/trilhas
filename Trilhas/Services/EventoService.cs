@@ -819,6 +819,5 @@ namespace Trilhas.Services
 
             return eventos;
         }
-
     }
 }
