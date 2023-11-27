@@ -13,6 +13,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Trilhas.Data.Model;
+using Trilhas.Helper;
 using Trilhas.Services;
 using Trilhas.Services.Interfaces;
 using Trilhas.Settings;
@@ -120,7 +121,9 @@ namespace Trilhas.Configurations
         {
             services.AddSingleton<MinioService>();
             services.AddSingleton<OpenIdService>();
+            services.AddSingleton<FileHelper>();
             services.AddScoped<ISiahresService, SiahresService>();
+            services.AddScoped<RelatorioService>();
             services.AddScoped<TrilhasService>();
             services.AddScoped<CadastroService>();
             services.AddScoped<EixoService>();
