@@ -153,6 +153,16 @@ angular.module('trilhasapp')
         templateUrl: '/js/relatorios/capacitadosPorEntidade/relatorio-capacitados-por-entidade.html'
     })
 
+   .state('eventosRelatorioDeCursista', {
+        url: '/relatorio-de-cursistas?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+        templateUrl: '/js/relatorios/relatorioDeCursistas/relatorio-de-cursistas.html'
+    })
+
+    .state('eventosRelatorioDeCursista-eventosRelatoriolistaInscricaoCursista', {
+        url: '/evento/listaIncritos-relCursista/:id',
+        templateUrl: '/js/relatorios/relatorioDeCursistas/evento-lista-inscricao-print-rel-cursistas.html'
+    })
+
 	.state('eventos-agendamento', {
 		url: '/evento',
 		templateUrl: '/js/eventos/evento-formulario.html'
