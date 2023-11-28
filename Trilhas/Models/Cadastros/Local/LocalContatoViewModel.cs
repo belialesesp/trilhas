@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Trilhas.Models.Cadastros.Local
+﻿namespace Trilhas.Models.Cadastros.Local
 {
-	public class LocalContatoViewModel
+    public class LocalContatoViewModel
 	{
 		public long Id { get; set; }
         public long TipoContatoId { get; set; }

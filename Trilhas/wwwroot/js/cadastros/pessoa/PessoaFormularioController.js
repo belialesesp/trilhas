@@ -76,14 +76,23 @@ function PessoaFormularioController($state, $stateParams, $q, $http, $scope, Ser
         });
     };
 
-    vm.atualizarPessoa = async function (cpf) {
+    vm.atualizarPessoa = function (cpf) {
         try
         {
-            const response = await $http.get(`/pessoas/atualizar/${cpf}`);
-            
-            if (vm.pessoa.storageError) {
-                toastr["warning"](`${vm.pessoa.storageError}<br/><a href="/admin/storagestatus" target="_blank">Mais detalhes...</a>`);
-            }
+            return $http.get(`/pessoas/atualizar/${cpf}`).then(function (response) {
+                if (response.data !== null) {
+                    vm.pessoa.numeroFuncional = response.data.numeroFuncional.toString();
+                    vm.pessoa.nome = response.data.nome;
+                    vm.pessoa.logradouro = response.data.logradouro;
+                    vm.pessoa.bairro = response.data.bairro;
+                    vm.pessoa.cep = response.data.cep.toString();
+                    vm.pessoa.complemento = response.data.complemento;
+                    vm.pessoa.uf = response.data.uf;
+                    vm.pessoa.email = response.data.email;
+
+                    toastr["success"]("Dados do servidor recuperados com sucesso.", "Sucesso");
+                }
+            });
         } catch (error) {
             console.error('Erro ao atualizar pessoa:', error);
         }

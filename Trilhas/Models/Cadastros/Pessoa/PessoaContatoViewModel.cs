@@ -9,6 +9,10 @@ namespace Trilhas.Models.Cadastros.Pessoa
         public long TipoContatoId { get; set; }
         public TipoContatoViewModel TipoContato { get; set; }
 
+        public PessoaContatoViewModel()
+        {
+                
+        }
         public PessoaContatoViewModel(long id){
 			Id = id;
 		}
