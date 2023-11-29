@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using Trilhas.Data.Enums;
 using Trilhas.Data.Model.Eventos;
 using Trilhas.Extensions;
@@ -101,6 +102,8 @@ namespace Trilhas.Services
             }
         }
 
+    
+
         public DownloadFileContract GerarPlanilhaRelatorioCapacitadosPorCurso(EventoFinalizadoViewModel evento)
         {
             string filePathName = _fileHelper.GetAppDataPath() + "RelCapacitadosPorCurso" + DateTime.Now.ToString("yyyyMMddHHmmss")  + ".xlsx";
@@ -109,12 +112,12 @@ namespace Trilhas.Services
                 File.Delete(filePathName);
 
             int line = 1;
-          
+
 
             using (var workbook = new XLWorkbook())
             {
                 var planilha = workbook.Worksheets.Add("CapacitadosPorCurso");
-            
+
                 planilha.Cell("A" + line).Value = "Curso: ";
                 planilha.Cell("B" + line).Value = evento.Nome;
 
@@ -173,6 +176,90 @@ namespace Trilhas.Services
 
                     line++;
                 }
+
+                workbook.SaveAs(filePathName);
+
+                return _fileHelper.ObterBytesDoArquivoParaDownload(filePathName, "RelatorioCapacitadosPorCurso.xlsx");
+            }
+
+            static void GenerateHeader(IXLWorksheet worksheet)
+            {
+                worksheet.Cell("A1").Value = "ID";
+                worksheet.Cell("B1").Value = "Curso";
+                worksheet.Cell("C1").Value = "Entidade";
+                worksheet.Cell("D1").Value = "C/H";
+                worksheet.Cell("E1").Value = "Período";
+                worksheet.Cell("F1").Value = "Município";
+                worksheet.Cell("G1").Value = "Modalidade";
+                worksheet.Cell("H1").Value = "Ins";
+                worksheet.Cell("I1").Value = "Apr";
+                worksheet.Cell("J1").Value = "Dec";
+                worksheet.Cell("K1").Value = "Des";
+                worksheet.Cell("L1").Value = "Situação";
+            }
+
+
+        }
+
+    public DownloadFileContract GerarPlanilhaRelatorioCursista(ListaInscritosViewModel model)
+        {
+            string filePathName = _fileHelper.GetAppDataPath() + "RelCursista" + DateTime.Now.ToString("yyyyMMddHHmmss")  + ".xlsx";
+
+            if (File.Exists(filePathName))
+                File.Delete(filePathName);
+
+            int line = 1;
+          
+
+            using (var workbook = new XLWorkbook())
+            {
+                var planilha = workbook.Worksheets.Add("CapacitadosPorCurso");
+            
+                planilha.Cell("A" + line).Value = "Curso: ";
+                planilha.Cell("B" + line).Value = model.Evento.Nome;
+
+                line++;
+                planilha.Cell("A" + line).Value = "Entidade Demandante: ";
+                planilha.Cell("B" + line).Value = model.Evento.Entidade;
+
+                line++;
+                planilha.Cell("A" + line).Value = "Período de inscrição: ";
+                planilha.Cell("B" + line).Value = model.Evento.DataInicioInscricao.ToString("dd/MM/yyyyy") + " - " + model.Evento.DataFimInscricao.ToString("dd/MM/yyyyy");
+
+                line++;
+                planilha.Cell("A" + line).Value = "Período de realização: ";
+                planilha.Cell("B" + line).Value = model.Evento.DataInicio.ToString("dd/MM/yyyyy") + " - " + model.Evento.DataFim.ToString("dd/MM/yyyyy");
+
+
+                line++;
+                line++;
+
+                planilha.Cell("A" + line).Value = "Cursista";
+                planilha.Cell("B" + line).Value = "CPF";
+                planilha.Cell("C" + line).Value = "Nr.Funcional";
+                planilha.Cell("D" + line).Value = "E-mail";
+                planilha.Cell("E" + line).Value = "Data Inscrição";
+
+
+
+                line++;
+                foreach (var _incrito in model.Inscritos)
+                {
+
+                    planilha.Cell("A" + line).Value = _incrito.Cursista.Nome;
+                    planilha.Cell("B" + line).Value = _incrito.Cursista.Cpf;
+                    planilha.Cell("C" + line).Value = _incrito.Cursista.NumeroFuncional;
+                    planilha.Cell("D" + line).Value = _incrito.Cursista.Email;
+                    planilha.Cell("E" + line).Value = _incrito.DataDeInscricao.ToString("dd/MM/yyyy");
+
+
+
+
+
+                    line++;
+                }
+
+
 
                 workbook.SaveAs(filePathName);
 
