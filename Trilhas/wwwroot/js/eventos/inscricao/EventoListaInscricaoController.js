@@ -37,6 +37,45 @@ function EventoListaInscricaoController($scope, $stateParams, $q, $http, ServerE
         });
     };
 
+    vm.consultarEExportarExcel = function () {
+
+
+        var successBaixarArquivo = function (response) {
+
+            var bin = atob(response.data.fileString);
+            var ab = s2ab(bin); // from example above
+            var blob = new Blob([ab], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' });
+
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = response.data.fileName;
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+            toastr["success"]("Planilha Criada com Sucesso.");
+        };
+
+        var errorBaixarArquivo = function (response) {
+            toastr["error"]("Ocorreu um erro ao consultar os registros.");
+        };
+
+        spinnerService.show('loader');
+        return $http.get("/eventos/exportarRelatorioCursista?id=" + $stateParams.id, { params: vm.query }).then(successBaixarArquivo, errorBaixarArquivo).finally(onComplete);
+
+
+    }
+
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+
     vm.validaInscricao = function (evento) {
         var dataAtual = new Date();
         var dataInicio = new Date(evento.dataInicioInscricao);

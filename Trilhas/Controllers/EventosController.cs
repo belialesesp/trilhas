@@ -167,6 +167,20 @@ namespace Trilhas.Controllers
             return new ObjectResult(relatorio);
         }
 
+
+        [HttpGet]
+        public IActionResult ExportarRelatorioCursista(long id)
+        {
+            var lista = _eventoService.RecuperarListaInscricao(id);
+
+            var vm = _mapper.MapearListaInscritosViewModel(lista);
+
+
+            var relatorio = _relatorioService.GerarPlanilhaRelatorioCursista(vm);
+
+            return new ObjectResult(relatorio);
+        }
+
         [HttpGet]
         [Authorize(Roles = "Administrador,Secretaria,Gestor")]
         public IActionResult BuscarCursistas(long eventoId, string nome, long entidadeId, string cpf, int start = -1, int count = -1)

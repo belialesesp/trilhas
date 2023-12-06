@@ -11,7 +11,7 @@
                 <td><strong>ESCOLA DE SERVIÇO PÚBLICO DO ESPÍRITO SANTO </strong></td>
             </tr>
             <tr id="l_3">
-                <td colspan="3"><strong>Relatório de Lista de Inscrição </strong></td>
+                <td colspan="3"><strong>Relatório de Capacitados por Curso/Modalidade </strong></td>
             </tr>
         </table>
     </div>
@@ -75,7 +75,7 @@
                         <td>{{inscrito.cursista.numeroFuncional}}</td>
                         <td>{{inscrito.cursista.email}}</td>
                         <td>{{inscrito.dataDeInscricao | date:'dd/MM/yyyy'}}</td>
-                     
+
                     </tr>
                     <tr ng-if="vm.inscricaoAndamento && vm.eventoListaInscrito.inscritos.length == 0">
                         <td colspan="6">Nenhum Cursista Inscrito no evento.</td>

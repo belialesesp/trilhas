@@ -159,9 +159,24 @@ angular.module('trilhasapp')
     })
 
     .state('eventosRelatorioDeCursista-eventosRelatoriolistaInscricaoCursista', {
-        url: '/evento/listaIncritos-relCursista/:id',
+        url: '/evento/listaIncritos-relCursista/:id', 
         templateUrl: '/js/relatorios/relatorioDeCursistas/evento-lista-inscricao-print-rel-cursistas.html'
     })
+
+    .state('eventosRelatoriocapacitadosPorModalidade', {
+        url: '/eventos-relatorio-capacitados-por-modalidade?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+        templateUrl: '/js/relatorios/capacitadosPorModalidade/relatorio-capacitados-por-modalidade.html'
+    })
+
+    .state('eventosRelatoriocapacitadosPorModalidade-eventosRelatoriolistaInscricaoModalidade', {
+        url: '/evento/listaIncritos-relModalidade/:id',
+        templateUrl: '/js/relatorios/capacitadosPorModalidade/evento-lista-inscricao-print-rel-modalidade.html'
+    })
+
+   .state('eventosRelatorioListaDePresenca', {
+        url: '/evento/lista-de-presenca?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+        templateUrl: '/js/relatorios/ListadePresenca/relatorio-lista-de-presenca.html'
+   })
 
 	.state('eventos-agendamento', {
 		url: '/evento',

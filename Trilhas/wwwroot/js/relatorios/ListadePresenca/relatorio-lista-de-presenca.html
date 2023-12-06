@@ -1,0 +1,128 @@
+﻿<div ng-app="trilhasapp" ng-controller="EventoListaPresencaController as vm">
+    <div class="content-header">
+        <h5>Eventos <em class="fa fa-angle-right"></em> Lista de Presença</h5>
+        <div class="line"></div>
+    </div>
+
+    <form name="form">
+        <div class="row">
+            <div class="form-group col-md-8 col-sm-12">
+                <label for="solucao"><span class="asterisco">*</span>Evento:</label>
+
+                <div class="input-group">
+                    <div class="input-group">
+                        <input type="text" id="evento" name="evento" class="form-control" autocomplete="off" readonly placeholder="Selecionar Evento"
+                               value="{{vm.listaPresenca.eventoTitulo}}" />
+                        <div class="input-group-append">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#modalBuscarEvento">
+                                <em class="fa fa-search"></em>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-4 col-sm-12">
+                <label for="solucao">Código de Barras:</label>
+                <input type="text" id="codigoBarras" name="codigoBarras" class="form-control" autocomplete="off" oninput="this.value=this.value.replace(/[^0-9,-]/g,'')"
+                       ng-model="vm.query.codigoBarras" ng-blur="vm.buscarDadosParaRegistrarPresenca()" ng-enter="vm.buscarDadosParaRegistrarPresenca()"
+                       placeholder="000000-000000" />
+            </div>
+        </div>
+    </form>
+
+    <div class="row d-inline-flex mb-3" ng-if="vm.listaPresenca.eventoId">
+        <div class="col-12">
+            <a href="/listaInscricaoManual/ListaIndividual?horarioId={{vm.horarioId}}&eventoId={{vm.listaPresenca.eventoId}}" target="_blank"
+               tooltip
+               data-placement="top"
+               class="btn btn-primary mr-2"
+               ng-class="{'disabled' : !vm.listaPresenca.inscritos || vm.listaPresenca.inscritos.length === 0 || vm.desabilitarListaPresenca}"
+               title="Imprimir Lista de Presença">
+                <em class="fa fa-print"></em> Horário selecionado
+            </a>
+            <a href="/listaInscricaoManual/listaCompleta?eventoId={{vm.listaPresenca.eventoId}}" target="_blank"
+               tooltip
+               data-placement="top"
+               class="btn btn-primary"
+               ng-class="{'disabled' : !vm.listaPresenca.inscritos || vm.listaPresenca.inscritos.length === 0}"
+               title="Imprimir Lista de Presença Completa">
+                <em class="fa fa-print"></em> Todos os Horários
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12" ng-if="vm.listaPresenca.eventoHorarios">
+            <table class="table table-striped-custom table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width:20%">Módulo</th>
+                        <th style="width:20%">Data</th>
+                        <th style="width:20%">Horário</th>
+                        <th style="width:10%" class="text-center">Selecionar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="horario in vm.listaPresenca.eventoHorarios" ng-if="vm.listaPresenca.inscritos.length > 0">
+                        <td>{{horario.modulo}}</td>
+                        <td>{{horario.dataHoraInicio | date:'dd/MM/yyyy'}}</td>
+                        <td>{{horario.dataHoraInicio | date:'HH:mm'}} - {{horario.dataHoraFim | date:'HH:mm'}}</td>
+                        <td class="text-center">
+                            <div class="form-check form-check-inline">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="selecionar{{horario.eventoHorarioId}}"
+                                           ng-model="horario.selecionar"
+                                           ng-change="vm.atualizarListaInscritos(horario)" />
+                                    <label class="custom-control-label" for="selecionar{{horario.eventoHorarioId}}"></label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr ng-if="vm.listaPresenca.inscritos.length == 0">
+                        <td colspan="4">Nenhum Cursista Inscrito.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6 col-sm-12" ng-if="vm.listaPresenca.inscritos">
+            <table class="table table-striped-custom table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th class="text-center" style="width:20%">Presente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="inscrito in vm.listaPresenca.inscritos">
+                        <td>{{inscrito.pessoaNome}}</td>
+                        <td class="text-center">
+                            <div class="form-check form-check-inline">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="presente{{inscrito.pessoaId}}"
+                                           ng-model="inscrito.presente"
+                                           ng-disabled="vm.desabilitarListaPresenca"
+                                           ng-change="vm.salvarPresenca(inscrito)" />
+                                    <label class="custom-control-label" for="presente{{inscrito.pessoaId}}"></label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr ng-if="vm.listaPresenca.inscritos.length == 0">
+                        <td colspan="4">Nenhum Cursista Inscrito.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div>
+
+    <!-- Modal -->
+    <ng-include src="'/js/eventos/listaPresenca/modal/lista-inscricao-evento-modal.html'"></ng-include>
+</div>
