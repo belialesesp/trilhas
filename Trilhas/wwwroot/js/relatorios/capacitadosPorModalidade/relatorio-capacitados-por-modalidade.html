@@ -279,29 +279,16 @@
                         <td ng-class="{strike: evento.situacao == 'CANCELADO' }">{{evento.situacao}}</td>
                         <td class="table-actions">
                             <span ng-if="evento.situacao != 'CANCELADO'">
-                                <!--<a ng-href="/eventos/downloadListaInscritosEvento?id={{evento.id}}" target="_blank"
 
-                                    tooltip
-                                    data-placement="top"
-                                    title="Download Lista de Inscrição"><span class="fa fa-file-csv"></span></a>-->
 
-                                <a ui-sref="eventos-encerramento({'id': {{evento.id}} })" ng-if="evento.situacao == 'FINALIZADO'"
+
+
+                                <a ui-sref="eventosRelatoriocapacitadosPorModalidade-eventosRelatoriolistaInscricaoModalidade({'id': {{evento.id}} })" 
                                    tooltip
                                    data-placement="top"
-                                   title="Resultados"><span class="fas fa-clipboard-check" aria-hidden="true"></span></a>
-
-                                <a ui-sref="eventosRelatoriocapacitadosPorModalidade-eventosRelatoriolistaInscricaoModalidade({'id': {{evento.listaDeInscricaoId}} })"
-                                   tooltip
-                                   data-placement="top"
-                                   title="Imprimir"><span class="fas fa-print"></span></a>
+                                   title="Resultados"><span class="fas fa-print" aria-hidden="true"></span></a>
 
 
-                                <!--<a ui-sref="" ng-click="vm.marcarExclusao(evento.id)"
-                                tooltip
-                                data-toggle="modal"
-                                data-placement="top"
-                                title="Excluir"
-                                data-target="#confirm-dialog"><span class="fa fa-trash"></span></a>-->
                             </span>
                         </td>
                     </tr>
