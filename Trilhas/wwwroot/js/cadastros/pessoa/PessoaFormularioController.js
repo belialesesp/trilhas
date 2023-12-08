@@ -79,7 +79,39 @@ function PessoaFormularioController($state, $stateParams, $q, $http, $scope, Ser
     vm.atualizarPessoa = async function (cpf) {
         try
         {
-            const response = await $http.get(`/pessoas/atualizar/${cpf}`);
+            return $http.get(`/pessoas/atualizar/${cpf}`).then(function (response) {
+                debugger;
+
+                var _dadosPessoais = response.data;
+
+                vm.pessoa.nome = _dadosPessoais.nome;
+                vm.pessoa.logradouro = _dadosPessoais.logradouro;
+                vm.pessoa.bairro  = _dadosPessoais.bairro;
+                vm.pessoa.cep = _dadosPessoais.cep;
+                vm.pessoa.complemento = _dadosPessoais.complemento;
+                vm.pessoa.numero = _dadosPessoais.numero;
+                vm.pessoa.ufIdentidade = _dadosPessoais.uf; 
+
+                vm.pessoa.email = _dadosPessoais.email;
+                
+                vm.pessoa.numeroFuncional = _dadosPessoais.numeroFuncional;
+
+                
+                vm.pessoa.dataNascimento = new Date(_dadosPessoais.dataNascimento);
+                
+                vm.pessoa.flagDeficiente = _dadosPessoais.flagDeficiente;
+                vm.pessoa.ufIdentidade = _dadosPessoais.ufIdentidade;
+                vm.contato.numero = _dadosPessoais.numeroContato;
+
+                ////E o e-mail? pq está ficando em vermelho?
+                //vc está clicando em salvar ?
+                //não, eu dei enter deve ser isso 
+
+
+               
+
+
+            });
             
             if (vm.pessoa.storageError) {
                 toastr["warning"](`${vm.pessoa.storageError}<br/><a href="/admin/storagestatus" target="_blank">Mais detalhes...</a>`);
