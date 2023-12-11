@@ -76,23 +76,42 @@ function PessoaFormularioController($state, $stateParams, $q, $http, $scope, Ser
         });
     };
 
-    vm.atualizarPessoa = function (cpf) {
+    vm.atualizarPessoa = async function (cpf) {
         try
         {
             return $http.get(`/pessoas/atualizar/${cpf}`).then(function (response) {
-                if (response.data !== null) {
-                    vm.pessoa.numeroFuncional = response.data.numeroFuncional.toString();
-                    vm.pessoa.nome = response.data.nome;
-                    vm.pessoa.logradouro = response.data.logradouro;
-                    vm.pessoa.bairro = response.data.bairro;
-                    vm.pessoa.cep = response.data.cep.toString();
-                    vm.pessoa.complemento = response.data.complemento;
-                    vm.pessoa.uf = response.data.uf;
-                    vm.pessoa.email = response.data.email;
 
-                    toastr["success"]("Dados do servidor recuperados com sucesso.", "Sucesso");
+                var _dadosPessoais = response.data;
+                if (_dadosPessoais != null) {
+
+                    vm.pessoa.nome = _dadosPessoais.nome;
+                    vm.pessoa.logradouro = _dadosPessoais.logradouro;
+                    vm.pessoa.bairro = _dadosPessoais.bairro;
+                    vm.pessoa.cep = _dadosPessoais.cep;
+                    vm.pessoa.complemento = _dadosPessoais.complemento;
+                    vm.pessoa.numero = _dadosPessoais.numero;
+                    vm.pessoa.uf = _dadosPessoais.uf;
+                    vm.carregarMunicipios(vm.pessoa.uf);
+
+                    vm.pessoa.email = _dadosPessoais.email;
+
+                    vm.pessoa.numeroFuncional = _dadosPessoais.numeroFuncional;
+
+
+                    vm.pessoa.dataNascimento = new Date(_dadosPessoais.dataNascimento);
+
+                    vm.pessoa.flagDeficiente = _dadosPessoais.flagDeficiente;
+                    vm.contato.numero = _dadosPessoais.numeroContato;
+                    toastr["success"]("Dados do servidor recuperados com sucesso.");
+
+
                 }
+
             });
+            
+            if (vm.pessoa.storageError) {
+                toastr["warning"](`${vm.pessoa.storageError}<br/><a href="/admin/storagestatus" target="_blank">Mais detalhes...</a>`);
+            }
         } catch (error) {
             console.error('Erro ao atualizar pessoa:', error);
         }
