@@ -90,7 +90,8 @@ function PessoaFormularioController($state, $stateParams, $q, $http, $scope, Ser
                 vm.pessoa.cep = _dadosPessoais.cep;
                 vm.pessoa.complemento = _dadosPessoais.complemento;
                 vm.pessoa.numero = _dadosPessoais.numero;
-                vm.pessoa.ufIdentidade = _dadosPessoais.uf; 
+                vm.pessoa.uf = _dadosPessoais.uf; 
+                vm.carregarMunicipios(vm.pessoa.uf);
 
                 vm.pessoa.email = _dadosPessoais.email;
                 
@@ -100,12 +101,9 @@ function PessoaFormularioController($state, $stateParams, $q, $http, $scope, Ser
                 vm.pessoa.dataNascimento = new Date(_dadosPessoais.dataNascimento);
                 
                 vm.pessoa.flagDeficiente = _dadosPessoais.flagDeficiente;
-                vm.pessoa.ufIdentidade = _dadosPessoais.ufIdentidade;
                 vm.contato.numero = _dadosPessoais.numeroContato;
 
-                ////E o e-mail? pq está ficando em vermelho?
-                //vc está clicando em salvar ?
-                //não, eu dei enter deve ser isso 
+               
 
 
                
