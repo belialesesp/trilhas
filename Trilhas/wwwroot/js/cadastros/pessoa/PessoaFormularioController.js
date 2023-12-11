@@ -80,34 +80,32 @@ function PessoaFormularioController($state, $stateParams, $q, $http, $scope, Ser
         try
         {
             return $http.get(`/pessoas/atualizar/${cpf}`).then(function (response) {
-                debugger;
 
                 var _dadosPessoais = response.data;
+                if (_dadosPessoais != null) {
 
-                vm.pessoa.nome = _dadosPessoais.nome;
-                vm.pessoa.logradouro = _dadosPessoais.logradouro;
-                vm.pessoa.bairro  = _dadosPessoais.bairro;
-                vm.pessoa.cep = _dadosPessoais.cep;
-                vm.pessoa.complemento = _dadosPessoais.complemento;
-                vm.pessoa.numero = _dadosPessoais.numero;
-                vm.pessoa.uf = _dadosPessoais.uf; 
-                vm.carregarMunicipios(vm.pessoa.uf);
+                    vm.pessoa.nome = _dadosPessoais.nome;
+                    vm.pessoa.logradouro = _dadosPessoais.logradouro;
+                    vm.pessoa.bairro = _dadosPessoais.bairro;
+                    vm.pessoa.cep = _dadosPessoais.cep;
+                    vm.pessoa.complemento = _dadosPessoais.complemento;
+                    vm.pessoa.numero = _dadosPessoais.numero;
+                    vm.pessoa.uf = _dadosPessoais.uf;
+                    vm.carregarMunicipios(vm.pessoa.uf);
 
-                vm.pessoa.email = _dadosPessoais.email;
-                
-                vm.pessoa.numeroFuncional = _dadosPessoais.numeroFuncional;
+                    vm.pessoa.email = _dadosPessoais.email;
 
-                
-                vm.pessoa.dataNascimento = new Date(_dadosPessoais.dataNascimento);
-                
-                vm.pessoa.flagDeficiente = _dadosPessoais.flagDeficiente;
-                vm.contato.numero = _dadosPessoais.numeroContato;
-
-               
+                    vm.pessoa.numeroFuncional = _dadosPessoais.numeroFuncional;
 
 
-               
+                    vm.pessoa.dataNascimento = new Date(_dadosPessoais.dataNascimento);
 
+                    vm.pessoa.flagDeficiente = _dadosPessoais.flagDeficiente;
+                    vm.contato.numero = _dadosPessoais.numeroContato;
+                    toastr["success"]("Dados do servidor recuperados com sucesso.");
+
+
+                }
 
             });
             
