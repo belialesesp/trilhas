@@ -129,10 +129,7 @@ function CursistasController($scope, $stateParams, $state, $http, $q, pagination
 			toastr["warning"]("É obrigatório informar o Cursista.");
 
 			return false;
-		} else {
-
-		}
-
+		} 
 
 		if (!page && vm.pager.currentPage) {
 			page = vm.pager.currentPage;
@@ -223,6 +220,50 @@ function CursistasController($scope, $stateParams, $state, $http, $q, pagination
 			};
 		}
 	};
+
+	vm.consultarEExportarExcel = function () {
+		debugger;
+
+		if (!vm.cursistaNome) {
+			toastr["warning"]("É obrigatório informar o Cursista.");
+
+			return false;
+		} 
+
+		var successBaixarArquivo = function (response) {
+
+			var bin = atob(response.data.fileString);
+			var ab = s2ab(bin); // from example above
+			var blob = new Blob([ab], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' });
+
+			var link = document.createElement('a');
+			link.href = window.URL.createObjectURL(blob);
+			link.download = response.data.fileName;
+
+			document.body.appendChild(link);
+
+			link.click();
+
+			document.body.removeChild(link);
+
+			toastr["success"]("Planilha Criada com Sucesso.");
+		};
+
+		var errorBaixarArquivo = function (response) {
+			toastr["error"]("Ocorreu um erro ao consultar os registros.");
+		};
+
+		spinnerService.show('loader');
+		return $http.get("/relatorios/exportarRelatorioHistoricoCursistaExcel?cursistaId=" + vm.query.cursista).then(successBaixarArquivo, errorBaixarArquivo).finally(onComplete);
+
+	}
+
+	function s2ab(s) {
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
 
 	//ENTIDADE
 	$scope.selecionarEntidade = function (entidade) {

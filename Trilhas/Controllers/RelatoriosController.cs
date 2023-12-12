@@ -15,14 +15,17 @@ namespace Trilhas.Controllers
 		private readonly PessoaService _pessoaService;
 		private readonly CertificadoService _certificadoService;
 		private readonly CertificadoMapper _mapper;
+        private readonly RelatorioService _relatorioService;
 
-		public RelatoriosController(PessoaService pessoaService, EventoService eventoService, CertificadoService certificadoService)
+        public RelatoriosController(PessoaService pessoaService, EventoService eventoService, CertificadoService certificadoService, RelatorioService relatorioService)
 		{
 			_pessoaService = pessoaService;
 			_eventoService = eventoService;
 			_mapper = new CertificadoMapper();
 			_certificadoService = certificadoService;
-		}
+			_relatorioService = relatorioService;
+
+        }
 
 		public IActionResult Certificado(long inscricaoId)
 		{
@@ -59,7 +62,25 @@ namespace Trilhas.Controllers
 			return View(vm);
 		}
 
-		public IActionResult Index()
+        [HttpGet]
+        public IActionResult ExportarRelatorioHistoricoCursistaExcel(long cursistaId)
+        {
+            RelatorioHistoricoCursistaViewModel vm = new RelatorioHistoricoCursistaViewModel();
+
+            Pessoa cursista = _pessoaService.RecuperarPessoaCompleto(cursistaId);
+
+            List<Evento> eventos = _eventoService.RecuperaEventoCursista(cursistaId);
+            vm = _mapper.MapearRelatorioHistoricoCursista(cursista, eventos);
+
+
+
+            var relatorio = _relatorioService.GerarPlanilhaRelatorioHistoricoCursistaExcel(vm);
+
+            return new ObjectResult(relatorio);
+        }
+
+
+        public IActionResult Index()
         {
             return View();
         }

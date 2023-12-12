@@ -19,7 +19,7 @@
     </div>
 
     <div class="content-header">
-        <h5 id="aparece">Cursistas</h5>
+        <h5 id="aparece">Relatório Historico de Cursistas</h5>
         <div id="aparece" class="line"></div>
     </div>
 
@@ -201,7 +201,7 @@
                 <tbody>
                     <tr ng-repeat="cursista in vm.cursistas">
                         <td>
-                            {{cursista.nome}} <a ui-sref="pessoas-edicao({'id': {{cursista.id}}})" title="Editar Pessoa"><em class="fa fa-pencil-alt float-right"></em></a>
+                            {{cursista.nome}} 
                         </td>
                         <td>{{cursista.cpf}}</td>
                         <td>{{cursista.entidade}}</td>
@@ -211,7 +211,6 @@
                         <td class="d-none d-md-table-cell text-right">
                         </td>
                         <td class="table-actions">
-                            <a href="/relatorios/relatorioHistoricoCursista?cursistaId={{cursista.id}}" title="Histórico do Cursista" target="_blank"><em class="fas fa-book"></em></a>
                         </td>
                     </tr>
 
@@ -224,9 +223,9 @@
         </div>
     </div>
 
-    <div class="row no-print">
+    <div class="row no-print" ng-if="vm.query.cursista">
         <div class="form-group col-md-2 col-4 ">
-            <button href="/relatorios/relatorioHistoricoCursista?cursistaId={{cursista.id}}" class="btn btn-info btn-sm btn-block" ng-click="vm.imprimir()"><em class="fas fa-print"></em>Imprimir</button>
+            <a class="btn btn-info btn-sm btn-block" href="/relatorios/relatorioHistoricoCursista?cursistaId={{vm.query.cursista}}" title="Histórico do Cursista" target="_blank"><em class="fas fa-print"></em>Imprimir</a>
         </div>
 
         <div class="form-group col-md-2 col-4">

@@ -179,8 +179,10 @@ angular.module('trilhasapp')
     })
 
    .state('eventosRelatorioListaDePresenca', {
-        url: '/evento/lista-de-presenca?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
-        templateUrl: '/js/relatorios/ListadePresenca/relatorio-lista-de-presenca.html'
+         url: '/eventosListaPresenca',
+        templateUrl:'/js/relatorios/ListadePresenca/relatorio-lista-de-presenca.html'
+
+           
    })
 
 	.state('eventos-agendamento', {

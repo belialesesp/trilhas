@@ -47,6 +47,43 @@ function EventoListaPresencaController($scope, $http, ServerErrorsService) {
 		return $http.get('/listaPresenca/buscarDadosParaRegistrarPresenca', { params: vm.query }).then(success, error);
 	};
 
+
+	vm.filtrarRelatorio = function (page) {
+		debugger;
+
+		if (!vm.cursistaNome) {
+			toastr["warning"]("É obrigatório informar o Cursista.");
+
+			return false;
+		}
+
+		if (!page && vm.pager.currentPage) {
+			page = vm.pager.currentPage;
+		}
+		if (page < 1 || (page > vm.pager.totalPages && vm.pager.totalPages > 0)) {
+			page = 1;
+		}
+
+		$state.go('relatorioHistoricoDeCursista',
+			{
+				'cursista': vm.query.cursista,
+				'curso': vm.query.curso,
+				'modalidade': vm.query.modalidade,
+				'entidade': vm.query.entidade,
+				'uf': vm.query.uf,
+				'municipio': vm.query.municipio,
+				'dataInicio': vm.query.dataInicio,
+				'dataFim': vm.query.dataFim,
+				'page': page,
+				'pageSize': vm.pageSize,
+				'desistentes': vm.query.desistentes
+			},
+			{ reload: true });
+	};
+
+
+
+
 	vm.atualizarListaInscritos = function (horario) {
 		if (horario.selecionar) {
 			for (var i in vm.listaPresenca.eventoHorarios) {
@@ -77,6 +114,8 @@ function EventoListaPresencaController($scope, $http, ServerErrorsService) {
 			toastr["error"]("Ocorreu um erro ao salvar o registro.");
 		});
 	};
+
+
 
 	vm.relatorioHorario = function () {
 		var success = function (response) { };

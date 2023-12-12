@@ -11,6 +11,7 @@ using Trilhas.Extensions;
 using Trilhas.Helper;
 using Trilhas.Helper.Contract;
 using Trilhas.Models.Evento;
+using Trilhas.Models.Relatorio;
 
 namespace Trilhas.Services
 {
@@ -18,7 +19,8 @@ namespace Trilhas.Services
     {
         private readonly FileHelper _fileHelper;
 
-        public RelatorioService(FileHelper fileHelper) {
+        public RelatorioService(FileHelper fileHelper)
+        {
 
             _fileHelper = fileHelper;
         }
@@ -101,8 +103,6 @@ namespace Trilhas.Services
                 worksheet.Cell("L1").Value = "Situação";
             }
         }
-
-    
 
         public DownloadFileContract GerarPlanilhaRelatorioCapacitadosPorCurso(EventoFinalizadoViewModel evento)
         {
@@ -201,7 +201,7 @@ namespace Trilhas.Services
 
         }
 
-    public DownloadFileContract GerarPlanilhaRelatorioCursista(ListaInscritosViewModel model)
+        public DownloadFileContract GerarPlanilhaRelatorioCursista(ListaInscritosViewModel model)
         {
             string filePathName = _fileHelper.GetAppDataPath() + "RelCursista" + DateTime.Now.ToString("yyyyMMddHHmmss")  + ".xlsx";
 
@@ -209,12 +209,12 @@ namespace Trilhas.Services
                 File.Delete(filePathName);
 
             int line = 1;
-          
+
 
             using (var workbook = new XLWorkbook())
             {
                 var planilha = workbook.Worksheets.Add("CapacitadosPorCurso");
-            
+
                 planilha.Cell("A" + line).Value = "Curso: ";
                 planilha.Cell("B" + line).Value = model.Evento.Nome;
 
@@ -280,6 +280,75 @@ namespace Trilhas.Services
                 worksheet.Cell("J1").Value = "Dec";
                 worksheet.Cell("K1").Value = "Des";
                 worksheet.Cell("L1").Value = "Situação";
+            }
+
+
+        }
+
+
+        public DownloadFileContract GerarPlanilhaRelatorioHistoricoCursistaExcel(RelatorioHistoricoCursistaViewModel model)
+        {
+            string filePathName = _fileHelper.GetAppDataPath() + "RelHistoricoCursista" + DateTime.Now.ToString("yyyyMMddHHmmss")  + ".xlsx";
+
+            if (File.Exists(filePathName))
+                File.Delete(filePathName);
+
+            int line = 1;
+
+
+            
+
+            using (var workbook = new XLWorkbook())
+            {
+                var planilha = workbook.Worksheets.Add("HistoricoCursista");
+
+                planilha.Cell("A" + line).Value = "Cursista: ";
+                planilha.Cell("B" + line).Value = model.Nome;
+
+                line++;
+                planilha.Cell("A" + line).Value = "Entidade ";
+                planilha.Cell("B" + line).Value = model.Entidade;
+
+                line++;
+                planilha.Cell("A" + line).Value = "Endereço";
+                planilha.Cell("B" + line).Value = model.Endereco;
+
+                line++;
+                planilha.Cell("A" + line).Value = "Contato";
+                planilha.Cell("B" + line).Value = model.Telefone;
+
+
+                line++;
+                line++;
+
+                planilha.Cell("A" + line).Value = "Curso";
+                planilha.Cell("B" + line).Value = "Entidade";
+                planilha.Cell("C" + line).Value = "Periodo";
+                planilha.Cell("D" + line).Value = "E-mail";
+                planilha.Cell("E" + line).Value = "Data Inscrição";
+
+
+
+                line++;
+                foreach (var _evento in model.ListaEventos)
+                {
+
+                    planilha.Cell("A" + line).Value = _evento.Nome;
+                    planilha.Cell("B" + line).Value = _evento.Entidade;
+                    planilha.Cell("C" + line).Value = _evento.Docente;
+                    planilha.Cell("D" + line).Value = _evento.Periodo;
+                    planilha.Cell("E" + line).Value = _evento.Frequencia;
+                    planilha.Cell("F" + line).Value = _evento.Resultado;
+
+
+                    line++;
+                }
+
+
+
+                workbook.SaveAs(filePathName);
+
+                return _fileHelper.ObterBytesDoArquivoParaDownload(filePathName, "RelatorioHistoricoCursista.xlsx");
             }
 
 
