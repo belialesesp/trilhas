@@ -11,6 +11,7 @@ using Trilhas.Extensions;
 using Trilhas.Helper;
 using Trilhas.Helper.Contract;
 using Trilhas.Models.Evento;
+using Trilhas.Models.Evento.Relatorios;
 using Trilhas.Models.Relatorio;
 
 namespace Trilhas.Services
@@ -285,7 +286,6 @@ namespace Trilhas.Services
 
         }
 
-
         public DownloadFileContract GerarPlanilhaRelatorioHistoricoCursistaExcel(RelatorioHistoricoCursistaViewModel model)
         {
             string filePathName = _fileHelper.GetAppDataPath() + "RelHistoricoCursista" + DateTime.Now.ToString("yyyyMMddHHmmss")  + ".xlsx";
@@ -353,6 +353,147 @@ namespace Trilhas.Services
 
 
         }
+
+        public DownloadFileContract GerarPlanilhaRelatorioListaIndividual(RelatorioListaPresencaViewModel model)
+        {
+            string filePathName = _fileHelper.GetAppDataPath() + "RelCredenciamento" + DateTime.Now.ToString("yyyyMMddHHmmss")  + ".xlsx";
+
+            if (File.Exists(filePathName))
+                File.Delete(filePathName);
+
+            int line = 1;
+
+
+            using (var workbook = new XLWorkbook())
+            {
+                var planilha = workbook.Worksheets.Add("Credenciamento");
+
+
+                planilha.Cell("A" + line).Value = "Curso: ";
+                planilha.Cell("B" + line).Value = model.Evento.EventoNome;
+
+                line++;
+                planilha.Cell("A" + line).Value = "Entidade Demandante: ";
+                planilha.Cell("B" + line).Value = model.Evento.EntidadeNome;
+
+                line++;
+                planilha.Cell("A" + line).Value = "Local: ";
+                planilha.Cell("B" + line).Value = model.Evento.LocalNome;
+
+                planilha.Cell("C" + line).Value = "Data: ";
+                planilha.Cell("D" + line).Value = model.DataInicio.ToString("dd/MM/yyyy");
+
+                planilha.Cell("E" + line).Value = "Hora: ";
+                planilha.Cell("F" + line).Value = model.DataInicio.ToString("HH:mm") + " às " + model.DataFim.ToString("HH:mm");
+
+                line++;
+                line++;
+
+
+                planilha.Cell("A" + line).Value = "NFUNC";
+                planilha.Cell("B" + line).Value = "Nome";
+                planilha.Cell("C" + line).Value = "CPF";
+                planilha.Cell("D" + line).Value = "Entidade";
+                planilha.Cell("E" + line).Value = "Assinatura";
+
+                line++;
+
+
+                foreach (var inscrito in model.ListaInscritos)
+                {
+
+                    planilha.Cell("A" + line).Value = inscrito.NumeroFuncional;
+                    planilha.Cell("B" + line).Value = inscrito.CursistaNome;
+                    planilha.Cell("C" + line).Value = inscrito.CursistaCPF;
+                    planilha.Cell("D" + line).Value = inscrito.EntidadeSigla;
+
+
+                    line++;
+                }
+
+                workbook.SaveAs(filePathName);
+
+                return _fileHelper.ObterBytesDoArquivoParaDownload(filePathName, "RelCredenciamento.xlsx");
+            }
+        }
+
+        public DownloadFileContract GerarPlanilhaRelatorioListaCompleta(RelatorioListaPresencaViewModel model)
+        {
+            string filePathName = _fileHelper.GetAppDataPath() + "RelCredenciamento" + DateTime.Now.ToString("yyyyMMddHHmmss")  + ".xlsx";
+
+            if (File.Exists(filePathName))
+                File.Delete(filePathName);
+
+            int line = 1;
+
+
+            using (var workbook = new XLWorkbook())
+            {
+                var planilha = workbook.Worksheets.Add("Credenciamento");
+
+                foreach (var data in model.Datas)
+                {
+                    planilha.Cell("A" + line).Value = "Curso: ";
+                    planilha.Cell("B" + line).Value = model.Evento.EventoNome;
+
+                    line++;
+                    planilha.Cell("A" + line).Value = "Entidade Demandante: ";
+                    planilha.Cell("B" + line).Value = model.Evento.EntidadeNome;
+
+                    line++;
+                    planilha.Cell("A" + line).Value = "Local: ";
+                    planilha.Cell("B" + line).Value = model.Evento.LocalNome;
+
+                    planilha.Cell("C" + line).Value = "Data: ";
+                    planilha.Cell("D" + line).Value = data.Data;
+
+                    planilha.Cell("E" + line).Value = "Hora: ";
+                    planilha.Cell("F" + line).Value = data.HoraInicio.ToString("HH:mm") + " às " + data.HoraFim.ToString("HH:mm");
+
+                    line++;
+                    line++;
+
+
+                    planilha.Cell("A" + line).Value = "NFUNC";
+                    planilha.Cell("B" + line).Value = "Nome";
+                    planilha.Cell("C" + line).Value = "CPF";
+                    planilha.Cell("D" + line).Value = "Entidade";
+                    planilha.Cell("E" + line).Value = "Assinatura";
+
+                    line++;
+
+
+                    foreach (var inscrito in model.ListaInscritos)
+                    {
+
+                        planilha.Cell("A" + line).Value = inscrito.NumeroFuncional;
+                        planilha.Cell("B" + line).Value = inscrito.CursistaNome;
+                        planilha.Cell("C" + line).Value = inscrito.CursistaCPF;
+                        planilha.Cell("D" + line).Value = inscrito.EntidadeSigla;
+
+
+
+
+                        line++;
+                    }
+
+                    line++;
+                    line++;
+
+
+                }
+
+
+
+                workbook.SaveAs(filePathName);
+
+                return _fileHelper.ObterBytesDoArquivoParaDownload(filePathName, "RelCredenciamento.xlsx");
+            }
+
+
+        }
+
+
 
 
     }

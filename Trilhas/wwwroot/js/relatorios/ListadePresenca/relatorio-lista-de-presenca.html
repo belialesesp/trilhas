@@ -33,30 +33,70 @@
         </div>
     </form>
 
-    <div class="row d-inline-flex mb-3" ng-if="vm.listaPresenca.eventoId">
-        <div class="col-12">
-            <a href="/listaInscricaoManual/ListaIndividual?horarioId={{vm.horarioId}}&eventoId={{vm.listaPresenca.eventoId}}" target="_blank"
-               tooltip
-               data-placement="top"
-               class="btn btn-primary mr-2"
-               ng-class="{'disabled' : !vm.listaPresenca.inscritos || vm.listaPresenca.inscritos.length === 0 || vm.desabilitarListaPresenca}"
-               title="Imprimir Lista de Presença">
-                <em class="fa fa-print"></em> Horário selecionado
-            </a>
-            <a href="/listaInscricaoManual/listaCompleta?eventoId={{vm.listaPresenca.eventoId}}" target="_blank"
-               tooltip
-               data-placement="top"
-               class="btn btn-primary"
-               ng-class="{'disabled' : !vm.listaPresenca.inscritos || vm.listaPresenca.inscritos.length === 0}"
-               title="Imprimir Lista de Presença Completa">
-                <em class="fa fa-print"></em> Todos os Horários
-            </a>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12" ng-if="vm.listaPresenca.eventoId">
+            <table class="table ">
+                <tr>
+                    <td>
+                        <a href="/listaInscricaoManual/ListaIndividual?horarioId={{vm.horarioId}}&eventoId={{vm.listaPresenca.eventoId}}" target="_blank"
+                           tooltip
+                           data-placement="top"
+                           class="btn btn-primary mr-2"
+                           ng-class="{'disabled' : !vm.listaPresenca.inscritos || vm.listaPresenca.inscritos.length === 0 || vm.desabilitarListaPresenca}"
+                           title="Imprimir Lista de Presença">
+                            <em class="fa fa-print"></em> Horário selecionado
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <!--btn btn-info btn-sm btn-block-->
+                    <td>
+
+                        <button class="btn btn-primary" 
+                           tooltip
+                           data-placement="top" ng-disabled="!vm.listaPresenca.inscritos || vm.listaPresenca.inscritos.length === 0 || vm.desabilitarListaPresenca" ng-click="vm.consultarEExportarExcel_Individual()"><em class="fa fa-file-excel"></em>Gerar Planilha - Horário Selecionado</button>
+
+                    </td>
+
+                </tr>
+        </table>
+    </div>
+
+
+
+        <div class="col-md-6 col-sm-12" ng-if="vm.listaPresenca.eventoId">
+            <table class="table ">
+                <tr>
+                    <td>
+                        <a href="/listaInscricaoManual/listaCompleta?eventoId={{vm.listaPresenca.eventoId}}" target="_blank"
+                           tooltip
+                           data-placement="top"
+                           class="btn btn-primary"
+                           ng-class="{'disabled' : !vm.listaPresenca.inscritos || vm.listaPresenca.inscritos.length === 0}"
+                           title="Imprimir Lista de Presença Completa">
+                            <em class="fa fa-print"></em> Todos os Horários
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="btn btn-primary"
+                                tooltip
+                                data-placement="top" ng-disabled="!vm.listaPresenca.inscritos || vm.listaPresenca.inscritos.length === 0" ng-click="vm.consultarEExportarExcel_Geral()">
+                            <em class="fa fa-file-excel"></em>Gerar Planilha - Horário Selecionado
+                        </button>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 
+
     <div class="row">
         <div class="col-md-6 col-sm-12" ng-if="vm.listaPresenca.eventoHorarios">
-            <table class="table table-striped-custom table-hover">
+            <table class="table ">
                 <thead class="thead-dark">
                     <tr>
                         <th style="width:20%">Módulo</th>
@@ -89,7 +129,7 @@
         </div>
 
         <div class="col-md-6 col-sm-12" ng-if="vm.listaPresenca.inscritos">
-            <table class="table table-striped-custom table-hover">
+            <table class="table ">
                 <thead class="thead-dark">
                     <tr>
                         <th>Nome</th>
