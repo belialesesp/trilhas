@@ -2,9 +2,9 @@
 	.module('trilhasapp')
 	.controller('EventoListaPresencaController', EventoListaPresencaController);
 
-EventoListaPresencaController.$inject = ['$scope', '$http', 'ServerErrorsService'];
+EventoListaPresencaController.$inject = ['$scope', '$http', 'ServerErrorsService', 'spinnerService'];
 
-function EventoListaPresencaController($scope, $http, ServerErrorsService) {
+function EventoListaPresencaController($scope, $http, ServerErrorsService, spinnerService) {
 	var vm = this;
 
 	vm.desabilitarListaPresenca = true;
@@ -47,6 +47,40 @@ function EventoListaPresencaController($scope, $http, ServerErrorsService) {
 		return $http.get('/listaPresenca/buscarDadosParaRegistrarPresenca', { params: vm.query }).then(success, error);
 	};
 
+
+	vm.filtrarRelatorio = function (page) {
+		debugger;
+
+		if (!vm.cursistaNome) {
+			toastr["warning"]("É obrigatório informar o Cursista.");
+
+			return false;
+		}
+
+		if (!page && vm.pager.currentPage) {
+			page = vm.pager.currentPage;
+		}
+		if (page < 1 || (page > vm.pager.totalPages && vm.pager.totalPages > 0)) {
+			page = 1;
+		}
+
+		$state.go('relatorioHistoricoDeCursista',
+			{
+				'cursista': vm.query.cursista,
+				'curso': vm.query.curso,
+				'modalidade': vm.query.modalidade,
+				'entidade': vm.query.entidade,
+				'uf': vm.query.uf,
+				'municipio': vm.query.municipio,
+				'dataInicio': vm.query.dataInicio,
+				'dataFim': vm.query.dataFim,
+				'page': page,
+				'pageSize': vm.pageSize,
+				'desistentes': vm.query.desistentes
+			},
+			{ reload: true });
+	};
+
 	vm.atualizarListaInscritos = function (horario) {
 		if (horario.selecionar) {
 			for (var i in vm.listaPresenca.eventoHorarios) {
@@ -85,4 +119,76 @@ function EventoListaPresencaController($scope, $http, ServerErrorsService) {
 
 		return $http.get('/listaInscricaoManual/index?idHorario=' + vm.idHorario + '&eventoId=' + vm.evento.id).then(success, error);
 	};
+
+	vm.consultarEExportarExcel_Individual = function () {
+		
+		var successBaixarArquivo = function (response) {
+
+			var bin = atob(response.data.fileString);
+			var ab = s2ab(bin); // from example above
+			var blob = new Blob([ab], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' });
+
+			var link = document.createElement('a');
+			link.href = window.URL.createObjectURL(blob);
+			link.download = response.data.fileName;
+
+			document.body.appendChild(link);
+
+			link.click();
+
+			document.body.removeChild(link);
+
+			toastr["success"]("Planilha Criada com Sucesso.");
+			spinnerService.close('loader');
+		};
+
+		var errorBaixarArquivo = function (response) {
+			toastr["error"]("Ocorreu um erro ao consultar os registros.");
+		};
+
+		spinnerService.show('loader');
+		return $http.get("/listaInscricaoManual/ExportarRelatorioListaIndividual?horarioId=" + vm.horarioId + "&eventoId=" + vm.listaPresenca.eventoId).then(successBaixarArquivo, errorBaixarArquivo).finally(onComplete);
+
+	}
+
+	vm.consultarEExportarExcel_Geral = function () {
+
+		var successBaixarArquivo = function (response) {
+
+			var bin = atob(response.data.fileString);
+			var ab = s2ab(bin); // from example above
+			var blob = new Blob([ab], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' });
+
+			var link = document.createElement('a');
+			link.href = window.URL.createObjectURL(blob);
+			link.download = response.data.fileName;
+
+			document.body.appendChild(link);
+
+			link.click();
+
+			document.body.removeChild(link);
+
+			toastr["success"]("Planilha Criada com Sucesso.");
+			spinnerService.close('loader');
+		};
+
+		var errorBaixarArquivo = function (response) {
+			toastr["error"]("Ocorreu um erro ao consultar os registros.");
+		};
+
+		spinnerService.show('loader');
+		return $http.get("/listaInscricaoManual/ExportarRelatorioListaCompleta?eventoId=" + vm.listaPresenca.eventoId).then(successBaixarArquivo, errorBaixarArquivo).finally(onComplete);
+
+	}
+
+	function s2ab(s) {
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+
+	//ENTIDADE
+
 };

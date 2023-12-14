@@ -412,6 +412,8 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
         window.print();
     }
 
+
+
     var consultar = function (page) {
 
         page = parseInt(page);
