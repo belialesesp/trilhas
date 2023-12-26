@@ -3,20 +3,19 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.ServiceModel.Description;
 using Trilhas.Extensions;
 using Trilhas.Settings;
 
 namespace Trilhas.Clients
 {
-    public class SiahresClient
+    public class SiarhesClient
     {
         private const string GRANT_TYPE = "client_credentials";
         private const string URL_TOKEN = "connect/token";
         private readonly HttpClient _httpClient;
-        private readonly SiahresSettings _settings;
+        private readonly SiarhesSettings _settings;
 
-        public SiahresClient(HttpClient httpClient, IOptions<SiahresSettings> settings)
+        public SiarhesClient(HttpClient httpClient, IOptions<SiarhesSettings> settings)
         {
             _settings = settings.Value;
             var base64EncodedString = $"{_settings.ClientId}:{_settings.ClientSecret}".EncodeBase64();

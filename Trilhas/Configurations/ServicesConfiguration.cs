@@ -114,7 +114,7 @@ namespace Trilhas.Configurations
 
         public static void AddHttpClients(this IServiceCollection services)
         {
-            services.AddHttpClient<ISiahresService, SiahresService>();
+            services.AddHttpClient<ISiahresService, SiarhesService>();
         }   
 
         public static void AddServices(this IServiceCollection services)
@@ -122,7 +122,7 @@ namespace Trilhas.Configurations
             services.AddSingleton<MinioService>();
             services.AddSingleton<OpenIdService>();
             services.AddSingleton<FileHelper>();
-            services.AddScoped<ISiahresService, SiahresService>();
+            services.AddScoped<ISiahresService, SiarhesService>();
             services.AddScoped<RelatorioService>();
             services.AddScoped<TrilhasService>();
             services.AddScoped<CadastroService>();
@@ -145,7 +145,7 @@ namespace Trilhas.Configurations
         {
             services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
             services.Configure<OpenIdSettings>(configuration.GetSection("OpenIdSettings"));
-            services.Configure<SiahresSettings>(configuration.GetSection("SiahresSettings"));
+            services.Configure<SiarhesSettings>(configuration.GetSection("SiahresSettings"));
         }
     }
 }

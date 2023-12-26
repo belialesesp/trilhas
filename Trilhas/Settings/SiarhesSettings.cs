@@ -2,7 +2,7 @@
 
 namespace Trilhas.Settings
 {
-    public class SiahresSettings
+    public class SiarhesSettings
     {
         public Uri BaseUrl { get; set; }
         public string Authority { get; set; }

@@ -11,9 +11,9 @@ using Trilhas.Settings;
 
 namespace Trilhas.Services
 {
-    public class SiahresService : SiahresClient, ISiahresService
+    public class SiarhesService : SiarhesClient, ISiahresService
     {
-        public SiahresService(HttpClient httpClient, IOptions<SiahresSettings> settings)
+        public SiarhesService(HttpClient httpClient, IOptions<SiarhesSettings> settings)
             : base(httpClient, settings)
         {
         }
