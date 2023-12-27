@@ -217,7 +217,7 @@ namespace Trilhas.Controllers
                 OrgaoExpedidorIdentidade = orgaoExpedidor,
                 Entidade = entidade,
                 NumeroFuncional = vm.NumeroFuncional,
-                NumeroIdentidade = vm.NumeroIdentidade,
+                NumeroIdentidade = vm.NumeroIdentidade.ToString(),
                 Numero = vm.Numero,
                 NumeroTitulo = vm.NumeroTitulo,
                 Pis = vm.Pis,
@@ -259,7 +259,7 @@ namespace Trilhas.Controllers
             pessoa.Entidade = entidade;
             pessoa.FlagDeficiente = vm.FlagDeficiente;
             pessoa.NumeroFuncional = vm.NumeroFuncional;
-            pessoa.NumeroIdentidade = vm.NumeroIdentidade;
+            pessoa.NumeroIdentidade = vm.NumeroIdentidade.ToString();
             pessoa.Numero = vm.Numero;
             pessoa.NumeroTitulo = vm.NumeroTitulo;
             pessoa.Pis = vm.Pis;
@@ -289,7 +289,7 @@ namespace Trilhas.Controllers
             {
                 ModelState.AddModelError("Data de Nascimento", "Informe a Data de Nascimento da Pessoa.");
             }
-            if (string.IsNullOrWhiteSpace(vm.NumeroIdentidade))
+            if (vm.NumeroIdentidade == null)
             {
                 ModelState.AddModelError("RG", "Informe o RG da Pessoa.");
             }

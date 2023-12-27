@@ -13,7 +13,7 @@ namespace Trilhas.Models.Cadastros.Pessoa
 		public string NumeroFuncional { get; set; }
 		public string NomeSocial { get; set; }
 		public DateTime DataNascimento { get; set; }
-		public string NumeroIdentidade { get; set; }
+		public long? NumeroIdentidade { get; set; }
 		public string UfIdentidade { get; set; }
 		public string Email { get; set; }
 
