@@ -145,7 +145,7 @@ namespace Trilhas.Configurations
         {
             services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
             services.Configure<OpenIdSettings>(configuration.GetSection("OpenIdSettings"));
-            services.Configure<SiarhesSettings>(configuration.GetSection("SiahresSettings"));
+            services.Configure<SiarhesSettings>(configuration.GetSection("SiarhesSettings"));
         }
     }
 }
