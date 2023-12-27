@@ -19,11 +19,6 @@ namespace Trilhas.Services
             return _context.Municipios.FirstOrDefault(x => x.Id == codigoMunicipio);
         }
 
-        //public long RecuperarIdMunicipio(string municipioNome)
-        //{
-        //    return _context.Municipios.FirstOrDefault(x => x.NomeMunicipio == municipioNome).Id;
-        //}
-
         public List<Municipio> RecuperarMunicipios(string uf)
         {
             return _context.Municipios
@@ -34,7 +29,7 @@ namespace Trilhas.Services
 
         public List<string> RecuperarUfs()
         {
-            return _context.Municipios.OrderBy(x => x.Uf).Select(x => x.Uf).Distinct().ToList();
+            return _context.Municipios.Select(x => x.Uf).Distinct().OrderBy(x => x).ToList();
         }
     }
 }
