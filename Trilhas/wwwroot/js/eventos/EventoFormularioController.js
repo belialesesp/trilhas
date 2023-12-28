@@ -165,6 +165,18 @@ function EventoFormularioController($state, $stateParams, $http, $q, $scope, Ser
             toastr["error"]('Preencha corretamente os campos assinalados no formulário.', 'Preenchimento inválido');
 
             return;
+
+
+        }
+
+        if (vm.evento.curso.modalidadeDeCurso == "PRESENCIAL" || vm.evento.curso.modalidadeDeCurso == "1") {
+            vm.evento.curso.modalidadeDeCurso = 1;
+        }
+        if (vm.evento.curso.modalidadeDeCurso == "SEMI PRESENCIAL" || vm.evento.curso.modalidadeDeCurso == "2") {
+            vm.evento.curso.modalidadeDeCurso = 2;
+        }
+        if (vm.evento.curso.modalidadeDeCurso == "EAD" || vm.evento.curso.modalidadeDeCurso == "0"  ) {
+            vm.evento.curso.modalidadeDeCurso = 0;
         }
 
         return $http.post('/eventos/salvar', vm.evento).then(success, error).finally(onComplete);
