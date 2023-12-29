@@ -104,10 +104,10 @@ namespace Trilhas.Controllers.Mappers
                     case "curso":
                         Curso curso = (Curso)solucao;
                         vm.TipoDeSolucao = "Curso";
-                        vm.ModalidadeDeCurso = curso.Modalidade.ToString();
+                        vm.ModalidadeDeCurso.Id = (int)curso.Modalidade;
+                        vm.ModalidadeDeCurso.Descricao = curso.Modalidade.ToString();
                         vm.Titulo = curso.Sigla + " - " + curso.Titulo;
                         vm.PermiteCertificado = curso.PermiteCertificado;
-                        vm.Modulos = new List<ModuloViewModel>();
 
                         if (curso.Modulos != null)
                         {

@@ -156,7 +156,7 @@ function DocenteFormularioController($state, $stateParams, $q, $http, $scope, Se
             vm.habilitacao.curso = {
                 'id': curso.id,
                 'titulo': curso.titulo,
-                'modalidade': curso.modalidadeDeCurso,
+                'modalidade': curso.modalidadeDeCurso.descricao,
                 'cargaHoraria': curso.cargaHorariaTotal
             };
         } else {

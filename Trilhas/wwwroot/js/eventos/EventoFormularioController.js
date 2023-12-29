@@ -165,18 +165,6 @@ function EventoFormularioController($state, $stateParams, $http, $q, $scope, Ser
             toastr["error"]('Preencha corretamente os campos assinalados no formulário.', 'Preenchimento inválido');
 
             return;
-
-
-        }
-
-        if (vm.evento.curso.modalidadeDeCurso == "PRESENCIAL" || vm.evento.curso.modalidadeDeCurso == "1") {
-            vm.evento.curso.modalidadeDeCurso = 1;
-        }
-        if (vm.evento.curso.modalidadeDeCurso == "SEMI PRESENCIAL" || vm.evento.curso.modalidadeDeCurso == "2") {
-            vm.evento.curso.modalidadeDeCurso = 2;
-        }
-        if (vm.evento.curso.modalidadeDeCurso == "EAD" || vm.evento.curso.modalidadeDeCurso == "0"  ) {
-            vm.evento.curso.modalidadeDeCurso = 0;
         }
 
         return $http.post('/eventos/salvar', vm.evento).then(success, error).finally(onComplete);
@@ -349,8 +337,9 @@ function EventoFormularioController($state, $stateParams, $http, $q, $scope, Ser
     //SOLUCAO
     $scope.selecionarCurso = function (curso) {
         if (curso) {
-            vm.flagEad = curso.modalidadeDeCurso.toUpperCase() === 'EAD' ? true : false;
+            vm.flagEad = curso.modalidadeDeCurso.descricao.toUpperCase() === 'EAD' ? true : false;
             vm.evento.curso = curso;
+            vm.evento.curso.modalidadeDeCurso = curso.modalidadeDeCurso.id;
             vm.evento.certificadoId = (vm.evento.curso.permiteCertificado && vm.certificados) ? vm.certificados.find(x => x.padrao).id : null;
             vm.evento.declaracaoCursistaId = vm.declaracaoCursista ? vm.declaracaoCursista.find(x => x.padrao).id : null;
             vm.evento.declaracaoDocenteId = vm.declaracaoDocente ? vm.declaracaoDocente.find(x => x.padrao).id : null;
