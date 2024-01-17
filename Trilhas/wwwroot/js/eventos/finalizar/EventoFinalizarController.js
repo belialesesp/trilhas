@@ -11,6 +11,7 @@ function EventoFinalizarController($stateParams, $q, $http, spinnerService, $sco
     vm.eventoListaInscrito = {};
 	vm.dataAtual = new Date();
     vm.query = {};
+    vm.habilitaEnviarSiarhes = false;
 
     vm.init = function () {
         var promises = [];
@@ -78,6 +79,21 @@ function EventoFinalizarController($stateParams, $q, $http, spinnerService, $sco
         spinnerService.show('loader');
         return $http.get("/eventos/exportarRelatorioCapacitadosPorCursoExcel?id=" + $stateParams.id, { params: vm.query }).then(successBaixarArquivo, errorBaixarArquivo).finally(onComplete);
 
+    }
+
+    vm.selecionarInscrito = function (inscrito) {
+        vm.habilitaEnviarSiarhes = false;
+
+        for (var i in vm.evento.inscritos) {
+            
+            if (vm.evento.inscritos[i].id == inscrito.id) {
+                vm.evento.inscritos[i].selecionar = inscrito.selecionar;
+            }
+
+            if (vm.evento.inscritos[i].selecionar) {
+                vm.habilitaEnviarSiarhes = true;
+            }
+        }
     }
 
     function s2ab(s) {

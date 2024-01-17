@@ -289,7 +289,8 @@ namespace Trilhas.Controllers.Mappers
                     Id = inscrito.Id,
                     Cursista = MapearCursistaViewModel(inscrito.Cursista),
                     Situacao = inscrito.Situacao.ToString(),
-                    Frequencia = inscrito.Frequencia
+                    Frequencia = inscrito.Frequencia,
+                    Selecionar = false
                 };
 
                 if (inscrito.Penalidade != null)

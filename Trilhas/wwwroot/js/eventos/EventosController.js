@@ -601,8 +601,6 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
 
     vm.carregarEntidades = function () {
         return $http.get('/entidades/buscar').then(function (response) {
-            debugger;
-
             vm.entidades = response.data;
         });
     };

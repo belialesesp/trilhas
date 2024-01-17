@@ -92,6 +92,7 @@
                         <th style="width:35%">Cursista</th>
                         <th style="width:10%">Situação</th>
                         <th style="width:10%">Frequência</th>
+                        <th style="width:10%">Envio SIARHES</th>
                         <th style="width:10%" class="table-actions"></th>
                     </tr>
                 </thead>
@@ -102,6 +103,18 @@
                         <td>{{inscrito.cursista.nome}}</td>
                         <td>{{inscrito.situacao}}</td>
                         <td>{{inscrito.frequencia}}%</td>
+                        <td class="text-center">
+                            <div class="form-check form-check-inline">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="selecionar{{inscrito.id}}"
+                                           ng-if="(inscrito.situacao == 'CERTIFICADO' || inscrito.situacao == 'DECLARADO')"
+                                           ng-model="inscrito.selecionar" 
+                                           ng-change="vm.selecionarInscrito(inscrito)" />
+                                    <label class="custom-control-label" for="selecionar{{inscrito.id}}"
+                                           ng-if="(inscrito.situacao == 'CERTIFICADO' || inscrito.situacao == 'DECLARADO')"></label>
+                                </div>
+                            </div>
+                        </td>
                         <td class="text-center">
                             <a ui-sref=""
                                ng-if="inscrito.penalidade && !inscrito.penalidade.cancelada"
@@ -132,6 +145,9 @@
         <div class="row">
             <div class="left-buttons col-md-6 col-sm-12">
                 <a href="" class="btn btn-secondary" back-button><em class="fas fa-arrow-alt-circle-left"></em> Voltar</a>
+            </div>
+            <div class="right-buttons col-md-6 col-sm-12">
+                <button type="button" class="btn btn-primary" ng-click="vm.finalizarEvento()" ng-disabled="!vm.habilitaEnviarSiarhes"><em class="fas fa-check-square"></em> Enviar SIARHES</button>
             </div>
         </div>
     </fieldset>

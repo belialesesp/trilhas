@@ -10,5 +10,6 @@ namespace Trilhas.Models.Evento
         public string Situacao { get; set; } 
         public double Frequencia { get; set; }
         public PenalidadeViewModel Penalidade { get; set; }
+        public bool Selecionar { get; set; }
     }
 }
