@@ -191,6 +191,44 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
             { reload: true });
     };
 
+    vm.filtrarRelatorioCapacitadosPorSolucoesEducacionais = function (page) {
+
+        if (vm.query.dataInicio > vm.query.dataFim) {
+
+            toastr["warning"]("Data Início não pode ser maior que Data Fim.");
+
+            return false;
+        }
+
+        if (!page && vm.pager.currentPage) {
+            page = vm.pager.currentPage;
+        }
+        if (page < 1 || (page > vm.pager.totalPages && vm.pager.totalPages > 0)) {
+            page = 1;
+        }
+
+        $state.go('eventosRelatoriocapacitadosPorSolucoesEducacionais',
+            {
+                'cursoId': vm.query.cursoId,
+                'modalidade': vm.query.modalidade,
+                'entidadeDemandanteId': vm.query.entidadeDemandanteId,
+                'uf': vm.query.uf,
+                'municipioId': vm.query.municipioId,
+                'docenteId': vm.query.docenteId,
+                'cursistaId': vm.query.cursistaId,
+                'dataInicio': vm.query.dataInicio,
+                'dataFim': vm.query.dataFim,
+                'cancelados': vm.query.cancelados,
+                'naoIniciados': vm.query.naoIniciados,
+                'andamentos': vm.query.andamentos,
+                'concluidos': vm.query.concluidos,
+                'page': page,
+                'pageSize': vm.pageSize,
+                'inscricao': vm.query.inscricao,
+                'finalizados': vm.query.finalizados
+            },
+            { reload: true });
+    };
     vm.filtrarRelatorioCapacitadosPorCurso = function (page) {
 
         if (vm.query.dataInicio > vm.query.dataFim) {
@@ -337,8 +375,6 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
             { reload: true });
     };
 
-
-
     vm.filtrarRelatorioModalide = function (page) {
 
         if (vm.query.dataInicio > vm.query.dataFim) {
@@ -347,7 +383,6 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
 
             return false;
         }
-
 
         if (!vm.query.entidadeDemandanteId) {
             toastr["warning"]("É obrigatório informar a entidade.");
@@ -362,10 +397,6 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
             page = 1;
         }
 
-
-
-
-
         if (!vm.query.cursoId) {
             toastr["warning"]("É obrigatório informar o curso.");
 
@@ -378,11 +409,6 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
         if (page < 1 || (page > vm.pager.totalPages && vm.pager.totalPages > 0)) {
             page = 1;
         }
-
-
-
-
-
 
 
         $state.go('eventosRelatoriocapacitadosPorModalidade',
@@ -411,7 +437,6 @@ function EventosController($scope, $stateParams, $state, $http, $q, paginationSe
     vm.imprimir = function () {
         window.print();
     }
-
 
 
     var consultar = function (page) {

@@ -168,6 +168,11 @@ angular.module('trilhasapp')
         templateUrl: '/js/relatorios/capacitadosPorModalidade/relatorio-capacitados-por-modalidade.html'
     })
 
+    .state('eventosRelatoriocapacitadosPorSolucoesEducacionais', {
+        url: '/eventos-relatorio-capacitados-por-solucoes-educacionais?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+        templateUrl: '/js/relatorios/capacitadosPorSolucoesEducacionais/relatorio-capacitados-por-solucoes-educacionais.html'
+    })
+
      .state('relatorioHistoricoDeCursista', {
        url: '/cadastro-historico-de-cursistas.html?cursista&curso&modalidade&entidade&uf&municipio&dataInicio&dataFim&page&pageSize&desistentes',
         templateUrl: '/js/relatorios/historicoDeCursistas/cadastro-historico-de-cursistas.html'
