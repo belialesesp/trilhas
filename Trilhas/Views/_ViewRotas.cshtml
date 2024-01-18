@@ -4,266 +4,271 @@
 
 <script type="text/javascript">
 
-angular.module('trilhasapp')
-    .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+    angular.module('trilhasapp')
+        .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
 
-        $urlRouterProvider.otherwise('/');
+            $urlRouterProvider.otherwise('/');
 
-        $stateProvider
-            .state('home', {
-                url: '/',
-                templateUrl: '/js/index.html'
-            });
+            $stateProvider
+                .state('home', {
+                    url: '/',
+                    templateUrl: '/js/index.html'
+                });
 
 
     @if (User.IsInRole("Administrador"))
     {
         <text>
-        $stateProvider
-            .state('eixos', {
-                url: '/eixos?nome&excluidos&page&pageSize',
-				templateUrl: '/js/trilhas/eixo/eixos.html'
-            })
-            .state('eixos-cadastro', {
-                url: '/cadastro',
-				templateUrl: '/js/trilhas/eixo/eixo-formulario.html'
-            })
-            .state('eixos-edicao', {
-                url: '/edicao/:id',
-				templateUrl: '/js/trilhas/eixo/eixo-formulario.html'
-            });
+                    $stateProvider
+                        .state('eixos', {
+                            url: '/eixos?nome&excluidos&page&pageSize',
+                            templateUrl: '/js/trilhas/eixo/eixos.html'
+                        })
+                        .state('eixos-cadastro', {
+                            url: '/cadastro',
+                            templateUrl: '/js/trilhas/eixo/eixo-formulario.html'
+                        })
+                        .state('eixos-edicao', {
+                            url: '/edicao/:id',
+                            templateUrl: '/js/trilhas/eixo/eixo-formulario.html'
+                        });
         </text>
     }
 
 
-    $stateProvider
-    .state('estacoes', {
-        url: '/estacoes?nome&excluidos&page&eixoId&pageSize',
-        templateUrl: '/js/trilhas/estacao/estacoes.html'
-    })
-    .state('estacoes-cadastro', {
-        url: '/estacao',
-			templateUrl: '/js/trilhas/estacao/estacao-formulario.html'
-    })
-    .state('estacoes-edicao', {
-        url: '/estacao/:id',
-			templateUrl: '/js/trilhas/estacao/estacao-formulario.html'
-    })
+                $stateProvider
+                    .state('estacoes', {
+                        url: '/estacoes?nome&excluidos&page&eixoId&pageSize',
+                        templateUrl: '/js/trilhas/estacao/estacoes.html'
+                    })
+                    .state('estacoes-cadastro', {
+                        url: '/estacao',
+                        templateUrl: '/js/trilhas/estacao/estacao-formulario.html'
+                    })
+                    .state('estacoes-edicao', {
+                        url: '/estacao/:id',
+                        templateUrl: '/js/trilhas/estacao/estacao-formulario.html'
+                    })
 
-    .state('solucoes', {
-        url: '/solucoes?titulo&excluidos&page&eixoId&estacaoId&tipoSolucao&autor&editora&responsavel&sigla&modalidadeCurso&nivelCurso&pageSize',
-		templateUrl: '/js/trilhas/solucao/solucoes.html'
-    })
-    .state('solucoes-cadastro', {
-        url: '/solucao',
-			templateUrl: '/js/trilhas/solucao/solucao-formulario.html'
-    })
-    .state('solucoes-edicao', {
-        url: '/solucao/:id',
-			templateUrl: '/js/trilhas/solucao/solucao-formulario.html'
-    })
+                    .state('solucoes', {
+                        url: '/solucoes?titulo&excluidos&page&eixoId&estacaoId&tipoSolucao&autor&editora&responsavel&sigla&modalidadeCurso&nivelCurso&pageSize',
+                        templateUrl: '/js/trilhas/solucao/solucoes.html'
+                    })
+                    .state('solucoes-cadastro', {
+                        url: '/solucao',
+                        templateUrl: '/js/trilhas/solucao/solucao-formulario.html'
+                    })
+                    .state('solucoes-edicao', {
+                        url: '/solucao/:id',
+                        templateUrl: '/js/trilhas/solucao/solucao-formulario.html'
+                    })
 
-    .state('entidades', {
-        url: '/entidades?nome&tipoEntidadeId&uf&municipioId&excluidos&page&pageSize',
-		templateUrl: '/js/cadastros/entidade/entidades.html'
+                    .state('entidades', {
+                        url: '/entidades?nome&tipoEntidadeId&uf&municipioId&excluidos&page&pageSize',
+                        templateUrl: '/js/cadastros/entidade/entidades.html'
 
-    })
-    .state('entidades-cadastro', {
-        url: '/entidade',
-			templateUrl: '/js/cadastros/entidade/entidade-formulario.html'
+                    })
+                    .state('entidades-cadastro', {
+                        url: '/entidade',
+                        templateUrl: '/js/cadastros/entidade/entidade-formulario.html'
 
-    })
-    .state('entidades-edicao', {
-        url: '/entidade/:id',
-			templateUrl: '/js/cadastros/entidade/entidade-formulario.html'
-    })
+                    })
+                    .state('entidades-edicao', {
+                        url: '/entidade/:id',
+                        templateUrl: '/js/cadastros/entidade/entidade-formulario.html'
+                    })
 
-    .state('recursos', {
-        url: '/recursos?nome&descricao&excluidos&page&pageSize',
-        templateUrl: '/js/cadastros/recurso/recursos.html'
-    })
-    .state('recursos-cadastro', {
-        url: '/recurso',
-        templateUrl: '/js/cadastros/recurso/recurso-formulario.html'
-    })
-    .state('recursos-edicao', {
-        url: '/recurso/:id',
-        templateUrl: '/js/cadastros/recurso/recurso-formulario.html'
-    })
+                    .state('recursos', {
+                        url: '/recursos?nome&descricao&excluidos&page&pageSize',
+                        templateUrl: '/js/cadastros/recurso/recursos.html'
+                    })
+                    .state('recursos-cadastro', {
+                        url: '/recurso',
+                        templateUrl: '/js/cadastros/recurso/recurso-formulario.html'
+                    })
+                    .state('recursos-edicao', {
+                        url: '/recurso/:id',
+                        templateUrl: '/js/cadastros/recurso/recurso-formulario.html'
+                    })
 
-    .state('locais', {
-        url: '/locais?nome&capacidade&endereco&excluidos&page&pageSize',
-        templateUrl: '/js/cadastros/local/locais.html'
-    })
-    .state('locais-cadastro', {
-        url: '/local',
-        templateUrl: '/js/cadastros/local/local-formulario.html'
-    })
-    .state('locais-edicao', {
-        url: '/local/:id',
-        templateUrl: '/js/cadastros/local/local-formulario.html'
-    })
+                    .state('locais', {
+                        url: '/locais?nome&capacidade&endereco&excluidos&page&pageSize',
+                        templateUrl: '/js/cadastros/local/locais.html'
+                    })
+                    .state('locais-cadastro', {
+                        url: '/local',
+                        templateUrl: '/js/cadastros/local/local-formulario.html'
+                    })
+                    .state('locais-edicao', {
+                        url: '/local/:id',
+                        templateUrl: '/js/cadastros/local/local-formulario.html'
+                    })
 
-    .state('pessoas', {
-		url: '/pessoas?nome&email&cpf&numeroFuncional&&excluidos&page&pageSize',
-	    templateUrl: '/js/cadastros/pessoa/pessoas.html'
-	})
-	.state('cursistas', {
-        url: '/cursistas?cursista&curso&modalidade&entidade&uf&municipio&dataInicio&dataFim&page&pageSize&desistentes',
-		templateUrl: '/js/cadastros/cursista/cursistas.html'
-	})
-    .state('pessoas-cadastro', {
-	    url: '/pessoa',
-	    templateUrl: '/js/cadastros/pessoa/pessoa-formulario.html'
-    })
-    .state('pessoas-edicao', {
-	    url: '/pessoa/:id',
-	    templateUrl: '/js/cadastros/pessoa/pessoa-formulario.html'
-	})
-    .state('docentes', {
-        url: '/docentes?nomeDocente&cursoId&modalidadeCurso&dataInicio&dataFim&&excluidos&page&pageSize',
-		templateUrl: '/js/cadastros/docente/docentes.html'
-	})
-	.state('docentes-cadastro', {
-		url: '/docente',
-		templateUrl: '/js/cadastros/docente/docente-formulario.html'
-	})
-	.state('docentes-edicao', {
-		url: '/docente/:id',
-		templateUrl: '/js/cadastros/docente/docente-formulario.html'
-	})
+                    .state('pessoas', {
+                        url: '/pessoas?nome&email&cpf&numeroFuncional&&excluidos&page&pageSize',
+                        templateUrl: '/js/cadastros/pessoa/pessoas.html'
+                    })
+                    .state('cursistas', {
+                        url: '/cursistas?cursista&curso&modalidade&entidade&uf&municipio&dataInicio&dataFim&page&pageSize&desistentes',
+                        templateUrl: '/js/cadastros/cursista/cursistas.html'
+                    })
+                    .state('pessoas-cadastro', {
+                        url: '/pessoa',
+                        templateUrl: '/js/cadastros/pessoa/pessoa-formulario.html'
+                    })
+                    .state('pessoas-edicao', {
+                        url: '/pessoa/:id',
+                        templateUrl: '/js/cadastros/pessoa/pessoa-formulario.html'
+                    })
+                    .state('docentes', {
+                        url: '/docentes?nomeDocente&cursoId&modalidadeCurso&dataInicio&dataFim&&excluidos&page&pageSize',
+                        templateUrl: '/js/cadastros/docente/docentes.html'
+                    })
+                    .state('docentes-cadastro', {
+                        url: '/docente',
+                        templateUrl: '/js/cadastros/docente/docente-formulario.html'
+                    })
+                    .state('docentes-edicao', {
+                        url: '/docente/:id',
+                        templateUrl: '/js/cadastros/docente/docente-formulario.html'
+                    })
 
-	.state('eventos', {
-        url: '/eventos?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
-		templateUrl: '/js/eventos/eventos.html'
-	})
+                    .state('eventos', {
+                        url: '/eventos?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+                        templateUrl: '/js/eventos/eventos.html'
+                    })
 
-   .state('eventosRelatoriocapacitadosPorPeriodo', {
-        url: '/eventos-relatorio-capacitados-por-periodo?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
-        templateUrl: '/js/relatorios/capacitadosPorPeriodo/relatorio-capacitados-por-periodo.html'
-    })
+                    .state('eventosRelatoriocapacitadosPorPeriodo', {
+                        url: '/eventos-relatorio-capacitados-por-periodo?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+                        templateUrl: '/js/relatorios/capacitadosPorPeriodo/relatorio-capacitados-por-periodo.html'
+                    })
 
-    .state('eventosRelatoriocapacitadosPorCurso', {
-        url: '/eventos-relatorio-capacitados-por-curso?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
-        templateUrl: '/js/relatorios/capacitadosPorCurso/relatorio-capacitados-por-curso.html'
-    })
+                    .state('eventosRelatoriocapacitadosPorCurso', {
+                        url: '/eventos-relatorio-capacitados-por-curso?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+                        templateUrl: '/js/relatorios/capacitadosPorCurso/relatorio-capacitados-por-curso.html'
+                    })
 
-    .state('eventosRelatoriocapacitadosPorEntidade', {
-        url: '/eventos-relatorio-capacitados-por-entidade?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
-        templateUrl: '/js/relatorios/capacitadosPorEntidade/relatorio-capacitados-por-entidade.html'
-    })
+                    .state('eventosRelatoriocapacitadosPorEntidade', {
+                        url: '/eventos-relatorio-capacitados-por-entidade?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+                        templateUrl: '/js/relatorios/capacitadosPorEntidade/relatorio-capacitados-por-entidade.html'
+                    })
 
-   .state('eventosRelatorioDeCursista', {
-        url: '/relatorio-de-cursistas?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
-        templateUrl: '/js/relatorios/relatorioDeCursistas/relatorio-de-cursistas.html'
-    })
+                    .state('eventosRelatorioDeCursista', {
+                        url: '/relatorio-de-cursistas?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+                        templateUrl: '/js/relatorios/relatorioDeCursistas/relatorio-de-cursistas.html'
+                    })
 
-    .state('eventosRelatorioDeCursista-eventosRelatoriolistaInscricaoCursista', {
-        url: '/evento/listaIncritos-relCursista/:id', 
-        templateUrl: '/js/relatorios/relatorioDeCursistas/evento-lista-inscricao-print-rel-cursistas.html'
-    })
+                    .state('eventosRelatorioDeCursista-eventosRelatoriolistaInscricaoCursista', {
+                        url: '/evento/listaIncritos-relCursista/:id',
+                        templateUrl: '/js/relatorios/relatorioDeCursistas/evento-lista-inscricao-print-rel-cursistas.html'
+                    })
 
-    .state('eventosRelatoriocapacitadosPorModalidade', {
-        url: '/eventos-relatorio-capacitados-por-modalidade?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
-        templateUrl: '/js/relatorios/capacitadosPorModalidade/relatorio-capacitados-por-modalidade.html'
-    })
+                    .state('eventosRelatoriocapacitadosPorModalidade', {
+                        url: '/eventos-relatorio-capacitados-por-modalidade?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+                        templateUrl: '/js/relatorios/capacitadosPorModalidade/relatorio-capacitados-por-modalidade.html'
+                    })
 
-    .state('eventosRelatoriocapacitadosPorSolucoesEducacionais', {
-        url: '/eventos-relatorio-capacitados-por-solucoes-educacionais?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
-        templateUrl: '/js/relatorios/capacitadosPorSolucoesEducacionais/relatorio-capacitados-por-solucoes-educacionais.html'
-    })
+                    .state('eventosRelatoriocapacitadosPorSolucoesEducacionais', {
+                        url: '/eventos-relatorio-capacitados-por-solucoes-educacionais?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+                        templateUrl: '/js/relatorios/capacitadosPorSolucoesEducacionais/relatorio-capacitados-por-solucoes-educacionais.html'
+                    })
 
-     .state('relatorioHistoricoDeCursista', {
-       url: '/cadastro-historico-de-cursistas.html?cursista&curso&modalidade&entidade&uf&municipio&dataInicio&dataFim&page&pageSize&desistentes',
-        templateUrl: '/js/relatorios/historicoDeCursistas/cadastro-historico-de-cursistas.html'
-      })
+                    .state('eventosRelatoriocapacitadosPorEixo', {
+                        url: '/eventos-relatorio-capacitados-por-eixo?cursoId&modalidade&entidadeDemandanteId&uf&municipioId&docenteId&cursistaId&dataInicio&dataFim&cancelados&naoIniciados&andamentos&concluidos&inscricao&page&pageSize&finalizados',
+                        templateUrl: '/js/relatorios/capacitadosPorEixo/relatorio-capacitados-por-eixo.html'
+                    })
 
-    .state('eventosRelatoriocapacitadosPorModalidade-eventosRelatoriolistaInscricaoModalidade', {
-        url: '/evento/listaIncritos-relModalidade/:id',
-        templateUrl: '/js/relatorios/capacitadosPorModalidade/evento-lista-inscricao-print-rel-modalidade.html'
-    })
+                    .state('relatorioHistoricoDeCursista', {
+                        url: '/cadastro-historico-de-cursistas.html?cursista&curso&modalidade&entidade&uf&municipio&dataInicio&dataFim&page&pageSize&desistentes',
+                        templateUrl: '/js/relatorios/historicoDeCursistas/cadastro-historico-de-cursistas.html'
+                    })
 
-   .state('eventosRelatorioListaDePresenca', {
-         url: '/eventosListaPresenca',
-        templateUrl:'/js/relatorios/ListadePresenca/relatorio-lista-de-presenca.html'
+                    .state('eventosRelatoriocapacitadosPorModalidade-eventosRelatoriolistaInscricaoModalidade', {
+                        url: '/evento/listaIncritos-relModalidade/:id',
+                        templateUrl: '/js/relatorios/capacitadosPorModalidade/evento-lista-inscricao-print-rel-modalidade.html'
+                    })
 
-           
-   })
-
-	.state('eventos-agendamento', {
-		url: '/evento',
-		templateUrl: '/js/eventos/evento-formulario.html'
-	})
-	.state('eventos-edicao', {
-		url: '/evento/:id',
-		templateUrl: '/js/eventos/evento-formulario.html'
-	})
-    .state('eventos-lista-inscricao', {
-		url: '/evento/listaIncritos/:id',
-		templateUrl: '/js/eventos/inscricao/evento-lista-inscricao.html'
-	})
-	.state('eventos-inscricao', {
-		url: '/evento/inscreverCursista/:id',
-		templateUrl: '/js/eventos/inscricao/evento-inscricao.html'
-	})
-	.state('eventos-encerramento', {
-		url: '/evento/encerramento/:id',
-		templateUrl: '/js/eventos/finalizar/evento-finalizar.html'
-	})
-
-    .state('eventosRelatoriocapacitadosPorCurso-FinalizarPrint', {
-        url: '/evento/encerramento/:id',
-        templateUrl: '/js/relatorios/capacitadosPorCurso/eventos-finalizar-print-capacitados-por-curso.html'
-    })
-
-    .state('eventosListaPresenca', {
-        url: '/eventosListaPresenca',
-        templateUrl: '/js/eventos/listaPresenca/evento-lista-presenca.html'
-	})
-	.state('programacaoEvento', {
-			url: '/programacaoEvento',
-			templateUrl: '/js/eventos/programacaoEvento/programacao-evento.html'
-	})
-	.state('certificados', {
-		url: '/certificados?nome&excluidos&page&pageSize',
-		templateUrl: '/js/cadastros/certificados/certificados.html'
-	})
-	.state('certificados-cadastro', {
-		url: '/certificado',
-		templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
-	})
-	.state('certificados-edicao', {
-		url: '/certificado/:id',
-		templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
-    })
-    .state('certificados-declaracaoCursista-cadastro', {
-        url: '/declaracaoCursista',
-        templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
-    })
-    .state('certificados-declaracaoCursista-edicao', {
-        url: '/declaracaoCursista/:id',
-        templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
-    })
-    .state('certificados-declaracaoDocente-cadastro', {
-        url: '/declaracaoDocente',
-        templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
-    })
-    .state('certificados-declaracaoDocente-edicao', {
-        url: '/declaracaoCursista/:id',
-        templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
-    })
-    .state('pendente', {
-        url: '/pendente',
-        templateUrl: '/js/em-construcao.html'
-    })
-    .state('certificadosEmitidos', {
-        url: '/certificadosEmitidos?nome&excluidos&page&pageSize',
-        templateUrl: '/js/cadastros/certificados-emitidos/certificados-emitidos.html'
-    });
+                    .state('eventosRelatorioListaDePresenca', {
+                        url: '/eventosListaPresenca',
+                        templateUrl: '/js/relatorios/ListadePresenca/relatorio-lista-de-presenca.html'
 
 
-    $locationProvider.hashPrefix('');
-    $locationProvider.html5Mode(true);
-});
+                    })
+
+                    .state('eventos-agendamento', {
+                        url: '/evento',
+                        templateUrl: '/js/eventos/evento-formulario.html'
+                    })
+                    .state('eventos-edicao', {
+                        url: '/evento/:id',
+                        templateUrl: '/js/eventos/evento-formulario.html'
+                    })
+                    .state('eventos-lista-inscricao', {
+                        url: '/evento/listaIncritos/:id',
+                        templateUrl: '/js/eventos/inscricao/evento-lista-inscricao.html'
+                    })
+                    .state('eventos-inscricao', {
+                        url: '/evento/inscreverCursista/:id',
+                        templateUrl: '/js/eventos/inscricao/evento-inscricao.html'
+                    })
+                    .state('eventos-encerramento', {
+                        url: '/evento/encerramento/:id',
+                        templateUrl: '/js/eventos/finalizar/evento-finalizar.html'
+                    })
+
+                    .state('eventosRelatoriocapacitadosPorCurso-FinalizarPrint', {
+                        url: '/evento/encerramento/:id',
+                        templateUrl: '/js/relatorios/capacitadosPorCurso/eventos-finalizar-print-capacitados-por-curso.html'
+                    })
+
+                    .state('eventosListaPresenca', {
+                        url: '/eventosListaPresenca',
+                        templateUrl: '/js/eventos/listaPresenca/evento-lista-presenca.html'
+                    })
+                    .state('programacaoEvento', {
+                        url: '/programacaoEvento',
+                        templateUrl: '/js/eventos/programacaoEvento/programacao-evento.html'
+                    })
+                    .state('certificados', {
+                        url: '/certificados?nome&excluidos&page&pageSize',
+                        templateUrl: '/js/cadastros/certificados/certificados.html'
+                    })
+                    .state('certificados-cadastro', {
+                        url: '/certificado',
+                        templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
+                    })
+                    .state('certificados-edicao', {
+                        url: '/certificado/:id',
+                        templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
+                    })
+                    .state('certificados-declaracaoCursista-cadastro', {
+                        url: '/declaracaoCursista',
+                        templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
+                    })
+                    .state('certificados-declaracaoCursista-edicao', {
+                        url: '/declaracaoCursista/:id',
+                        templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
+                    })
+                    .state('certificados-declaracaoDocente-cadastro', {
+                        url: '/declaracaoDocente',
+                        templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
+                    })
+                    .state('certificados-declaracaoDocente-edicao', {
+                        url: '/declaracaoCursista/:id',
+                        templateUrl: '/js/cadastros/certificados/formulario-certificado.html'
+                    })
+                    .state('pendente', {
+                        url: '/pendente',
+                        templateUrl: '/js/em-construcao.html'
+                    })
+                    .state('certificadosEmitidos', {
+                        url: '/certificadosEmitidos?nome&excluidos&page&pageSize',
+                        templateUrl: '/js/cadastros/certificados-emitidos/certificados-emitidos.html'
+                    });
+
+
+            $locationProvider.hashPrefix('');
+            $locationProvider.html5Mode(true);
+        });
 
 </script>
