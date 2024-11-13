@@ -10,7 +10,7 @@ resources:
   - pipeline: buildPipeline
     source: esesp-trilhas-build
     trigger: none
-    version: SelecionarBuild
+    version: latest
 
 stages:
 - stage: Deploy_DEV
