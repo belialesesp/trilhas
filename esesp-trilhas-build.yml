@@ -1,0 +1,24 @@
+trigger: none
+
+resources:
+  repositories:
+  - repository: templates
+    type: git
+    name: DevopsTools/prodest-build-deploy-templates
+
+variables:
+  - name: branchName
+    ${{ if or(eq(variables['build.SourceBranchName'], 'main'), eq(variables['build.SourceBranchName'], 'master')) }}:
+      value: ''
+    ${{ else }}:
+      value: -${{ variables['Build.SourceBranchName'] }}
+
+name: $(Date:yyyy.MM.d).$(Rev:r)$(branchName)
+
+stages:
+- stage: Build
+  jobs:
+  - template: buildDotnetGitopsV2.yml@templates
+    parameters:
+      nomeApp: trilhadeaprendizagem
+      caminhoDockerfile: Trilhas
