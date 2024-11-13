@@ -1,0 +1,25 @@
+trigger: none
+
+resources:
+  repositories:
+  - repository: templates
+    type: git
+    name: DevopsTools/prodest-build-deploy-templates
+
+  pipelines:
+  - pipeline: buildPipeline
+    source: esesp-trilhas-build
+    trigger: none
+    version: SelecionarBuild
+
+stages:
+- stage: Deploy_DEV
+  jobs:
+  - template: deployDotnetGitopsV2.yml@templates
+    parameters:
+      nomeApp: trilhadeaprendizagem
+      namespace: esesp-trilhas
+      ambiente: dev
+      library: esesp-trilhas-dev
+      repoGitops: esesp-trilhadeaprendizagem-gitops
+      caminhoAppSettings: Trilhas
