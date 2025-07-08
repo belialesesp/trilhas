@@ -1,0 +1,21 @@
+trigger: none
+pool: build2022
+
+schedules:
+- cron: "0 4 * * Mon-Fri"
+  displayName: M-F 1:00 AM (UTC + 3)  - Horario de Brasília
+  branches:
+    include:
+    - develop
+
+resources:
+  repositories:
+  - repository: templates
+    type: git
+    name: DevopsTools/prodest-build-deploy-templates
+
+jobs:
+  - template: buildQualityDotnetCore.yml@templates
+    parameters: 
+      group: SonarQube
+      projeto: "**/*Unit[Tt]ests/*.csproj"
