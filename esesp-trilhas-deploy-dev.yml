@@ -18,7 +18,7 @@ stages:
   - template: deployDotnetGitopsV2_1.yml@templates
     parameters:
       nomeApp: trilhas-web
-      namespace: esesp-trilhas
+      namespace: esesp-trilhaaprendizagem
       ambiente: dev
       library: esesp-trilhas-dev
       repoGitops: esesp-trilhaaprendizagem-gitops
