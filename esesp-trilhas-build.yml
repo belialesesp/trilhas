@@ -20,5 +20,5 @@ stages:
   jobs:
   - template: buildDotnetGitopsV2.yml@templates
     parameters:
-      nomeApp: trilhadeaprendizagem
+      nomeApp: trilhas-web
       caminhoDockerfile: Trilhas
