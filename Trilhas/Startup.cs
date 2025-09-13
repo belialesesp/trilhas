@@ -41,9 +41,14 @@ namespace Trilhas
 			services.Configure<RequestLocalizationOptions>(options => {
 				options.DefaultRequestCulture = new RequestCulture(culture: "pt-BR", uiCulture: "pt-BR");
 			});
-
+            Console.WriteLine("🔗 Using connection string: " + Configuration.GetConnectionString("DefaultConnection"));
 			services.AddDbContext<ApplicationDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+    			options.UseSqlServer(
+        		Configuration.GetConnectionString("DefaultConnection"),
+        		sqlOptions => sqlOptions.EnableRetryOnFailure()
+    			)
+			);
+
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
