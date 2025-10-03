@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "Local Development Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3>Development Mode Login</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>⚠️ Development Mode</strong><br/>
+                        This is a simplified login for localhost development only. 
+                        In production, this will use Acesso Cidadão authentication.
+                    </div>
+                    
+                    <form method="post" action="/Account/LocalLogin">
+                        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                        
+                        <div class="form-group">
+                            <label for="username">Username (for testing):</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="username" 
+                                   name="username" 
+                                   placeholder="Enter any username" 
+                                   value="admin" />
+                            <small class="form-text text-muted">
+                                Enter any username. You'll be logged in with full admin permissions.
+                            </small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Login as Test User
+                        </button>
+                    </form>
+                    
+                    <hr/>
+                    
+                    <div class="text-center">
+                        <small class="text-muted">
+                            Roles assigned: Administrador, Secretaria, Gestor, Coordenador
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
