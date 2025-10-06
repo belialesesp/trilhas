@@ -1,10 +1,12 @@
 ﻿using IdentityModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -22,100 +24,138 @@ namespace Trilhas.Configurations
 {
     public static class ServicesConfiguration
     {
+        // Original method signature for backward compatibility
         public static void AddAuthentication(this IServiceCollection services, OpenIdService settings)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "oidc";
-            })
-            .AddCookie(options =>
-            {
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                options.Cookie.Name = "TrilhasCookie";
-                options.AccessDeniedPath = "/Error/AccessDenied";
+            // Call the new overload with null environment (defaults to production behavior)
+            AddAuthentication(services, settings, null);
+        }
 
-                options.Events = new CookieAuthenticationEvents
+        // New overload with environment parameter
+        public static void AddAuthentication(this IServiceCollection services, OpenIdService settings, IWebHostEnvironment environment)
+        {
+            // Check if we should bypass authentication
+            bool bypassAuth = environment?.IsDevelopment() == true || 
+                            Environment.GetEnvironmentVariable("BYPASS_AUTH") == "true";
+
+            if (bypassAuth)
+            {
+                // Simplified authentication for local development
+                services.AddAuthentication(options =>
                 {
-                    OnSignedIn = async context =>
+                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/LocalLogin";
+                    options.LogoutPath = "/Account/Logout";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                    options.Cookie.Name = "TrilhasDevCookie";
+                    options.AccessDeniedPath = "/Error/AccessDenied";
+                });
+
+                Console.WriteLine("🔓 Authentication: Using LOCAL development mode (Acesso Cidadão BYPASSED)");
+            }
+            else
+            {
+                // Production authentication with Acesso Cidadão
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = "oidc";
+                })
+                .AddCookie(options =>
+                {
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                    options.Cookie.Name = "TrilhasCookie";
+                    options.AccessDeniedPath = "/Error/AccessDenied";
+
+                    options.Events = new CookieAuthenticationEvents
                     {
-                        Guid idUsuario = context.Principal.Claims
-                            .Where(c => c.Type.ToLower().Equals("subnovo"))
-                            .Select(c => new Guid(c.Value))
-                            .FirstOrDefault();
+                        OnSignedIn = async context =>
+                        {
+                            Guid idUsuario = context.Principal.Claims
+                                .Where(c => c.Type.ToLower().Equals("subnovo"))
+                                .Select(c => new Guid(c.Value))
+                                .FirstOrDefault();
 
-                        IServiceProvider serviceProvider = context.HttpContext.RequestServices;
-                        IDistributedCache distributedCache = serviceProvider.GetRequiredService<IDistributedCache>();
+                            IServiceProvider serviceProvider = context.HttpContext.RequestServices;
+                            IDistributedCache distributedCache = serviceProvider.GetRequiredService<IDistributedCache>();
 
-                        await distributedCache.RemoveAsync(idUsuario.ToString());
-                    },
-                };
-            })
-            .AddOpenIdConnect("oidc", options =>
-            {
-                options.Authority = settings.Authority;
-                options.ClientId = settings.ClientId;
-                options.ClientSecret = settings.ClientSecret;
-                options.SaveTokens = settings.SaveTokens;
-                options.CallbackPath = new PathString(settings.CallbackPath);
-                options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
-                options.GetClaimsFromUserInfoEndpoint = true;
-                options.RequireHttpsMetadata = true;
-
-                options.Scope.Clear();
-                options.Scope.Add("openid");
-                options.Scope.Add("profile");
-                options.Scope.Add("email");
-                //options.Scope.Add("cpf");
-                options.Scope.Add("permissoes");
-                options.Scope.Add("agentepublico");
-
-                options.Events = new OpenIdConnectEvents()
+                            await distributedCache.RemoveAsync(idUsuario.ToString());
+                        },
+                    };
+                })
+                .AddOpenIdConnect("oidc", options =>
                 {
-                    OnUserInformationReceived = async c =>
+                    options.Authority = settings.Authority;
+                    options.ClientId = settings.ClientId;
+                    options.ClientSecret = settings.ClientSecret;
+                    options.SaveTokens = settings.SaveTokens;
+                    options.CallbackPath = new PathString(settings.CallbackPath);
+                    options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    options.RequireHttpsMetadata = true;
+
+                    options.Scope.Clear();
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.Scope.Add("email");
+                    //options.Scope.Add("cpf");
+                    options.Scope.Add("permissoes");
+                    options.Scope.Add("agentepublico");
+
+                    options.Events = new OpenIdConnectEvents()
                     {
-                        var id = new ClaimsIdentity(c.Principal.Identity.AuthenticationType);
-
-                        var user = JsonConvert.DeserializeObject<Usuario>(c.User.RootElement.ToString());
-
-                        id.AddClaim(new Claim("verificada", user.Verificada.ToString()));
-
-                        if (!string.IsNullOrEmpty(user.Apelido))
+                        OnUserInformationReceived = async c =>
                         {
-                            id.AddClaim(new Claim(id.NameClaimType, user.Apelido));
+                            var id = new ClaimsIdentity(c.Principal.Identity.AuthenticationType);
+
+                            var user = JsonConvert.DeserializeObject<Usuario>(c.User.RootElement.ToString());
+
+                            id.AddClaim(new Claim("verificada", user.Verificada.ToString()));
+
+                            if (!string.IsNullOrEmpty(user.Apelido))
+                            {
+                                id.AddClaim(new Claim(id.NameClaimType, user.Apelido));
+                            }
+
+                            if (!string.IsNullOrEmpty(user.Email))
+                            {
+                                id.AddClaim(new Claim("email", user.Email));
+                            }
+
+                            if (!string.IsNullOrEmpty(user.Role))
+                            {
+                                id.AddClaim(new Claim(id.RoleClaimType, user.Role));
+                            }
+
+                            id.AddClaim(new Claim("id_token", c.ProtocolMessage.IdToken));
+                            c.Principal.AddIdentity(id);
+                            c.Success();
+
+                            await Task.FromResult(0);
                         }
+                    };
 
-                        if (!string.IsNullOrEmpty(user.Email))
-                        {
-                            id.AddClaim(new Claim("email", user.Email));
-                        }
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        NameClaimType = JwtClaimTypes.Name,
+                        RoleClaimType = JwtClaimTypes.Role,
+                    };
+                });
 
-                        if (!string.IsNullOrEmpty(user.Role))
-                        {
-                            id.AddClaim(new Claim(id.RoleClaimType, user.Role));
-                        }
-
-                        id.AddClaim(new Claim("id_token", c.ProtocolMessage.IdToken));
-                        c.Principal.AddIdentity(id);
-                        c.Success();
-
-                        await Task.FromResult(0);
-                    }
-                };
-
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    NameClaimType = JwtClaimTypes.Name,
-                    RoleClaimType = JwtClaimTypes.Role,
-                };
-            });
+                Console.WriteLine("🔐 Authentication: Using PRODUCTION mode (Acesso Cidadão ENABLED)");
+            }
         }
 
         public static void AddHttpClients(this IServiceCollection services)
         {
             services.AddHttpClient<ISiahresService, SiarhesService>();
-        }   
+        }
 
         public static void AddServices(this IServiceCollection services)
         {
