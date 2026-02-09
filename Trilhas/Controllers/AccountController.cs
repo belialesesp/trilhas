@@ -93,8 +93,7 @@ namespace Trilhas.Controllers
                     break;
             }
 
-            var claimsIdentity = new ClaimsIdentity(claims, "Identity.Application");
-
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true,
@@ -102,10 +101,9 @@ namespace Trilhas.Controllers
             };
 
             await HttpContext.SignInAsync(
-                "Identity.Application",
+                CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-
 
             return LocalRedirect(returnUrl);
         }
