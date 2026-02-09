@@ -6,6 +6,7 @@ using Trilhas.Data.Model.Eventos;
 using Trilhas.Data.Model.Trilhas;
 using Trilhas.Data.Seed;
 using Trilhas.SqlDto;
+using Trilhas.Data.Model.TermosReferencia;
 
 namespace Trilhas.Data
 {
@@ -81,6 +82,8 @@ namespace Trilhas.Data
         public DbSet<RegistroDePresenca> RegistrosDePresenca { get; set; }
         public DbSet<Certificado> Certificados { get; set; }
         public DbSet<CertificadoEmitido> CertificadosEmitidos { get; set; }
+        public DbSet<TermoDeReferencia> TermosDeReferencia { get; set; }
+        public DbSet<TermoReferenciaItem> TermoReferenciaItens { get; set; }
 
         #region Dto retorno query sql
         public DbSet<GridDocenteDto> GridDocenteDto { get; set; }

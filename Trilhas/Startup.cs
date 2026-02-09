@@ -17,76 +17,109 @@ using Trilhas.Services;
 namespace Trilhas
 {
     public class Startup
-	{
-		private readonly ILogger<Startup> _logger;
+    {
+        private readonly ILogger<Startup> _logger;
+        private readonly IWebHostEnvironment _env;
 
-		public Startup(ILogger<Startup> logger, IConfiguration configuration)
-		{
-			_logger = logger;
-			Configuration = configuration;
-		}
+        public Startup(ILogger<Startup> logger, IConfiguration configuration, IWebHostEnvironment env)
+        {
+            _logger = logger;
+            Configuration = configuration;
+            _env = env;
+        }
 
-		public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         [Obsolete]
         public void ConfigureServices(IServiceCollection services)
-		{
-			services.Configure<CookiePolicyOptions>(options => {
-				// This lambda determines whether user consent for non-essential cookies is needed for a given request.
-				options.CheckConsentNeeded = context => true;
-				options.MinimumSameSitePolicy = SameSiteMode.None;
-			});
+        {
+            services.Configure<CookiePolicyOptions>(options => {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
-			services.Configure<RequestLocalizationOptions>(options => {
-				options.DefaultRequestCulture = new RequestCulture(culture: "pt-BR", uiCulture: "pt-BR");
-			});
+            services.Configure<RequestLocalizationOptions>(options => {
+                options.DefaultRequestCulture = new RequestCulture(culture: "pt-BR", uiCulture: "pt-BR");
+            });
 
-			services.AddDbContext<ApplicationDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            Console.WriteLine("🔗 Using connection string: " + Configuration.GetConnectionString("DefaultConnection"));
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    sqlOptions => sqlOptions.EnableRetryOnFailure()
+                )
+            );
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-			services.AddSettings(Configuration);
-			services.AddHttpClients();
-			services.AddServices();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+            })
+            .AddCookie("Cookies", options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
+
+            services.AddSettings(Configuration);
+            services.AddHttpClients();
+            services.AddServices();
 
             var sp = services.BuildServiceProvider();
 
-            services.AddAuthentication(sp.GetService<OpenIdService>());
+            // Pass the environment to the authentication configuration
+            if (_env.IsDevelopment())
+            {
+                services.AddAuthentication("LocalCookie")
+                    .AddCookie("LocalCookie", options =>
+                    {
+                        options.LoginPath = "/Account/Login";
+                        options.AccessDeniedPath = "/Account/AccessDenied";
+                    });
+            }
+            else
+            {
+                services.AddAuthentication(sp.GetService<OpenIdService>(), _env);
+            }
 
-			services.AddMvc(options => {
-				options.EnableEndpointRouting = false;
-			}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-		}
+
+            services.AddMvc(options => {
+                options.EnableEndpointRouting = false;
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
+        {
             if (env.IsDevelopment())
-			{
-				app.UseHttpsRedirection();
-				app.UseDeveloperExceptionPage();
-			} else
-			{
-				app.Use((context, next) => {
-					context.Request.Scheme = "https";
-					return next();
-				});
-				app.UseExceptionHandler("/Home/Error");
-			}
+            {
+                app.UseHttpsRedirection();
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.Use((context, next) => {
+                    context.Request.Scheme = "https";
+                    return next();
+                });
+                app.UseExceptionHandler("/Home/Error");
+            }
 
-			//app.UseHttpsRedirection();
-			app.UseStaticFiles();
-			app.UseCookiePolicy();
+            app.UseStaticFiles();
+            app.UseCookiePolicy();
 
-			app.UseAuthentication();
+            app.UseAuthentication();
 
-			app.UseMvc(routes => {
-				routes.MapRoute("admin", "admin/{*index}", defaults: new { controller = "Admin", action = "Index" });
-				routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
-			});
-		}
-	}
+            app.UseMvc(routes => {
+                routes.MapRoute("admin", "admin/{*index}", defaults: new { controller = "Admin", action = "Index" });
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+    }
 }

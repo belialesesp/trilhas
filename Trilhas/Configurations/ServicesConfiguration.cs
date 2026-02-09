@@ -139,6 +139,7 @@ namespace Trilhas.Configurations
             services.AddScoped<DocenteService>();
             services.AddScoped<CertificadoService>();
             services.AddScoped<CertificadoEmitidoService>();
+            services.AddScoped<TermoReferenciaService>();
         }
 
         public static void AddSettings(this IServiceCollection services, IConfiguration configuration)

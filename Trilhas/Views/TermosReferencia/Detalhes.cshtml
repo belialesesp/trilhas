@@ -1,0 +1,499 @@
+@{
+    ViewData["Title"] = "Detalhes do Termo de Referência";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Model = ViewBag.Termo as Trilhas.Data.Model.TermosReferencia.TermoDeReferencia;
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h4 class="mb-0">
+                                <i class="fas fa-file-contract"></i> <span id="tituloTermo">@Model.Titulo</span>
+                            </h4>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button class="btn btn-light btn-sm" onclick="editarTermo()">
+                                <i class="fas fa-edit"></i> Editar Informações
+                            </button>
+                            <a href="/TermosReferencia/Index" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-arrow-left"></i> Voltar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Ano:</strong><br>
+                            <span id="anoTermo">@Model.Ano</span>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Status:</strong><br>
+                            <span id="statusTermo" class="badge badge-secondary">@Model.Status</span>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Data Criação:</strong><br>
+                            @Model.CreationTime.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Descrição:</strong><br>
+                            <span id="descricaoTermo">@(Model.Descricao ?? "-")</span>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <strong>Total de Itens:</strong> <span id="totalItens">@Model.Itens.Count</span> |
+                            <strong>Valor Total Geral:</strong> <span id="valorTotalGeral" class="text-success font-weight-bold">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Planning Table -->
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h5 class="mb-0">
+                                <i class="fas fa-table"></i> Planilha Resumo do Projeto e Desembolso
+                            </h5>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button class="btn btn-success btn-sm" onclick="adicionarNovoItem()">
+                                <i class="fas fa-plus"></i> Adicionar Item
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm" id="tabelaItens">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Curso</th>
+                                    <th>Profissional</th>
+                                    <th>Quant.</th>
+                                    <th>Carga Horária</th>
+                                    <th>Mês Exec.</th>
+                                    <th>Data Oferta</th>
+                                    <th>Modalidade</th>
+                                    <th>Turmas</th>
+                                    <th>Alunos/Turma</th>
+                                    <th>Valor Hora (R$)</th>
+                                    <th>Encargos (%)</th>
+                                    <th>Total (R$)</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoTabelaItens">
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-warning font-weight-bold">
+                                    <td colspan="11" class="text-right">TOTAL</td>
+                                    <td id="totalFooter">R$ 0,00</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Editing Termo Info -->
+<div class="modal fade" id="modalEditarTermo" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Editar Informações do Termo</h5>
+                <button type="button" class="close text-white" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarTermo">
+                    <input type="hidden" id="termoId" value="@Model.Id">
+                    <div class="form-group">
+                        <label for="editTitulo">Título *</label>
+                        <input type="text" class="form-control" id="editTitulo" value="@Model.Titulo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescricao">Descrição</label>
+                        <textarea class="form-control" id="editDescricao" rows="3">@Model.Descricao</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStatus">Status *</label>
+                        <select class="form-control" id="editStatus" required>
+                            <option value="Rascunho">Rascunho</option>
+                            <option value="Aprovado">Aprovado</option>
+                            <option value="Em Execução">Em Execução</option>
+                            <option value="Concluído">Concluído</option>
+                        </select>
+                    </div>
+                    <script>
+                        // Set the selected status on page load
+                        document.getElementById('editStatus').value = '@Model.Status';
+                    </script>
+                    <div class="form-group">
+                        <label for="editDataAprovacao">Data de Aprovação</label>
+                        <input type="date" class="form-control" id="editDataAprovacao" 
+                               value="@(Model.DataAprovacao?.ToString("yyyy-MM-dd"))">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarTermo()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Editing Item -->
+<div class="modal fade" id="modalEditarItem" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="modalItemTitle">Editar Item</h5>
+                <button type="button" class="close text-white" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarItem">
+                    <input type="hidden" id="itemId" value="0">
+                    <input type="hidden" id="itemTermoId" value="@Model.Id">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="itemCurso">Curso *</label>
+                                <input type="text" class="form-control" id="itemCurso" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="itemProfissional">Profissional *</label>
+                                <select class="form-control" id="itemProfissional" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Docente">Docente</option>
+                                    <option value="Conteudista">Conteudista</option>
+                                    <option value="Assistente">Assistente</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="itemQuantidade">Quantidade</label>
+                                <input type="number" class="form-control" id="itemQuantidade" value="1" min="0">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="itemCargaHoraria">Carga Horária</label>
+                                <input type="number" class="form-control" id="itemCargaHoraria" value="0" min="0" step="0.5">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="itemQuantidadeTurmas">Turmas</label>
+                                <input type="number" class="form-control" id="itemQuantidadeTurmas" value="1" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="itemMesExecucao">Mês Execução</label>
+                                <input type="text" class="form-control" id="itemMesExecucao" placeholder="Ex: Janeiro">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="itemDataOferta">Data Oferta</label>
+                                <input type="date" class="form-control" id="itemDataOferta">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="itemModalidade">Modalidade</label>
+                                <select class="form-control" id="itemModalidade">
+                                    <option value="">Selecione...</option>
+                                    <option value="Presencial">Presencial</option>
+                                    <option value="EAD">EAD</option>
+                                    <option value="Híbrido">Híbrido</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="itemAlunosPorTurma">Alunos/Turma</label>
+                                <input type="number" class="form-control" id="itemAlunosPorTurma" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="itemValorHora">Valor Hora (R$)</label>
+                                <input type="number" class="form-control" id="itemValorHora" value="0" min="0" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="itemEncargos">Encargos (%)</label>
+                                <input type="number" class="form-control" id="itemEncargos" value="0" min="0" max="100" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Valor Total Calculado:</strong> <span id="valorCalculado">R$ 0,00</span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarItem()">Salvar Item</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const termoId = @Model.Id;
+    
+    $(document).ready(function() {
+        carregarItens();
+        
+        // Auto-calculate total when values change
+        $('#itemQuantidade, #itemCargaHoraria, #itemQuantidadeTurmas, #itemValorHora, #itemEncargos').on('input', calcularValorItem);
+    });
+    
+    function carregarItens() {
+        $.ajax({
+            url: '/TermosReferencia/Recuperar?id=' + termoId,
+            type: 'GET',
+            success: function(data) {
+                renderizarItens(data.itens);
+                atualizarTotais(data.itens);
+            },
+            error: function() {
+                toastr.error('Erro ao carregar itens');
+            }
+        });
+    }
+    
+    function renderizarItens(itens) {
+        const tbody = $('#corpoTabelaItens');
+        tbody.empty();
+        
+        if (itens.length === 0) {
+            tbody.append(`
+                <tr>
+                    <td colspan="13" class="text-center">
+                        <em>Nenhum item cadastrado. Clique em "Adicionar Item" para incluir.</em>
+                    </td>
+                </tr>
+            `);
+            return;
+        }
+        
+        itens.forEach(function(item) {
+            const row = `
+                <tr>
+                    <td>${item.curso}</td>
+                    <td>${item.profissional}</td>
+                    <td class="text-center">${item.quantidade}</td>
+                    <td class="text-center">${item.cargaHoraria}</td>
+                    <td>${item.mesExecucao || '-'}</td>
+                    <td>${item.dataOferta || '-'}</td>
+                    <td>${item.modalidade || '-'}</td>
+                    <td class="text-center">${item.quantidadeTurmas}</td>
+                    <td class="text-center">${item.alunosPorTurma}</td>
+                    <td class="text-right">${formatarMoeda(item.valorHora)}</td>
+                    <td class="text-center">${item.encargosPercentual}%</td>
+                    <td class="text-right font-weight-bold">${formatarMoeda(item.valorTotal)}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-warning" onclick='editarItem(${JSON.stringify(item)})' title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="excluirItem(${item.id})" title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            tbody.append(row);
+        });
+    }
+    
+    function atualizarTotais(itens) {
+        const total = itens.reduce((sum, item) => sum + item.valorTotal, 0);
+        $('#totalFooter').text(formatarMoeda(total));
+        $('#valorTotalGeral').text(formatarMoeda(total));
+        $('#totalItens').text(itens.length);
+    }
+    
+    function formatarMoeda(valor) {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }).format(valor);
+    }
+    
+    function editarTermo() {
+        $('#modalEditarTermo').modal('show');
+    }
+    
+    function salvarTermo() {
+        const dados = {
+            id: parseInt($('#termoId').val()),
+            titulo: $('#editTitulo').val(),
+            descricao: $('#editDescricao').val(),
+            status: $('#editStatus').val(),
+            dataAprovacao: $('#editDataAprovacao').val() || null,
+            ano: parseInt($('#anoTermo').text())
+        };
+        
+        $.ajax({
+            url: '/TermosReferencia/Atualizar',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(dados),
+            success: function(response) {
+                toastr.success(response.message);
+                $('#modalEditarTermo').modal('hide');
+                
+                // Update display
+                $('#tituloTermo').text(dados.titulo);
+                $('#descricaoTermo').text(dados.descricao || '-');
+                $('#statusTermo').text(dados.status).removeClass().addClass('badge ' + getStatusBadgeClass(dados.status));
+            },
+            error: function(xhr) {
+                const error = xhr.responseJSON?.message || 'Erro ao atualizar termo';
+                toastr.error(error);
+            }
+        });
+    }
+    
+    function getStatusBadgeClass(status) {
+        const badges = {
+            'Rascunho': 'badge-secondary',
+            'Aprovado': 'badge-success',
+            'Em Execução': 'badge-primary',
+            'Concluído': 'badge-info'
+        };
+        return badges[status] || 'badge-secondary';
+    }
+    
+    function adicionarNovoItem() {
+        $('#modalItemTitle').text('Adicionar Novo Item');
+        $('#formEditarItem')[0].reset();
+        $('#itemId').val('0');
+        $('#itemTermoId').val(termoId);
+        calcularValorItem();
+        $('#modalEditarItem').modal('show');
+    }
+    
+    function editarItem(item) {
+        $('#modalItemTitle').text('Editar Item');
+        $('#itemId').val(item.id);
+        $('#itemTermoId').val(termoId);
+        $('#itemCurso').val(item.curso);
+        $('#itemProfissional').val(item.profissional);
+        $('#itemQuantidade').val(item.quantidade);
+        $('#itemCargaHoraria').val(item.cargaHoraria);
+        $('#itemMesExecucao').val(item.mesExecucao);
+        $('#itemDataOferta').val(item.dataOferta ? item.dataOferta.split('/').reverse().join('-') : '');
+        $('#itemModalidade').val(item.modalidade);
+        $('#itemQuantidadeTurmas').val(item.quantidadeTurmas);
+        $('#itemAlunosPorTurma').val(item.alunosPorTurma);
+        $('#itemValorHora').val(item.valorHora);
+        $('#itemEncargos').val(item.encargosPercentual);
+        calcularValorItem();
+        $('#modalEditarItem').modal('show');
+    }
+    
+    function calcularValorItem() {
+        const quantidade = parseFloat($('#itemQuantidade').val()) || 0;
+        const cargaHoraria = parseFloat($('#itemCargaHoraria').val()) || 0;
+        const turmas = parseFloat($('#itemQuantidadeTurmas').val()) || 0;
+        const valorHora = parseFloat($('#itemValorHora').val()) || 0;
+        const encargos = parseFloat($('#itemEncargos').val()) || 0;
+        
+        const valorTotal = quantidade * cargaHoraria * turmas * valorHora * (1 + encargos / 100);
+        $('#valorCalculado').text(formatarMoeda(valorTotal));
+    }
+    
+    function salvarItem() {
+        const itemId = parseInt($('#itemId').val());
+        const url = itemId > 0 ? '/TermosReferencia/AtualizarItem' : '/TermosReferencia/AdicionarItem';
+        const method = itemId > 0 ? 'PUT' : 'POST';
+        
+        const dados = {
+            id: itemId,
+            termoDeReferenciaId: parseInt($('#itemTermoId').val()),
+            curso: $('#itemCurso').val(),
+            profissional: $('#itemProfissional').val(),
+            quantidade: parseInt($('#itemQuantidade').val()),
+            cargaHoraria: parseFloat($('#itemCargaHoraria').val()),
+            mesExecucao: $('#itemMesExecucao').val(),
+            dataOferta: $('#itemDataOferta').val() || null,
+            modalidade: $('#itemModalidade').val(),
+            quantidadeTurmas: parseInt($('#itemQuantidadeTurmas').val()),
+            alunosPorTurma: parseInt($('#itemAlunosPorTurma').val()),
+            valorHora: parseFloat($('#itemValorHora').val()),
+            encargosPercentual: parseFloat($('#itemEncargos').val())
+        };
+        
+        $.ajax({
+            url: url,
+            type: method,
+            contentType: 'application/json',
+            data: JSON.stringify(dados),
+            success: function(response) {
+                toastr.success(response.message);
+                $('#modalEditarItem').modal('hide');
+                carregarItens();
+            },
+            error: function(xhr) {
+                const error = xhr.responseJSON?.message || 'Erro ao salvar item';
+                toastr.error(error);
+            }
+        });
+    }
+    
+    function excluirItem(itemId) {
+        if (!confirm('Tem certeza que deseja excluir este item?')) {
+            return;
+        }
+        
+        $.ajax({
+            url: '/TermosReferencia/ExcluirItem?itemId=' + itemId,
+            type: 'DELETE',
+            success: function(response) {
+                toastr.success(response.message);
+                carregarItens();
+            },
+            error: function(xhr) {
+                const error = xhr.responseJSON?.message || 'Erro ao excluir item';
+                toastr.error(error);
+            }
+        });
+    }
+</script>
+}
