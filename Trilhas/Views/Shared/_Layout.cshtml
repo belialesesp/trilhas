@@ -4,6 +4,7 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <base href="/admin/">
     <meta charset="utf-8" />
@@ -171,9 +172,11 @@
             </div>
         </sarsha-spinner>
 
-        <nav id="sidebar" class="navbar navbar-expand-md navbar-light align-items-start" ng-controller="MenuController as vm" ng-if="!vm.exibirMenu">
+        <nav id="sidebar" class="navbar navbar-expand-md navbar-light align-items-start"
+            ng-controller="MenuController as vm" ng-if="!vm.exibirMenu">
             <div class="sidebar-header">
-                <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <h3><a asp-controller="home" asp-action="index">ESESP</a></h3>
@@ -184,28 +187,35 @@
                     <ul class="navbar-nav d-block w-100">
                         <li>
 
-                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" data-target="#trilhasSubmenu">Trilhas</a>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#trilhasSubmenu">Trilhas</a>
                             <ul class="list-unstyled collapse" id="trilhasSubmenu">
                                 <li>
-                                    <a class="nav-item" href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'eixos'}" ng-click="vm.mudaRota('eixos');">Eixos</a>
+                                    <a class="nav-item" href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'eixos'}"
+                                        ng-click="vm.mudaRota('eixos');">Eixos</a>
                                 </li>
                                 <li>
 
-                                    <a href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'estacoes'}" ng-click="vm.mudaRota('estacoes'); ">Estações</a>
+                                    <a href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'estacoes'}"
+                                        ng-click="vm.mudaRota('estacoes'); ">Estações</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="solucoes" ng-class="{'menu-ativo': vm.menuAtivo === 'solucoes'}">Soluções Educacionais</a>
+                                    <a ui-sref="solucoes" ng-class="{'menu-ativo': vm.menuAtivo === 'solucoes'}">Soluções
+                                        Educacionais</a>
                                 </li>
                             </ul>
                         </li>
                         <li>
-                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" data-target="#cadastroSubmenu">Cadastros</a>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#cadastroSubmenu">Cadastros</a>
                             <ul class="list-unstyled collapse" id="cadastroSubmenu">
                                 <li>
-                                    <a ui-sref="entidades" ng-class="{'menu-ativo': vm.menuAtivo === 'entidades'}">Entidades</a>
+                                    <a ui-sref="entidades"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'entidades'}">Entidades</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="recursos" ng-class="{'menu-ativo': vm.menuAtivo === 'recursos'}">Recursos Operacionais</a>
+                                    <a ui-sref="recursos" ng-class="{'menu-ativo': vm.menuAtivo === 'recursos'}">Recursos
+                                        Operacionais</a>
                                 </li>
                                 <li>
                                     <a ui-sref="locais" ng-class="{'menu-ativo': vm.menuAtivo === 'locais'}">Locais</a>
@@ -214,67 +224,96 @@
                                     <a ui-sref="pessoas" ng-class="{'menu-ativo': vm.menuAtivo === 'pessoas'}">Pessoas</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="docentes" ng-class="{'menu-ativo': vm.menuAtivo === 'docentes'}">Docentes</a>
+                                    <a ui-sref="docentes"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'docentes'}">Docentes</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="cursistas" ng-class="{'menu-ativo': vm.menuAtivo === 'cursistas'}">Cursistas</a>
+                                    <a ui-sref="cursistas"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'cursistas'}">Cursistas</a>
                                 </li>
                             </ul>
                         </li>
                         <li>
-                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" data-target="#cadastroEventos">Eventos</a>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#cadastroEventos">Eventos</a>
                             <ul class="list-unstyled collapse" id="cadastroEventos">
                                 <li>
-                                    <a ui-sref="eventos" ng-class="{'menu-ativo': vm.menuAtivo === 'eventos'}">Planejamento</a>
+                                    <a ui-sref="eventos"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventos'}">Planejamento</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="eventosListaPresenca" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosListaPresenca'}">Lista de Presença</a>
+                                    <a ui-sref="eventosListaPresenca"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosListaPresenca'}">Lista de
+                                        Presença</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="programacaoEvento" ng-class="{'menu-ativo': vm.menuAtivo === 'programacaoEvento'}">Programação de Evento</a>
+                                    <a ui-sref="programacaoEvento"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'programacaoEvento'}">Programação de
+                                        Evento</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="certificados" ng-class="{'menu-ativo': vm.menuAtivo === 'certificados'}">Certificados</a>
+                                    <a ui-sref="certificados"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'certificados'}">Certificados</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="certificadosEmitidos" ng-class="{'menu-ativo': vm.menuAtivo === 'certificadosEmitidos'}">Certificados Emitidos</a>
+                                    <a ui-sref="certificadosEmitidos"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'certificadosEmitidos'}">Certificados
+                                        Emitidos</a>
                                 </li>
                             </ul>
                         </li>
                         <li>
-                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" data-target="#relatorios">Relatórios</a>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#relatorios">Relatórios</a>
                             <ul class="list-unstyled collapse" id="relatorios">
                                 <li>
-                                    <a ui-sref="eventosRelatoriocapacitadosPorPeriodo" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorPeriodo'}">Capacitados por Período</a>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorPeriodo"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorPeriodo'}">Capacitados
+                                        por Período</a>
                                 </li>
 
                                 <li>
-                                    <a ui-sref="eventosRelatoriocapacitadosPorCurso" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorCurso'}">Capacitados por Curso</a>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorCurso"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorCurso'}">Capacitados
+                                        por Curso</a>
                                 </li>
 
                                 <li>
-                                    <a ui-sref="eventosRelatoriocapacitadosPorEntidade" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorEntidade'}">Capacitados por Entidade</a>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorEntidade"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorEntidade'}">Capacitados
+                                        por Entidade</a>
                                 </li>
 
                                 <li>
-                                    <a ui-sref="eventosRelatoriocapacitadosPorModalidade" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorModalidade'}">Capacitados por Modalidade</a>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorModalidade"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorModalidade'}">Capacitados
+                                        por Modalidade</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="eventosRelatoriocapacitadosPorSolucoesEducacionais" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorSolucoesEducacionais'}">Capacitados por Soluções Educacionais</a>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorSolucoesEducacionais"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorSolucoesEducacionais'}">Capacitados
+                                        por Soluções Educacionais</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="eventosRelatoriocapacitadosPorEixo" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorEixo'}">Capacitados por Eixo</a>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorEixo"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorEixo'}">Capacitados
+                                        por Eixo</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="relatorioHistoricoDeCursista" ng-class="{'menu-ativo': vm.menuAtivo === 'relatorioHistoricoDeCursista'}">Histórico de Cursista</a>
+                                    <a ui-sref="relatorioHistoricoDeCursista"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'relatorioHistoricoDeCursista'}">Histórico
+                                        de Cursista</a>
                                 </li>
 
                                 <li>
-                                    <a ui-sref="eventosRelatorioListaDePresenca" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatorioListaDePresenca'}">Lista de Presença</a>
+                                    <a ui-sref="eventosRelatorioListaDePresenca"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatorioListaDePresenca'}">Lista
+                                        de Presença</a>
                                 </li>
 
                                 <li>
-                                    <a ui-sref="eventosRelatorioDeCursista" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatorioDeCursista'}">Cursistas</a>
+                                    <a ui-sref="eventosRelatorioDeCursista"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatorioDeCursista'}">Cursistas</a>
                                 </li>
                             </ul>
                         </li>
@@ -285,21 +324,28 @@
                 {
                     <ul class="navbar-nav d-block w-100">
                         <li>
-                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" data-target="#cadastroSubmenu">Cadastros</a>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#cadastroSubmenu">Cadastros</a>
                             <ul class="list-unstyled collapse" id="cadastroSubmenu">
                                 <li>
-                                    <a ui-sref="recursos" ng-class="{'menu-ativo': vm.menuAtivo === 'recursos'}">Recursos Operacionais</a>
+                                    <a ui-sref="recursos" ng-class="{'menu-ativo': vm.menuAtivo === 'recursos'}">Recursos
+                                        Operacionais</a>
                                 </li>
                             </ul>
                         </li>
                         <li>
-                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" data-target="#cadastroEventos">Eventos</a>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#cadastroEventos">Eventos</a>
                             <ul class="list-unstyled collapse" id="cadastroEventos">
                                 <li>
-                                    <a ui-sref="eventos" ng-class="{'menu-ativo': vm.menuAtivo === 'eventos'}">Planejamento</a>
+                                    <a ui-sref="eventos"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventos'}">Planejamento</a>
                                 </li>
                             </ul>
                         </li>
+                        <a asp-controller="TermosReferencia" asp-action="Index">
+                            <i class="fas fa-file-contract"></i> Termos de Referência
+                        </a>
                     </ul>
                 }
                 else if (User.IsInRole("Gestor"))
@@ -307,31 +353,41 @@
                     <ul class="navbar-nav d-block w-100">
                         <li>
 
-                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" data-target="#trilhasSubmenu">Trilhas</a>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#trilhasSubmenu">Trilhas</a>
                             <ul class="list-unstyled collapse" id="trilhasSubmenu">
                                 <li>
-                                    <a class="nav-item" href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'eixos'}" ng-click="vm.mudaRota('eixos');">Eixos</a>
+                                    <a class="nav-item" href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'eixos'}"
+                                        ng-click="vm.mudaRota('eixos');">Eixos</a>
                                 </li>
                                 <li>
 
-                                    <a href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'estacoes'}" ng-click="vm.mudaRota('estacoes'); ">Estações</a>
+                                    <a href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'estacoes'}"
+                                        ng-click="vm.mudaRota('estacoes'); ">Estações</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="solucoes" ng-class="{'menu-ativo': vm.menuAtivo === 'solucoes'}">Soluções Educacionais</a>
+                                    <a ui-sref="solucoes" ng-class="{'menu-ativo': vm.menuAtivo === 'solucoes'}">Soluções
+                                        Educacionais</a>
                                 </li>
                             </ul>
                         </li>
                         <li>
-                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" data-target="#cadastroEventos">Eventos</a>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#cadastroEventos">Eventos</a>
                             <ul class="list-unstyled collapse" id="cadastroEventos">
                                 <li>
-                                    <a ui-sref="eventos" ng-class="{'menu-ativo': vm.menuAtivo === 'eventos'}">Planejamento</a>
+                                    <a ui-sref="eventos"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventos'}">Planejamento</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="eventosListaPresenca" ng-class="{'menu-ativo': vm.menuAtivo === 'eventosListaPresenca'}">Lista de Presença</a>
+                                    <a ui-sref="eventosListaPresenca"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosListaPresenca'}">Lista de
+                                        Presença</a>
                                 </li>
                                 <li>
-                                    <a ui-sref="programacaoEvento" ng-class="{'menu-ativo': vm.menuAtivo === 'programacaoEvento'}">Programação de Evento</a>
+                                    <a ui-sref="programacaoEvento"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'programacaoEvento'}">Programação de
+                                        Evento</a>
                                 </li>
                             </ul>
                         </li>
@@ -345,13 +401,16 @@
             <div id="content-navbar" class="container-fluid">
                 <div class="row">
                     <div class="col-2">
-                        <button class="btn" ng-click="vm.exibirMenu = !vm.exibirMenu" ng-show="vm.exibirMenu"><span class="fa fa-compress"></span></button>
-                        <button class="btn" ng-click="vm.exibirMenu = !vm.exibirMenu" ng-show="!vm.exibirMenu"><span class="fa fa-expand"></span></button>
+                        <button class="btn" ng-click="vm.exibirMenu = !vm.exibirMenu" ng-show="vm.exibirMenu"><span
+                                class="fa fa-compress"></span></button>
+                        <button class="btn" ng-click="vm.exibirMenu = !vm.exibirMenu" ng-show="!vm.exibirMenu"><span
+                                class="fa fa-expand"></span></button>
                     </div>
 
                     <div class="col-10 text-right">
                         <div class="col-md-12 dropdown">
-                            <button class="btn btn-secondary btn-sm dropdown-toggle justify-content-end" type="button" id="btn-login" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle justify-content-end" type="button"
+                                id="btn-login" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-user"></i> @UserManager.GetUserName(User)
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -365,5 +424,7 @@
             @RenderBody()
         </div>
     </div>
+    @RenderSection("Scripts", required: false)
 </body>
+
 </html>
