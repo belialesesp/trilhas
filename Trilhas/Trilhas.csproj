@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>aspnet-Trilhas-F34FDEAB-F976-4027-932A-CD6CDC695B88</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,53 +47,29 @@
     <None Include="wwwroot\lib\ui-input-mask\src\br\cpf\cpf.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\br\cpf\cpf.spec.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\br\cpf\cpf.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\br\inscricao-estadual\ie.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\br\inscricao-estadual\ie.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\br\inscricao-estadual\ie.test.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\finance\finance.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\ie\ie.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\ie\ie.spec.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\ie\ie.test.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\inscricao-estadual\inscricao-estadual.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\inscricao-estadual\inscricao-estadual.spec.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\inscricao-estadual\inscricao-estadual.test.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\br\nfe\nfe.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\br\nfe\nfe.spec.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\br\nfe\nfe.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\br\numero-beneficio\numero-beneficio.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\br\numero-beneficio\numero-beneficio.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\br\numero-beneficio\numero-beneficio.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\br\phone\br-phone.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\number\br-number.spec.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\number\br-number.test.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\number\number.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\br\phone\br-phone.spec.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\br\phone\br-phone.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\ch\ch-masks.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\ch\phone\ch-phone.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\ch\phone\ch-phone.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\ch\phone\ch-phone.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\fr\fr-masks.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\fr\phone\fr-phone.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\fr\phone\fr-phone.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\fr\phone\fr-phone.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\credit-card\credit-card.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\credit-card\credit-card.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\credit-card\credit-card.test.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\phone\phone.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\scientific-notation\scientific-notation.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\scientific-notation\scientific-notation.spec.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\scientific-notation\scientific-notation.test.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\time\time.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\time\time.spec.js" />
+    <None Include="wwwroot\lib\ui-input-mask\src\br\time\time.test.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\global\date\date.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\date\date.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\date\date.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\global-masks.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\money\money.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\money\money.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\money\money.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\number\number.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\number\number.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\number\number.test.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\global\percentage\percentage.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\percentage\percentage.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\percentage\percentage.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\scientific-notation\scientific-notation.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\scientific-notation\scientific-notation.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\scientific-notation\scientific-notation.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\time\time.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\time\time.spec.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\global\time\time.test.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\helpers\mask-factory.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\helpers\number-mask-builder.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\helpers\pre-formatters.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\helpers\validators.js" />
-    <None Include="wwwroot\lib\ui-input-mask\src\us\phone\us-phone.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\us\phone\us-phone.spec.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\us\phone\us-phone.test.js" />
     <None Include="wwwroot\lib\ui-input-mask\src\us\us-masks.js" />
@@ -107,7 +84,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.20" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.36" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.*">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.36">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

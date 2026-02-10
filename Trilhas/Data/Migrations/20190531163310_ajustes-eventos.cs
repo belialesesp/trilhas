@@ -93,7 +93,7 @@ namespace Trilhas.Data.Migrations
             migrationBuilder.InsertData(
                 table: "OrgaoExpedidor",
                 columns: new[] { "Id", "Nome", "Sigla" },
-                values: new object[] { 1L, "Secretaria de Segurança Pública", "SSP" });
+                values: new object[] { 1L, "GESE de Segurança Pública", "SSP" });
 
             migrationBuilder.InsertData(
                 table: "Sexo",

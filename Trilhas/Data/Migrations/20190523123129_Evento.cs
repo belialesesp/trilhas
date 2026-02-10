@@ -39,7 +39,7 @@ namespace Trilhas.Data.Migrations
                     LastModifierUserId = table.Column<string>(nullable: true),
                     DeletionTime = table.Column<DateTime>(nullable: true),
                     DeletionUserId = table.Column<string>(nullable: true),
-                    CoordenadorPessoaId = table.Column<long>(nullable: true),
+                    GEDTHPessoaId = table.Column<long>(nullable: true),
                     SolucaoEducacionalId = table.Column<long>(nullable: true),
                     EntidadeDemandanteId = table.Column<long>(nullable: true),
                     LocalId = table.Column<long>(nullable: true),
@@ -52,8 +52,8 @@ namespace Trilhas.Data.Migrations
                 {
                     table.PrimaryKey("PK_Evento", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Evento_Pessoa_CoordenadorPessoaId",
-                        column: x => x.CoordenadorPessoaId,
+                        name: "FK_Evento_Pessoa_GEDTHPessoaId",
+                        column: x => x.GEDTHPessoaId,
                         principalTable: "Pessoa",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -281,9 +281,9 @@ namespace Trilhas.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Evento_CoordenadorPessoaId",
+                name: "IX_Evento_GEDTHPessoaId",
                 table: "Evento",
-                column: "CoordenadorPessoaId");
+                column: "GEDTHPessoaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Evento_EntidadeDemandanteId",

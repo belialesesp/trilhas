@@ -171,7 +171,7 @@ namespace Trilhas.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("CoordenadorPessoaId");
+                    b.Property<long?>("GEDTHPessoaId");
 
                     b.Property<DateTime>("CreationTime");
 
@@ -201,7 +201,7 @@ namespace Trilhas.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CoordenadorPessoaId");
+                    b.HasIndex("GEDTHPessoaId");
 
                     b.HasIndex("EntidadeDemandanteId");
 
@@ -1041,9 +1041,9 @@ namespace Trilhas.Data.Migrations
 
             modelBuilder.Entity("Trilhas.Data.Model.Evento", b =>
                 {
-                    b.HasOne("Trilhas.Data.Model.Pessoa", "Coordenador")
+                    b.HasOne("Trilhas.Data.Model.Pessoa", "GEDTH")
                         .WithMany()
-                        .HasForeignKey("CoordenadorPessoaId");
+                        .HasForeignKey("GEDTHPessoaId");
 
                     b.HasOne("Trilhas.Data.Model.Entidade", "EntidadeDemandante")
                         .WithMany()

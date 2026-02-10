@@ -34,7 +34,7 @@ namespace Trilhas.Controllers
             _mapper = new CertificadoMapper();
         }
 
-        [Authorize(Roles = "Administrador,Secretaria")]
+        [Authorize(Roles = "Administrador,GESE")]
         public IActionResult Index(long inscricaoId, long docenteId, long eventoId)
         {
             EmissaoCertificadoViewModel vm;
@@ -90,7 +90,7 @@ namespace Trilhas.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "Administrador,Secretaria")]
+        [Authorize(Roles = "Administrador,GESE")]
         public IActionResult Preview(long id)
         {
             Certificado certificado = _service.RecuperarCertificado(id, null);
@@ -101,7 +101,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrador,Secretaria")]
+        [Authorize(Roles = "Administrador,GESE")]
         public IActionResult Salvar([FromBody] SalvarCertificadoViewModel vm)
         {
             try
@@ -176,7 +176,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrador,Secretaria")]
+        [Authorize(Roles = "Administrador,GESE")]
         public IActionResult Buscar(string nome, bool excluidos, EnumTipoCertificado? tipoCertificado, int start = -1, int count = -1)
         {
             List<Certificado> certificados = _service.RecuperarCertificados(nome, excluidos, tipoCertificado, start, count);
@@ -187,7 +187,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrador,Secretaria")]
+        [Authorize(Roles = "Administrador,GESE")]
         public IActionResult Quantidade(string nome, bool exibirExcluidos, EnumTipoCertificado? tipoCertificado, int start = -1, int count = -1)
         {
             int quantidade = _service.QuantidadeDeCertificados(nome, exibirExcluidos, tipoCertificado);
@@ -195,7 +195,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrador,Secretaria")]
+        [Authorize(Roles = "Administrador,GESE")]
         public IActionResult Recuperar(long id, EnumTipoCertificado? tipoCertificado)
         {
             try
@@ -216,7 +216,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Administrador,Secretaria")]
+        [Authorize(Roles = "Administrador,GESE")]
         public IActionResult Excluir(long id)
         {
             try

@@ -304,7 +304,7 @@ namespace Trilhas.Data.Migrations
                     b.ToTable("OrgaoExpedidor");
 
                     b.HasData(
-                        new { Id = 1L, Nome = "Secretaria de Segurança Pública", Sigla = "SSP" }
+                        new { Id = 1L, Nome = "GESE de Segurança Pública", Sigla = "SSP" }
                     );
                 });
 
@@ -537,7 +537,7 @@ namespace Trilhas.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("CoordenadorPessoaId");
+                    b.Property<long?>("GEDTHPessoaId");
 
                     b.Property<DateTime>("CreationTime");
 
@@ -565,7 +565,7 @@ namespace Trilhas.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CoordenadorPessoaId");
+                    b.HasIndex("GEDTHPessoaId");
 
                     b.HasIndex("CursoId");
 
@@ -1094,9 +1094,9 @@ namespace Trilhas.Data.Migrations
 
             modelBuilder.Entity("Trilhas.Data.Model.Eventos.Evento", b =>
                 {
-                    b.HasOne("Trilhas.Data.Model.Cadastro.Pessoa", "Coordenador")
+                    b.HasOne("Trilhas.Data.Model.Cadastro.Pessoa", "GEDTH")
                         .WithMany()
-                        .HasForeignKey("CoordenadorPessoaId");
+                        .HasForeignKey("GEDTHPessoaId");
 
                     b.HasOne("Trilhas.Data.Model.Trilhas.Curso", "Curso")
                         .WithMany()

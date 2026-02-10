@@ -11,7 +11,7 @@ using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Administrador,Secretaria,Coordenador")]
+    [Authorize(Roles = "Administrador,GESE,GEDTH")]
     public class ListaInscricaoManualController : Controller
     {
         private readonly EventoService _eventoService;

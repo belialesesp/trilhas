@@ -13,8 +13,8 @@ namespace Trilhas.Data.Model.Eventos
 {
     public class Evento : DefaultEntity
     {
-        [ForeignKey("CoordenadorPessoaId")]
-        public Pessoa Coordenador { get; set; }
+        [ForeignKey("GEDTHPessoaId")]
+        public Pessoa GEDTH { get; set; }
         [ForeignKey("CursoId")]
         public Curso Curso { get; set; }
         [ForeignKey("EntidadeDemandanteId")]

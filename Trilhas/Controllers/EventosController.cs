@@ -20,7 +20,7 @@ using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
+    [Authorize(Roles = "Administrador,GESE,Gestor,GEDTH")]
     public class EventosController : DefaultController
     {
         private readonly EventoService _eventoService;
@@ -182,7 +182,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrador,Secretaria,Gestor")]
+        [Authorize(Roles = "Administrador,GESE,Gestor")]
         public IActionResult BuscarCursistas(long eventoId, string nome, long entidadeId, string cpf, int start = -1, int count = -1)
         {
             Evento evento = _eventoService.RecuperarEventoInscricao(eventoId);
@@ -213,7 +213,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrador,Secretaria,Gestor")]
+        [Authorize(Roles = "Administrador,GESE,Gestor")]
         public IActionResult BuscarCursistasQuantidade(string nome, long entidadeId, string cpf, int start = -1, int count = -1)
         {
             long gestorId = 0;
@@ -234,7 +234,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrador,Secretaria")]
+        [Authorize(Roles = "Administrador,GESE")]
         public IActionResult Recuperar(long id)
         {
             Evento evento = _eventoService.RecuperarEventoEdicao(id);
@@ -245,7 +245,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrador,Secretaria,Coordenador")]
+        [Authorize(Roles = "Administrador,GESE,GEDTH")]
         public IActionResult Encerramento(long id)
         {
             try
@@ -267,7 +267,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
+        [Authorize(Roles = "Administrador,GESE,Gestor,GEDTH")]
         public IActionResult FinalizarEvento(long eventoId)
         {
             try
@@ -295,7 +295,7 @@ namespace Trilhas.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
+        [Authorize(Roles = "Administrador,GESE,Gestor,GEDTH")]
         public IActionResult DesomologarEvento(long eventoId)
         {
             try
@@ -320,7 +320,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
+        [Authorize(Roles = "Administrador,GESE,Gestor,GEDTH")]
         public IActionResult SalvarPenalidade([FromBody] PenalidadeViewModel penalidade)
         {
             try
@@ -343,7 +343,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Administrador,Secretaria")]
+        [Authorize(Roles = "Administrador,GESE")]
         public IActionResult Excluir(long id, string motivoExclusao)
         {
             try
@@ -368,7 +368,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrador,Secretaria")]
+        [Authorize(Roles = "Administrador,GESE")]
         public IActionResult Salvar([FromBody] SalvarEventoViewModel vm)
         {
             try
@@ -401,7 +401,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrador,Secretaria,Gestor")]
+        [Authorize(Roles = "Administrador,GESE,Gestor")]
         public IActionResult RecuperarListaInscritos(long id)
         {
             var lista = _eventoService.RecuperarListaInscricao(id);
@@ -412,7 +412,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrador,Secretaria,Gestor")]
+        [Authorize(Roles = "Administrador,GESE,Gestor")]
         public IActionResult InscreverCursista([FromBody] InscreverViewModel vm)
         {
             try
@@ -509,15 +509,15 @@ namespace Trilhas.Controllers
         {
             Pessoa coordenador = null;
 
-            if (vm.Coordenador != null && vm.Coordenador.Id > 0)
-                coordenador = _pessoaService.RecuperarPessoa(vm.Coordenador.Id);
+            if (vm.GEDTH != null && vm.GEDTH.Id > 0)
+                coordenador = _pessoaService.RecuperarPessoa(vm.GEDTH.Id);
 
             Curso curso = (Curso)_solucaoService.RecuperarSolucaoEducacionalCompleta(vm.Curso.Id);
             Entidade entidade = _entidadeService.RecuperarEntidade(vm.Entidade.Id);
 
             Evento evento = new Evento
             {
-                Coordenador = coordenador,
+                GEDTH = coordenador,
                 Curso = curso,
                 EntidadeDemandante = entidade,
                 Observacoes = vm.Observacoes,
@@ -563,8 +563,8 @@ namespace Trilhas.Controllers
         {
             Pessoa coordenador = null;
             
-            if(vm.Coordenador != null && vm.Coordenador.Id > 0)
-                coordenador = _pessoaService.RecuperarPessoa(vm.Coordenador.Id);
+            if(vm.GEDTH != null && vm.GEDTH.Id > 0)
+                coordenador = _pessoaService.RecuperarPessoa(vm.GEDTH.Id);
 
             Evento evento = _eventoService.RecuperarEventoCompleto(vm.Id);
             Curso curso = (Curso)_solucaoService.RecuperarSolucaoEducacionalCompleta(vm.Curso.Id);
@@ -584,7 +584,7 @@ namespace Trilhas.Controllers
                 evento.Certificado = _certificadoService.RecuperarCertificado(vm.CertificadoId.Value, null);
             }
 
-            evento.Coordenador = coordenador;
+            evento.GEDTH = coordenador;
             evento.Curso = curso;
             evento.EntidadeDemandante = entidade;
             evento.Observacoes = vm.Observacoes;

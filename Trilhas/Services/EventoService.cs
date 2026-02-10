@@ -91,7 +91,7 @@ namespace Trilhas.Services
         {
             IQueryable<Evento> result = _context.Eventos
             .Include(x => x.Agendas)
-            .Include(x => x.Coordenador)
+            .Include(x => x.GEDTH)
             .Include(x => x.Curso)
             .Include(x => x.EntidadeDemandante)
             .Include(x => x.Local).ThenInclude(y => y.Municipio)
@@ -174,7 +174,7 @@ namespace Trilhas.Services
         public Evento RecuperarEventoEdicao(long id, bool incluirExcluidos = false)
         {
             return _context.Eventos
-            .Include(x => x.Coordenador)
+            .Include(x => x.GEDTH)
             .Include(x => x.EntidadeDemandante)
             .Include(x => x.Agendas)
             .Include(x => x.Curso).ThenInclude(x => x.Modulos)
@@ -224,7 +224,7 @@ namespace Trilhas.Services
                 .Include(x => x.Certificado)
                 .Include(x => x.DeclaracaoCursista)
                 .Include(x => x.DeclaracaoDocente)
-                .Include(x => x.Coordenador)
+                .Include(x => x.GEDTH)
                 .Include(x => x.EntidadeDemandante)
                 .Include(x => x.Agendas)
                 .Include(x => x.Curso).ThenInclude(x => x.Modulos)
@@ -766,7 +766,7 @@ namespace Trilhas.Services
         {
             IQueryable<Evento> result = _context.Eventos
             .Include(x => x.Agendas)
-            .Include(x => x.Coordenador)
+            .Include(x => x.GEDTH)
             .Include(x => x.Curso).ThenInclude(y => y.Estacao).ThenInclude(z => z.Eixo)
             .Include(x => x.Local).ThenInclude(y => y.Municipio)
             .Include(x => x.Cotas).ThenInclude(a => a.Entidade)

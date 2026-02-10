@@ -1,8 +1,8 @@
 ﻿namespace Trilhas.Models.Evento
 {
-    public class EventoCoordenadorViewModel
+    public class EventoGEDTHViewModel
 	{
-		public EventoCoordenadorViewModel(long id) {
+		public EventoGEDTHViewModel(long id) {
 			Id = id;
 		}
 

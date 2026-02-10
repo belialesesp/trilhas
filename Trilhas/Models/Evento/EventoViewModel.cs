@@ -6,7 +6,7 @@ namespace Trilhas.Models.Evento
     {
         public long Id { get; set; }
 
-        public EventoCoordenadorViewModel Coordenador { get; set; }
+        public EventoGEDTHViewModel GEDTH { get; set; }
 
         public EventoCursoViewModel Curso { get; set; }
 

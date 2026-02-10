@@ -23,7 +23,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
-		[Authorize(Roles = "Administrador,Secretaria")]
+		[Authorize(Roles = "Administrador,GESE")]
 		public IActionResult Buscar(string nome, bool excluidos, int start = -1, int count = -1)
         {
             List<CertificadoEmitido> certificados = _service.RecuperarCertificados(nome, excluidos);
@@ -34,7 +34,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpGet]
-		[Authorize(Roles = "Administrador,Secretaria")]
+		[Authorize(Roles = "Administrador,GESE")]
 		public IActionResult Quantidade(string nome, bool exibirExcluidos)
         {
             int quantidade = _service.QuantidadeDeCertificados(nome, exibirExcluidos);
@@ -42,7 +42,7 @@ namespace Trilhas.Controllers
         }
 
         [HttpDelete]
-		[Authorize(Roles = "Administrador,Secretaria")]
+		[Authorize(Roles = "Administrador,GESE")]
 		public IActionResult Excluir(long id)
         {
             try

@@ -653,7 +653,7 @@ namespace Trilhas.Data.Migrations
 
                     b.Property<long?>("CertificadoId");
 
-                    b.Property<long?>("CoordenadorPessoaId");
+                    b.Property<long?>("GEDTHPessoaId");
 
                     b.Property<DateTime>("CreationTime");
 
@@ -689,7 +689,7 @@ namespace Trilhas.Data.Migrations
 
                     b.HasIndex("CertificadoId");
 
-                    b.HasIndex("CoordenadorPessoaId");
+                    b.HasIndex("GEDTHPessoaId");
 
                     b.HasIndex("CursoId");
 
@@ -1391,9 +1391,9 @@ namespace Trilhas.Data.Migrations
                         .WithMany()
                         .HasForeignKey("CertificadoId");
 
-                    b.HasOne("Trilhas.Data.Model.Cadastro.Pessoa", "Coordenador")
+                    b.HasOne("Trilhas.Data.Model.Cadastro.Pessoa", "GEDTH")
                         .WithMany()
-                        .HasForeignKey("CoordenadorPessoaId");
+                        .HasForeignKey("GEDTHPessoaId");
 
                     b.HasOne("Trilhas.Data.Model.Trilhas.Curso", "Curso")
                         .WithMany()
