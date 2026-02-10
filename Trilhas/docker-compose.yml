@@ -45,7 +45,6 @@ services:
         condition: service_completed_successfully
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      BYPASS_AUTH: "true"
       ConnectionStrings__DefaultConnection: "Server=trilhas-sql,1433;Database=Trilhas;User Id=trilhas_user;Password=StrongPass123!;TrustServerCertificate=True;Encrypt=False;"
     ports:
       - "8080:8080"
