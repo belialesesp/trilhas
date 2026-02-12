@@ -20,31 +20,33 @@ namespace Trilhas.Controllers
             _env = env;
         }
 
-        public async Task Login(string returnUrl = "/")
+        // public async Task Login(string returnUrl = "/")
+        // {
+        //     // Check if we're in development mode
+        //     if (_env.IsDevelopment() || Environment.GetEnvironmentVariable("BYPASS_AUTH") == "true")
+        //     {
+        //         // Redirect to local login page
+        //         Response.Redirect($"/Account/LocalLogin?returnUrl={Uri.EscapeDataString(returnUrl)}");
+        //         return;
+        //     }
+
+        //     // Production: Use OpenID Connect (Acesso Cidadão)
+        //     await HttpContext.ChallengeAsync("oidc", new AuthenticationProperties() { RedirectUri = returnUrl });
+        // }
+
+        [HttpGet]
+        public IActionResult Login(string returnUrl = "/")
         {
             // Check if we're in development mode
             if (_env.IsDevelopment() || Environment.GetEnvironmentVariable("BYPASS_AUTH") == "true")
             {
-                // Redirect to local login page
-                Response.Redirect($"/Account/LocalLogin?returnUrl={Uri.EscapeDataString(returnUrl)}");
-                return;
+                // ✅ CORREÇÃO: Redirecionamento síncrono
+                return RedirectToAction("LocalLogin", new { returnUrl });
             }
 
             // Production: Use OpenID Connect (Acesso Cidadão)
-            await HttpContext.ChallengeAsync("oidc", new AuthenticationProperties() { RedirectUri = returnUrl });
-        }
-
-        [HttpGet]
-        public IActionResult LocalLogin(string returnUrl = "/")
-        {
-            // Only allow local login in development
-            if (!_env.IsDevelopment() && Environment.GetEnvironmentVariable("BYPASS_AUTH") != "true")
-            {
-                return RedirectToAction("Login", new { returnUrl });
-            }
-
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            // Este método precisa ser async e chamar ChallengeAsync
+            return Challenge(new AuthenticationProperties() { RedirectUri = returnUrl }, "oidc");
         }
 
         [HttpPost]
@@ -93,18 +95,20 @@ namespace Trilhas.Controllers
                     break;
             }
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsIdentity = new ClaimsIdentity(claims, "LocalCookie");
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true,
                 RedirectUri = returnUrl
             };
-
+Console.WriteLine($"=== TENTATIVA DE LOGIN ===");
+Console.WriteLine($"Username: {username}");
+Console.WriteLine($"Role: {role}");
+Console.WriteLine($"Usuário existe no banco? Vamos verificar...");
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
+                "LocalCookie",
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-
             return LocalRedirect(returnUrl);
         }
 
