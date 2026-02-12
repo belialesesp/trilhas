@@ -13,7 +13,7 @@ namespace Trilhas.Models.Evento
         public int? CertificadoId { get; set; }
         public int DeclaracaoCursistaId { get; set; }
         public int DeclaracaoDocenteId { get; set; }
-        public EventoCoordenadorViewModel Coordenador { get; set; }
+        public EventoGEDTHViewModel GEDTH { get; set; }
         public EventoCursoViewModel Curso { get; set; }
         public EventoEntidadeViewModel Entidade { get; set; }
         public EventoLocalViewModel Local { get; set; }

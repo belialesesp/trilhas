@@ -95,7 +95,7 @@
         @*EVENTO*@
         <script src="~/js/eventos/EventosController.js"></script>
         <script src="~/js/eventos/EventoFormularioController.js"></script>
-        <script src="~/js/eventos/modal/EventoModalCoordenadorController.js"></script>
+        <script src="~/js/eventos/modal/EventoModalGEDTHController.js"></script>
         <script src="~/js/eventos/modal/EventoModalEntidadeController.js"></script>
         <script src="~/js/eventos/modal/EventoModalEntidadeCotaController.js"></script>
         <script src="~/js/eventos/modal/EventoModalDocenteController.js"></script>
@@ -182,7 +182,7 @@
                 <h3><a asp-controller="home" asp-action="index">ESESP</a></h3>
             </div>
             <div id="navbarNav" class="collapse navbar-collapse">
-                @if (User.IsInRole("Administrador") || User.IsInRole("Secretaria"))
+                @if (User.IsInRole("Administrador") || User.IsInRole("GESE"))
                 {
                     <ul class="navbar-nav d-block w-100">
                         <li>
@@ -320,7 +320,7 @@
 
                     </ul>
                 }
-                else if (User.IsInRole("Coordenador"))
+                else if (User.IsInRole("GEDTH"))
                 {
                     <ul class="navbar-nav d-block w-100">
                         <li>

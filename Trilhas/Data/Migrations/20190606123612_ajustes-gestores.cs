@@ -11,7 +11,7 @@ namespace Trilhas.Data.Migrations
                 table: "Docente");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Evento_Pessoa_CoordenadorPessoaId",
+                name: "FK_Evento_Pessoa_GEDTHPessoaId",
                 table: "Evento");
 
             migrationBuilder.DropForeignKey(
@@ -201,9 +201,9 @@ namespace Trilhas.Data.Migrations
                 newName: "IX_Eventos_CursoId");
 
             migrationBuilder.RenameIndex(
-                name: "IX_Evento_CoordenadorPessoaId",
+                name: "IX_Evento_GEDTHPessoaId",
                 table: "Eventos",
-                newName: "IX_Eventos_CoordenadorPessoaId");
+                newName: "IX_Eventos_GEDTHPessoaId");
 
             migrationBuilder.RenameIndex(
                 name: "IX_Docente_PessoaId",
@@ -302,9 +302,9 @@ namespace Trilhas.Data.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Eventos_Pessoas_CoordenadorPessoaId",
+                name: "FK_Eventos_Pessoas_GEDTHPessoaId",
                 table: "Eventos",
-                column: "CoordenadorPessoaId",
+                column: "GEDTHPessoaId",
                 principalTable: "Pessoas",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
@@ -453,7 +453,7 @@ namespace Trilhas.Data.Migrations
                 table: "EventoRecurso");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Eventos_Pessoas_CoordenadorPessoaId",
+                name: "FK_Eventos_Pessoas_GEDTHPessoaId",
                 table: "Eventos");
 
             migrationBuilder.DropForeignKey(
@@ -619,9 +619,9 @@ namespace Trilhas.Data.Migrations
                 newName: "IX_Evento_CursoId");
 
             migrationBuilder.RenameIndex(
-                name: "IX_Eventos_CoordenadorPessoaId",
+                name: "IX_Eventos_GEDTHPessoaId",
                 table: "Evento",
-                newName: "IX_Evento_CoordenadorPessoaId");
+                newName: "IX_Evento_GEDTHPessoaId");
 
             migrationBuilder.RenameIndex(
                 name: "IX_Docentes_PessoaId",
@@ -672,9 +672,9 @@ namespace Trilhas.Data.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Evento_Pessoa_CoordenadorPessoaId",
+                name: "FK_Evento_Pessoa_GEDTHPessoaId",
                 table: "Evento",
-                column: "CoordenadorPessoaId",
+                column: "GEDTHPessoaId",
                 principalTable: "Pessoa",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);

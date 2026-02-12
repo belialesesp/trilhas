@@ -1,0 +1,430 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <base href="/admin/">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESESP - Trilhas de Aprendizagem</title>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/popper/popper.min.js"></script>
+        <script src="~/lib/popper/tooltip.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/angular/angular.js"></script>
+        <script src="~/lib/angular/i18n/angular-locale_pt-br.js"></script>
+        <script src="~/lib/angular/angular-route.js"></script>
+        <script src="~/lib/angular/angular-animate.js"></script>
+        <script src="~/lib/angular/angular-ui-router.js"></script>
+        <script src="~/lib/angular/angular-sanitize.js"></script>
+        <script src="~/lib/angular/angular-messages.js"></script>
+        <script src="~/lib/angular-loading-spinner/angular-loading-spinner.js"></script>
+        <script src="~/lib/ng-img-crop/ng-img-crop.js"></script>
+        <script src="~/lib/toastr/toastr.js"></script>
+        <script src="~/lib/angular/stateEvent.js"></script>
+        <script src="~/lib/ui-mask-master/dist/mask.js"></script>
+        <script src="~/lib/ui-input-mask/src/angular-input-masks-standalone.js"></script>
+        <script src="~/lib/JsBarcode/JsBarcode.all.min.js"></script>
+        <script src="~/lib/ckeditor/ckeditor.js"></script>
+        <script src="~/lib/ng-ckeditor/ng-ckeditor-master/ng-ckeditor.js"></script>
+        @*
+        <script src="~/js/angular-directives/angular-input-masks-dependencies.js"></script>
+        <script src="~/js/angular-directives/angular-input-masks.br.js"></script>*@
+
+        <script src="~/js/site.js"></script>
+
+        @*ANGULAR*@
+        <script src="~/js/app.js"></script>
+        <partial name="../_ViewRotas.cshtml" />
+
+        <script src="~/js/angular-directives/capitalize.js"></script>
+        <script src="~/js/angular-directives/ngEnter.js"></script>
+        <script src="~/js/angular-directives/backbutton-directive.js"></script>
+        <script src="~/js/angular-directives/confirmOnExit.js"></script>
+        <script src="~/js/angular-directives/validadorCPF.js"></script>
+        <script src="~/js/angular-directives/validadoPisPasep.js"></script>
+        <script src="~/js/angular-services/pagination-service.js"></script>
+        <script src="~/js/angular-services/server-errors-service.js"></script>
+        @*
+        <script src="~/js/angular-components/notification-alert-component.js"></script>*@
+        <script src="~/js/angular-components/confirm-component.js"></script>
+        <script src="~/js/angular-components/confirm-cancelar-inscricao-component.js"></script>
+        <script src="~/js/angular-components/confirm-inscrever-cursista-component.js"></script>
+
+        <script src="~/js/angular-factories/modalidade-factory.js"></script>
+
+        <script src="~/js/MenuController.js"></script>
+
+        @*TRILHAS*@
+        <script src="~/js/trilhas/eixo/EixosController.js"></script>
+        <script src="~/js/trilhas/eixo/EixoFormularioController.js"></script>
+        <script src="~/js/trilhas/estacao/EstacoesController.js"></script>
+        <script src="~/js/trilhas/estacao/EstacaoFormularioController.js"></script>
+        <script src="~/js/trilhas/solucao/SolucoesController.js"></script>
+        <script src="~/js/trilhas/solucao/SolucaoFormularioController.js"></script>
+
+        @*CADASTRO*@
+        <script src="~/js/cadastros/entidade/EntidadesController.js"></script>
+        <script src="~/js/cadastros/entidade/EntidadeFormularioController.js"></script>
+        <script src="~/js/cadastros/entidade/modal/EntidadeModalGestorController.js"></script>
+        <script src="~/js/cadastros/recurso/RecursosController.js"></script>
+        <script src="~/js/cadastros/recurso/RecursoFormularioController.js"></script>
+        <script src="~/js/cadastros/local/LocaisController.js"></script>
+        <script src="~/js/cadastros/local/LocalFormularioController.js"></script>
+        <script src="~/js/cadastros/local/modal/LocalModalRecursoController.js"></script>
+        <script src="~/js/cadastros/pessoa/PessoaFormularioController.js"></script>
+        <script src="~/js/cadastros/pessoa/PessoasController.js"></script>
+        <script src="~/js/cadastros/cursista/CursistasController.js"></script>
+        <script src="~/js/cadastros/cursista/modal/CursistaModalEntidadeController.js"></script>
+        <script src="~/js/cadastros/cursista/modal/CursistaModalPessoaController.js"></script>
+        <script src="~/js/cadastros/cursista/modal/CursistaModalCursoController.js"></script>
+        <script src="~/js/cadastros/docente/DocentesController.js"></script>
+        <script src="~/js/cadastros/docente/DocenteFormularioController.js"></script>
+        <script src="~/js/cadastros/docente/modal/DocenteModalCursoController.js"></script>
+        <script src="~/js/cadastros/docente/modal/DocenteModalPessoaController.js"></script>
+        <script src="~/js/cadastros/certificados/CertificadosController.js"></script>
+        <script src="~/js/cadastros/certificados/FormularioCertificadoController.js"></script>
+        <script src="~/js/cadastros/pessoa/modal/PessoaModalEntidadeController.js"></script>
+        <script src="~/js/cadastros/certificados-emitidos/CertificadosEmitidosController.js"></script>
+
+        @*EVENTO*@
+        <script src="~/js/eventos/EventosController.js"></script>
+        <script src="~/js/eventos/EventoFormularioController.js"></script>
+        <script src="~/js/eventos/modal/EventoModalCoordenadorController.js"></script>
+        <script src="~/js/eventos/modal/EventoModalEntidadeController.js"></script>
+        <script src="~/js/eventos/modal/EventoModalEntidadeCotaController.js"></script>
+        <script src="~/js/eventos/modal/EventoModalDocenteController.js"></script>
+        <script src="~/js/eventos/modal/EventoModalCursistaController.js"></script>
+        <script src="~/js/eventos/modal/EventoModalLocalController.js"></script>
+        <script src="~/js/eventos/modal/EventoModalRecursoController.js"></script>
+        <script src="~/js/eventos/modal/EventoModalCursoController.js"></script>
+        <script src="~/js/eventos/inscricao/EventoInscricaoController.js"></script>
+        <script src="~/js/eventos/inscricao/EventoListaInscricaoController.js"></script>
+        <script src="~/js/eventos/inscricao/modal/InscricaoModalEntidadeController.js"></script>
+        <script src="~/js/eventos/listaPresenca/EventoListaPresencaController.js"></script>
+        <script src="~/js/eventos/listaPresenca/modal/ListaInscricaoEventoModalController.js"></script>
+        <script src="~/js/eventos/finalizar/EventoFinalizarController.js"></script>
+        <script src="~/js/eventos/programacaoEvento/ProgramacaoEventoController.js"></script>
+        <script src="~/js/eventos/programacaoEvento/modal/ProgramacaoEventoModalController.js"></script>
+        <script src="~/js/eventos/finalizar/modal/cancelarPenalidadeModalController.js"></script>
+        <script src="~/js/eventos/modal/EventoModalMotivoExclusaoController.js"></script>
+    </environment>
+
+    <environment exclude="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/popper/popper.min.js"></script>
+        <script src="~/lib/popper/tooltip.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/angular/angular.js"></script>
+        <script src="~/lib/angular/i18n/angular-locale_pt-br.js"></script>
+        <script src="~/lib/angular/angular-route.js"></script>
+        <script src="~/lib/angular/angular-animate.js"></script>
+        <script src="~/lib/angular/angular-ui-router.js"></script>
+        <script src="~/lib/angular/angular-sanitize.js"></script>
+        <script src="~/lib/angular/angular-messages.js"></script>
+        <script src="~/lib/angular-loading-spinner/angular-loading-spinner.js"></script>
+        <script src="~/lib/ng-img-crop/ng-img-crop.js"></script>
+        <script src="~/lib/toastr/toastr.js"></script>
+        <script src="~/lib/angular/stateEvent.js"></script>
+        <script src="~/lib/ui-mask-master/dist/mask.js"></script>
+        <script src="~/lib/ui-input-mask/src/angular-input-masks-standalone.js"></script>
+        <script src="~/lib/JsBarcode/JsBarcode.all.min.js"></script>
+        <script src="~/lib/ckeditor/ckeditor.js"></script>
+        <script src="~/lib/ng-ckeditor/ng-ckeditor-master/ng-ckeditor.min.js"></script>
+
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <partial name="../_ViewRotas.cshtml" />
+    </environment>
+
+    <environment include="Development">
+        <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/toastr/toastr.css" rel="stylesheet" />
+        <link href="~/lib/angular-loading-spinner/angular-loading-spinner.css" rel="stylesheet" />
+        <link href="~/lib/ng-img-crop/ng-img-crop.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/print.css" />
+        <link rel="stylesheet" href="~/css/certificado.css" />
+    </environment>
+    <environment exclude="Development">
+        <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="~/lib/toastr/toastr.min.css" rel="stylesheet" />
+        <link href="~/lib/angular-loading-spinner/angular-loading-spinner.css" rel="stylesheet" />
+        <link href="~/lib/ng-img-crop/ng-img-crop.css" rel="stylesheet" />
+
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+</head>
+
+<body ng-app="trilhasapp">
+
+    <div class="wrapper">
+
+        <sarsha-spinner name="loader">
+            <div>
+                <span><i class="fa fa-spinner"></i></span>
+            </div>
+        </sarsha-spinner>
+
+        <nav id="sidebar" class="navbar navbar-expand-md navbar-light align-items-start"
+            ng-controller="MenuController as vm" ng-if="!vm.exibirMenu">
+            <div class="sidebar-header">
+                <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <h3><a asp-controller="home" asp-action="index">ESESP</a></h3>
+            </div>
+            <div id="navbarNav" class="collapse navbar-collapse">
+                @if (User.IsInRole("Administrador") || User.IsInRole("Secretaria"))
+                {
+                    <ul class="navbar-nav d-block w-100">
+                        <li>
+
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#trilhasSubmenu">Trilhas</a>
+                            <ul class="list-unstyled collapse" id="trilhasSubmenu">
+                                <li>
+                                    <a class="nav-item" href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'eixos'}"
+                                        ng-click="vm.mudaRota('eixos');">Eixos</a>
+                                </li>
+                                <li>
+
+                                    <a href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'estacoes'}"
+                                        ng-click="vm.mudaRota('estacoes'); ">Estações</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="solucoes" ng-class="{'menu-ativo': vm.menuAtivo === 'solucoes'}">Soluções
+                                        Educacionais</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#cadastroSubmenu">Cadastros</a>
+                            <ul class="list-unstyled collapse" id="cadastroSubmenu">
+                                <li>
+                                    <a ui-sref="entidades"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'entidades'}">Entidades</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="recursos" ng-class="{'menu-ativo': vm.menuAtivo === 'recursos'}">Recursos
+                                        Operacionais</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="locais" ng-class="{'menu-ativo': vm.menuAtivo === 'locais'}">Locais</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="pessoas" ng-class="{'menu-ativo': vm.menuAtivo === 'pessoas'}">Pessoas</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="docentes"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'docentes'}">Docentes</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="cursistas"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'cursistas'}">Cursistas</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#cadastroEventos">Eventos</a>
+                            <ul class="list-unstyled collapse" id="cadastroEventos">
+                                <li>
+                                    <a ui-sref="eventos"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventos'}">Planejamento</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="eventosListaPresenca"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosListaPresenca'}">Lista de
+                                        Presença</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="programacaoEvento"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'programacaoEvento'}">Programação de
+                                        Evento</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="certificados"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'certificados'}">Certificados</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="certificadosEmitidos"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'certificadosEmitidos'}">Certificados
+                                        Emitidos</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#relatorios">Relatórios</a>
+                            <ul class="list-unstyled collapse" id="relatorios">
+                                <li>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorPeriodo"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorPeriodo'}">Capacitados
+                                        por Período</a>
+                                </li>
+
+                                <li>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorCurso"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorCurso'}">Capacitados
+                                        por Curso</a>
+                                </li>
+
+                                <li>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorEntidade"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorEntidade'}">Capacitados
+                                        por Entidade</a>
+                                </li>
+
+                                <li>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorModalidade"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorModalidade'}">Capacitados
+                                        por Modalidade</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorSolucoesEducacionais"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorSolucoesEducacionais'}">Capacitados
+                                        por Soluções Educacionais</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="eventosRelatoriocapacitadosPorEixo"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatoriocapacitadosPorEixo'}">Capacitados
+                                        por Eixo</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="relatorioHistoricoDeCursista"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'relatorioHistoricoDeCursista'}">Histórico
+                                        de Cursista</a>
+                                </li>
+
+                                <li>
+                                    <a ui-sref="eventosRelatorioListaDePresenca"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatorioListaDePresenca'}">Lista
+                                        de Presença</a>
+                                </li>
+
+                                <li>
+                                    <a ui-sref="eventosRelatorioDeCursista"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosRelatorioDeCursista'}">Cursistas</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                }
+                else if (User.IsInRole("Coordenador"))
+                {
+                    <ul class="navbar-nav d-block w-100">
+                        <li>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#cadastroSubmenu">Cadastros</a>
+                            <ul class="list-unstyled collapse" id="cadastroSubmenu">
+                                <li>
+                                    <a ui-sref="recursos" ng-class="{'menu-ativo': vm.menuAtivo === 'recursos'}">Recursos
+                                        Operacionais</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#cadastroEventos">Eventos</a>
+                            <ul class="list-unstyled collapse" id="cadastroEventos">
+                                <li>
+                                    <a ui-sref="eventos"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventos'}">Planejamento</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <a asp-controller="TermosReferencia" asp-action="Index">
+                            <i class="fas fa-file-contract"></i> Termos de Referência
+                        </a>
+                    </ul>
+                }
+                else if (User.IsInRole("Gestor"))
+                {
+                    <ul class="navbar-nav d-block w-100">
+                        <li>
+
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#trilhasSubmenu">Trilhas</a>
+                            <ul class="list-unstyled collapse" id="trilhasSubmenu">
+                                <li>
+                                    <a class="nav-item" href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'eixos'}"
+                                        ng-click="vm.mudaRota('eixos');">Eixos</a>
+                                </li>
+                                <li>
+
+                                    <a href="#" ng-class="{'menu-ativo': vm.menuAtivo === 'estacoes'}"
+                                        ng-click="vm.mudaRota('estacoes'); ">Estações</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="solucoes" ng-class="{'menu-ativo': vm.menuAtivo === 'solucoes'}">Soluções
+                                        Educacionais</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                                data-target="#cadastroEventos">Eventos</a>
+                            <ul class="list-unstyled collapse" id="cadastroEventos">
+                                <li>
+                                    <a ui-sref="eventos"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventos'}">Planejamento</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="eventosListaPresenca"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'eventosListaPresenca'}">Lista de
+                                        Presença</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="programacaoEvento"
+                                        ng-class="{'menu-ativo': vm.menuAtivo === 'programacaoEvento'}">Programação de
+                                        Evento</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
+            </div>
+        </nav>
+
+        <div class="content">
+
+            <div id="content-navbar" class="container-fluid">
+                <div class="row">
+                    <div class="col-2">
+                        <button class="btn" ng-click="vm.exibirMenu = !vm.exibirMenu" ng-show="vm.exibirMenu"><span
+                                class="fa fa-compress"></span></button>
+                        <button class="btn" ng-click="vm.exibirMenu = !vm.exibirMenu" ng-show="!vm.exibirMenu"><span
+                                class="fa fa-expand"></span></button>
+                    </div>
+
+                    <div class="col-10 text-right">
+                        <div class="col-md-12 dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle justify-content-end" type="button"
+                                id="btn-login" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-user"></i> @UserManager.GetUserName(User)
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" asp-controller="account" asp-action="logout">Sair</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @RenderBody()
+        </div>
+    </div>
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

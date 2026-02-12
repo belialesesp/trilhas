@@ -1,0 +1,155 @@
+﻿@model Trilhas.Models.Evento.Relatorios.RelatorioProgramacaoEventosViewModel
+
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> UserManager
+
+@{ Layout = null; }
+
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Programação de Eventos</title>
+
+	<style type="text/css">
+		@@page {
+			size: landscape
+		}
+	</style>
+
+	<link rel="stylesheet" href="~/css/programacao-evento.css">
+</head>
+
+<body>
+	@if(@Model.TotalVagas > 0)
+	{
+		<div>
+			@if(Model.ListaPresencial.Count > 0)
+			{
+				<table id="tabelaProg">
+					<caption><strong>Programação de Cursos Presenciais - @Model.Mes</strong></caption>
+					<thead>
+						<tr>
+							<th style="width: 10%">Eixo</th>
+							<th style="width: 5%">Sigla</th>
+							<th style="width: 17%">Curso</th>
+							<th style="width: 5%">Carga Horária</th>
+							<th style="width: 12%">Período de Inscrição</th>
+							<th style="width: 5%">Número de Vagas</th>
+							<th style="width: 12%">Período de Realização</th>
+							<th style="width: 8%">Horário</th>
+							<th style="width: 10%">Local</th>
+							<th style="width: 5%">Docente</th>
+							<th style="width: 5%">Coordenador</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach(var evento in Model.ListaPresencial)
+						{
+							<tr>
+								<td>@evento.Eixo</td>
+								<td><strong>@evento.Sigla</strong></td>
+								<td><strong>@evento.Curso</strong><br><strong>Público Alvo: </strong>@evento.PublicoAlvo</td>
+								<td>@evento.CargaHoraria</td>
+								<td>@evento.PeriodoInscricao</td>
+								<td>@evento.NumeroVagas</td>
+								<td>@evento.PeriodoRealizacao</td>
+								<td>@evento.Horario</td>
+								<td>@evento.Local</td>
+								<td>@evento.Docente</td>
+								<td>@evento.Coordenador</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			}
+			@if(Model.ListaSemiPresencial.Count > 0)
+			{
+				<table id="tabelaProg">
+					<caption><strong>Programação de Cursos Semipresenciais - @Model.Mes</strong></caption>
+					<thead>
+						<tr>
+							<th style="width: 10%">Eixo</th>
+							<th style="width: 5%">Sigla</th>
+							<th style="width: 17%">Curso</th>
+							<th style="width: 5%">Carga Horária</th>
+							<th style="width: 12%">Período de Inscrição</th>
+							<th style="width: 5%">Número de Vagas</th>
+							<th style="width: 12%">Período de Realização</th>
+							<th style="width: 8%">Horário</th>
+							<th style="width: 10%">Local</th>
+							<th style="width: 5%">Docente</th>
+							<th style="width: 5%">Coordenador</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach(var evento in Model.ListaSemiPresencial)
+						{
+							<tr>
+								<td>@evento.Eixo</td>
+								<td>@evento.Sigla</td>
+								<td><strong>@evento.Curso</strong><br><strong>Público Alvo: </strong>@evento.PublicoAlvo</td>
+								<td>@evento.CargaHoraria</td>
+								<td>@evento.PeriodoInscricao</td>
+								<td>@evento.NumeroVagas</td>
+								<td>@evento.PeriodoRealizacao</td>
+								<td>@evento.Horario</td>
+								<td>@evento.Local</td>
+								<td>@evento.Docente</td>
+								<td>@evento.Coordenador</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			}
+			@if(Model.ListaEaD.Count > 0)
+			{
+				<table id="tabelaProg">
+					<caption><strong>Programação de Cursos EaD - @Model.Mes</strong></caption>
+					<thead>
+						<tr>
+							<th style="width: 10%">Eixo</th>
+							<th style="width: 5%">Sigla</th>
+							<th style="width: 17%">Curso</th>
+							<th style="width: 5%">Carga Horária</th>
+							<th style="width: 12%">Período de Inscrição</th>
+							<th style="width: 5%">Número de Vagas</th>
+							<th style="width: 12%">Período de Realização</th>
+							<th style="width: 8%">Horário</th>
+							<th style="width: 10%">Local</th>
+							<th style="width: 5%">Docente</th>
+							<th style="width: 5%">Coordenador</th>
+
+						</tr>
+					</thead>
+					<tbody>
+						@foreach(var evento in Model.ListaEaD)
+						{
+							<tr>
+								<td>@evento.Eixo</td>
+								<td>@evento.Sigla</td>
+								<td><strong>@evento.Curso</strong><br><strong>Público Alvo: </strong>@evento.PublicoAlvo</td>
+								<td>@evento.CargaHoraria</td>
+								<td>@evento.PeriodoInscricao</td>
+								<td>@evento.NumeroVagas</td>
+								<td>@evento.PeriodoRealizacao</td>
+								<td>@evento.Horario</td>
+								<td>@evento.Local</td>
+								<td>@evento.Docente</td>
+								<td>@evento.Coordenador</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+		<div id="rodape">
+			<strong>Total de Vagas Disponiveis - </strong>@Model.TotalVagas
+		</div>
+	} else
+	{
+		<strong>Não existem Eventos Programados para o Mês[@Model.Mes] escolhido</strong>
+	}
+</body>
+</html>

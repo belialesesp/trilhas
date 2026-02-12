@@ -12,7 +12,7 @@ using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
+    [Authorize(Roles = "Administrador,GESE,Gestor,GEDTH")]
     public class ListaPresencaController : DefaultController
     {
         private readonly EventoService _eventoService;

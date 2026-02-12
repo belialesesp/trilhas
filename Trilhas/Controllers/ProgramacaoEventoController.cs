@@ -11,7 +11,7 @@ using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
+    [Authorize(Roles = "Administrador,GESE,Gestor,GEDTH")]
     public class ProgramacaoEventoController : Controller
     {
         private readonly EventoService _eventoService;
@@ -48,7 +48,7 @@ namespace Trilhas.Controllers
                         Horario = evento.Horarios.Last().DataHoraInicio.ToString("HH:mm") + " às " + evento.Horarios.Last().DataHoraFim.ToString("HH:mm"),
                         Local = "Site EAD",
                         Docente = horario.Docente.Pessoa.NomeSocial ?? horario.Docente.Pessoa.Nome,
-                        Coordenador = evento.Coordenador.NomeSocial ?? evento.Coordenador.Nome
+                        GEDTH = evento.GEDTH.NomeSocial ?? evento.GEDTH.Nome
                     });
 				} else if(evento.Curso.Modalidade == EnumModalidade.PRESENCIAL)
 				{
@@ -64,7 +64,7 @@ namespace Trilhas.Controllers
 						Horario = evento.Horarios.Last().DataHoraInicio.ToString("HH:mm") + " às " + evento.Horarios.Last().DataHoraFim.ToString("HH:mm"),
 						Local = evento.Local.Nome,
 						Docente = horario.Docente.Pessoa.NomeSocial ?? horario.Docente.Pessoa.Nome,
-						Coordenador = evento.Coordenador.NomeSocial ?? evento.Coordenador.Nome
+						GEDTH = evento.GEDTH.NomeSocial ?? evento.GEDTH.Nome
 					});
 				}
                 else
@@ -82,7 +82,7 @@ namespace Trilhas.Controllers
                         Horario = evento.Horarios.Last().DataHoraInicio.ToString("HH:mm") + " às " + evento.Horarios.Last().DataHoraFim.ToString("HH:mm"),
                         Local = evento.Local.Nome,
                         Docente = horario.Docente.Pessoa.NomeSocial ?? horario.Docente.Pessoa.Nome,
-                        Coordenador = evento.Coordenador.NomeSocial ?? evento.Coordenador.Nome
+                        GEDTH = evento.GEDTH.NomeSocial ?? evento.GEDTH.Nome
                     });
                 }
             }

@@ -7,7 +7,7 @@ using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Administrador,Secretaria")]
+    [Authorize(Roles = "Administrador,GESE")]
     public class EtiquetaController : Controller
     {
         protected UserManager<IdentityUser> _userManager;

@@ -30,7 +30,7 @@ namespace Trilhas.Controllers.Mappers
                 eventoVm.FlagEad = true;
             }
 
-            eventoVm.Coordenador = MapearCoordenadorViewModel(evento.Coordenador);
+            eventoVm.GEDTH = MapearGEDTHViewModel(evento.GEDTH);
             eventoVm.Entidade = MapearEntidadeViewModel(evento.EntidadeDemandante);
             eventoVm.Agenda = MapearEventoAgendaViewModel(evento.Agendas.Last());
             eventoVm.Recursos = MapearEventoRecursoViewModel(evento.Recursos);
@@ -100,12 +100,12 @@ namespace Trilhas.Controllers.Mappers
             return vm;
         }
 
-        public EventoCoordenadorViewModel MapearCoordenadorViewModel(Pessoa coordenador)
+        public EventoGEDTHViewModel MapearGEDTHViewModel(Pessoa coordenador)
         {
             if(coordenador is null)
                 return null;
 
-            EventoCoordenadorViewModel vm = new EventoCoordenadorViewModel(coordenador.Id);
+            EventoGEDTHViewModel vm = new EventoGEDTHViewModel(coordenador.Id);
             vm.Nome = coordenador.NomeSocial ?? coordenador.Nome;
 
             return vm;
@@ -150,7 +150,7 @@ namespace Trilhas.Controllers.Mappers
                     DataInicio = evento.Agendas.LastOrDefault()?.DataHoraInicio,
                     DataFim = evento.Agendas.LastOrDefault()?.DataHoraFim,
                     Municipio = evento.Curso.Modalidade == EnumModalidade.EAD ? "EAD" : evento.Local.Municipio.NomeMunicipio + "-" + evento.Local.Municipio.Uf,
-                    Docente = evento.Coordenador != null ? evento.Coordenador.NomeSocial ?? evento.Coordenador.Nome : string.Empty,
+                    Docente = evento.GEDTH != null ? evento.GEDTH.NomeSocial ?? evento.GEDTH.Nome : string.Empty,
                     ListaDeInscricaoId = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Id : 0,
                     Inscritos = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue).Count() : 0,
                     Aprovados = evento.ListaDeInscricao != null ? evento.ListaDeInscricao.Inscritos.Where(x => !x.DeletionTime.HasValue && x.Situacao == EnumSituacaoCursista.CERTIFICADO).Count() : 0,

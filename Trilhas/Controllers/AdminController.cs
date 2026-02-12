@@ -8,7 +8,7 @@ using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
+    [Authorize(Roles = "Administrador,GESE,Gestor,GEDTH")]
     public class AdminController : Controller
     {
         private MinioService _minioService;
@@ -22,7 +22,7 @@ namespace Trilhas.Controllers
 
         public IActionResult Index()
         {
-            if(!User.IsInRole("Administrador") && User.IsInRole("Secretaria") && User.IsInRole("Gestor") && User.IsInRole("Coordenador"))
+            if(!User.IsInRole("Administrador") && User.IsInRole("GESE") && User.IsInRole("Gestor") && User.IsInRole("GEDTH"))
                 return BadRequest(ModelState);
 
             return View();

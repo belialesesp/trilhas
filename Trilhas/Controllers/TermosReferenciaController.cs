@@ -13,7 +13,7 @@ using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Coordenador,Administrador")]
+    [Authorize(Roles = "GEDTH,Administrador")]
     public class TermosReferenciaController : DefaultController
     {
         private readonly TermoReferenciaService _service;

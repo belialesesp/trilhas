@@ -11,7 +11,7 @@ using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Administrador,Secretaria,Coordenador")]
+    [Authorize(Roles = "Administrador,GESE,GEDTH")]
     public class RecursosController : DefaultController
     {
         private readonly RecursoService _recursoService;

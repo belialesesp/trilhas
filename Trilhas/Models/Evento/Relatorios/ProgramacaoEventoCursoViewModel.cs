@@ -13,6 +13,6 @@
 		public string Horario { get; set; }
 		public string Local { get; set; }
 		public string Docente { get; set; }
-		public string Coordenador { get; set; }
+		public string GEDTH { get; set; }
 	}
 }

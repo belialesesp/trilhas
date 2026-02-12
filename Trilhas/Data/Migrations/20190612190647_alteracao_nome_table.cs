@@ -377,7 +377,7 @@ namespace Trilhas.Data.Migrations
                 keyColumn: "Id",
                 keyValue: 1L,
                 column: "Nome",
-                value: "Secretaria de Segurança Pública");
+                value: "GESE de Segurança Pública");
 
             migrationBuilder.UpdateData(
                 table: "Sexo",

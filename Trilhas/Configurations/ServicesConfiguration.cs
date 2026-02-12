@@ -1,4 +1,4 @@
-﻿using IdentityModel;
+﻿﻿using IdentityModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting;
@@ -179,7 +179,6 @@ namespace Trilhas.Configurations
             services.AddScoped<DocenteService>();
             services.AddScoped<CertificadoService>();
             services.AddScoped<CertificadoEmitidoService>();
-            services.AddScoped<TermoReferenciaService>();
         }
 
         public static void AddSettings(this IServiceCollection services, IConfiguration configuration)
