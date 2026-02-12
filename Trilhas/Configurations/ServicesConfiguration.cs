@@ -1,12 +1,10 @@
-﻿using IdentityModel;
+﻿﻿using IdentityModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -24,17 +22,8 @@ namespace Trilhas.Configurations
 {
     public static class ServicesConfiguration
     {
-        // Original method signature for backward compatibility
         public static void AddAuthentication(this IServiceCollection services, OpenIdService settings)
         {
-            // Call the new overload with null environment (defaults to production behavior)
-            AddAuthentication(services, settings, null);
-        }
-
-        // New overload with environment parameter
-        public static void AddAuthentication(this IServiceCollection services, OpenIdService settings, IWebHostEnvironment environment)
-        {
-            // Production authentication with Acesso Cidadão
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -121,14 +110,12 @@ namespace Trilhas.Configurations
                     RoleClaimType = JwtClaimTypes.Role,
                 };
             });
-
-            Console.WriteLine("🔐 Authentication: Using PRODUCTION mode (Acesso Cidadão ENABLED)");
         }
 
         public static void AddHttpClients(this IServiceCollection services)
         {
             services.AddHttpClient<ISiahresService, SiarhesService>();
-        }
+        }   
 
         public static void AddServices(this IServiceCollection services)
         {
@@ -152,7 +139,6 @@ namespace Trilhas.Configurations
             services.AddScoped<DocenteService>();
             services.AddScoped<CertificadoService>();
             services.AddScoped<CertificadoEmitidoService>();
-            services.AddScoped<TermoReferenciaService>();
         }
 
         public static void AddSettings(this IServiceCollection services, IConfiguration configuration)
