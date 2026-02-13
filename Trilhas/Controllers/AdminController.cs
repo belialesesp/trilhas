@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Claims;
 using Trilhas.Models;
 using Trilhas.Services;
 
 namespace Trilhas.Controllers
 {
-    [Authorize(Roles = "Administrador,Secretaria,Gestor,Coordenador")]
+    [Authorize(Roles = "Administrador,GESE,Secretaria,Gestor,GEDTH,Coordenador")]
     public class AdminController : Controller
     {
         private MinioService _minioService;
@@ -22,8 +23,21 @@ namespace Trilhas.Controllers
 
         public IActionResult Index()
         {
-            if(!User.IsInRole("Administrador") && User.IsInRole("Secretaria") && User.IsInRole("Gestor") && User.IsInRole("Coordenador"))
-                return BadRequest(ModelState);
+            if(!User.IsInRole("Administrador") && 
+                !User.IsInRole("GESE") && 
+                !User.IsInRole("Secretaria") && 
+                !User.IsInRole("Gestor") && 
+                !User.IsInRole("GEDTH") &&
+                !User.IsInRole("Coordenador"))
+            {
+                return Forbid();
+            }
+
+            // Debug logging
+            System.Console.WriteLine("=== ADMIN PAGE ACCESS ===");
+            System.Console.WriteLine($"User: {User.Identity.Name}");
+            System.Console.WriteLine($"Is Authenticated: {User.Identity.IsAuthenticated}");
+            System.Console.WriteLine($"Roles: {string.Join(", ", User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value))}");
 
             return View();
         }
@@ -63,7 +77,6 @@ namespace Trilhas.Controllers
         public string Erro { get; set; }
         public string Hora { get; set; }
     }
-
 
     public class AdminViewModel
     {

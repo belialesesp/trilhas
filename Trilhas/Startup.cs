@@ -52,30 +52,25 @@ namespace Trilhas
                 )
             );
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            // Add Identity services (required by views that inject UserManager/SignInManager)
+            // But DON'T call AddIdentity() - it would override our authentication configuration
+            services.AddIdentityCore<IdentityUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders()
+                .AddSignInManager<SignInManager<IdentityUser>>();
 
             services.AddSettings(Configuration);
             services.AddHttpClients();
             services.AddServices();
 
+            // FIXED: Always use ServicesConfiguration.AddAuthentication for consistent auth setup
+            // Build service provider to get OpenIdService (it's registered in AddServices as a singleton)
             var sp = services.BuildServiceProvider();
-
-            // Pass the environment to the authentication configuration
-            if (_env.IsDevelopment())
-            {
-                services.AddAuthentication("LocalCookie")
-                    .AddCookie("LocalCookie", options =>
-                    {
-                        options.LoginPath = "/Account/Login";
-                        options.AccessDeniedPath = "/Account/AccessDenied";
-                    });
-            }
-            else
-            {
-                services.AddAuthentication(sp.GetService<OpenIdService>(), _env);
-            }
-
+            var openIdService = sp.GetService<OpenIdService>();
+            
+            // Call the authentication extension method with environment parameter
+            services.AddAuthentication(openIdService, _env);
 
             services.AddMvc(options => {
                 options.EnableEndpointRouting = false;

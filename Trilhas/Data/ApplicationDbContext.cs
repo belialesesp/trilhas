@@ -27,6 +27,23 @@ namespace Trilhas.Data
             .HasValue<Video>("video")
             .HasValue<Livro>("livro");
 
+            // Configure TermoReferenciaItem decimal precision to fix the warning
+            modelBuilder.Entity<TermoReferenciaItem>()
+                .Property(t => t.CargaHoraria)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<TermoReferenciaItem>()
+                .Property(t => t.ValorHora)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<TermoReferenciaItem>()
+                .Property(t => t.EncargosPercentual)
+                .HasPrecision(5, 2);
+
+            modelBuilder.Entity<TermoReferenciaItem>()
+                .Property(t => t.ValorTotal)
+                .HasPrecision(18, 2);
+
             modelBuilder.Seed();
         }
 

@@ -182,7 +182,7 @@
                 <h3><a asp-controller="home" asp-action="index">ESESP</a></h3>
             </div>
             <div id="navbarNav" class="collapse navbar-collapse">
-                @if (User.IsInRole("Administrador") || User.IsInRole("Secretaria"))
+                @if (User.IsInRole("Administrador") || User.IsInRole("GESE") || User.IsInRole("Secretaria"))
                 {
                     <ul class="navbar-nav d-block w-100">
                         <li>
@@ -230,6 +230,11 @@
                                 <li>
                                     <a ui-sref="cursistas"
                                         ng-class="{'menu-ativo': vm.menuAtivo === 'cursistas'}">Cursistas</a>
+                                </li>
+                                <li>
+                                    <a asp-controller="TermosReferencia" asp-action="Index">
+                                        <i class="fas fa-file-contract"></i> Termos de Referência
+                                    </a>
                                 </li>
                             </ul>
                         </li>
@@ -320,7 +325,7 @@
 
                     </ul>
                 }
-                else if (User.IsInRole("Coordenador"))
+                else if (User.IsInRole("GEDTH") || User.IsInRole("Coordenador"))
                 {
                     <ul class="navbar-nav d-block w-100">
                         <li>
@@ -343,9 +348,6 @@
                                 </li>
                             </ul>
                         </li>
-                        <a asp-controller="TermosReferencia" asp-action="Index">
-                            <i class="fas fa-file-contract"></i> Termos de Referência
-                        </a>
                     </ul>
                 }
                 else if (User.IsInRole("Gestor"))

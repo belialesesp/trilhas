@@ -20,35 +20,40 @@ namespace Trilhas.Controllers
             _env = env;
         }
 
-        // public async Task Login(string returnUrl = "/")
-        // {
-        //     // Check if we're in development mode
-        //     if (_env.IsDevelopment() || Environment.GetEnvironmentVariable("BYPASS_AUTH") == "true")
-        //     {
-        //         // Redirect to local login page
-        //         Response.Redirect($"/Account/LocalLogin?returnUrl={Uri.EscapeDataString(returnUrl)}");
-        //         return;
-        //     }
-
-        //     // Production: Use OpenID Connect (Acesso Cidadão)
-        //     await HttpContext.ChallengeAsync("oidc", new AuthenticationProperties() { RedirectUri = returnUrl });
-        // }
-
         [HttpGet]
         public IActionResult Login(string returnUrl = "/")
         {
             // Check if we're in development mode
             if (_env.IsDevelopment() || Environment.GetEnvironmentVariable("BYPASS_AUTH") == "true")
             {
-                // ✅ CORREÇÃO: Redirecionamento síncrono
+                // Redirect to local login page
                 return RedirectToAction("LocalLogin", new { returnUrl });
             }
 
             // Production: Use OpenID Connect (Acesso Cidadão)
-            // Este método precisa ser async e chamar ChallengeAsync
             return Challenge(new AuthenticationProperties() { RedirectUri = returnUrl }, "oidc");
         }
 
+        /// <summary>
+        /// GET: Display the local login form (MISSING ACTION - THIS WAS THE BUG!)
+        /// </summary>
+        [HttpGet]
+        public IActionResult LocalLogin(string returnUrl = "/")
+        {
+            // Only allow local login in development
+            if (!_env.IsDevelopment() && Environment.GetEnvironmentVariable("BYPASS_AUTH") != "true")
+            {
+                return RedirectToAction("Login", new { returnUrl });
+            }
+
+            // Pass the return URL to the view
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        /// <summary>
+        /// POST: Process the local login form submission
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> LocalLogin(string username, string role, string returnUrl = "/")
         {
@@ -74,20 +79,26 @@ namespace Trilhas.Controllers
                 case "admin":
                     claims.Add(new Claim(ClaimTypes.Role, "Administrador"));
                     break;
+                case "gese":
                 case "secretaria":
-                    claims.Add(new Claim(ClaimTypes.Role, "Secretaria"));
+                    claims.Add(new Claim(ClaimTypes.Role, "GESE")); // New name for Secretaria
+                    claims.Add(new Claim(ClaimTypes.Role, "Secretaria")); // Keep old name for backward compatibility
                     break;
                 case "gestor":
                     claims.Add(new Claim(ClaimTypes.Role, "Gestor"));
                     break;
+                case "gedth":
                 case "coordenador":
-                    claims.Add(new Claim(ClaimTypes.Role, "Coordenador"));
+                    claims.Add(new Claim(ClaimTypes.Role, "GEDTH")); // New name for Coordenador
+                    claims.Add(new Claim(ClaimTypes.Role, "Coordenador")); // Keep old name for backward compatibility
                     break;
                 case "all":
                     // Add all roles for complete testing
                     claims.Add(new Claim(ClaimTypes.Role, "Administrador"));
+                    claims.Add(new Claim(ClaimTypes.Role, "GESE"));
                     claims.Add(new Claim(ClaimTypes.Role, "Secretaria"));
                     claims.Add(new Claim(ClaimTypes.Role, "Gestor"));
+                    claims.Add(new Claim(ClaimTypes.Role, "GEDTH"));
                     claims.Add(new Claim(ClaimTypes.Role, "Coordenador"));
                     break;
                 default:
@@ -95,32 +106,36 @@ namespace Trilhas.Controllers
                     break;
             }
 
-            var claimsIdentity = new ClaimsIdentity(claims, "LocalCookie");
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true,
                 RedirectUri = returnUrl
             };
-Console.WriteLine($"=== TENTATIVA DE LOGIN ===");
-Console.WriteLine($"Username: {username}");
-Console.WriteLine($"Role: {role}");
-Console.WriteLine($"Usuário existe no banco? Vamos verificar...");
+
+            Console.WriteLine($"=== LOCAL LOGIN ATTEMPT ===");
+            Console.WriteLine($"Username: {username}");
+            Console.WriteLine($"Role: {role}");
+            Console.WriteLine($"Return URL: {returnUrl}");
+
             await HttpContext.SignInAsync(
-                "LocalCookie",
+                CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
+
+            Console.WriteLine("✅ Login successful! Redirecting to: " + returnUrl);
+            
             return LocalRedirect(returnUrl);
         }
 
         [Authorize]
-        public async Task Logout()
+        public async Task<IActionResult> Logout()
         {
             if (_env.IsDevelopment() || Environment.GetEnvironmentVariable("BYPASS_AUTH") == "true")
             {
                 // Local logout
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                Response.Redirect("/");
-                return;
+                return Redirect("/");
             }
 
             // Production logout (Acesso Cidadão)
@@ -130,6 +145,8 @@ Console.WriteLine($"Usuário existe no banco? Vamos verificar...");
             });
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            return Redirect("/");
         }
     }
 }
