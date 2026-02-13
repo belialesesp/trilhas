@@ -42,14 +42,8 @@ namespace Trilhas.Services
         /// </summary>
         public TermoDeReferencia ProcessarDocumentoPDF(string userId, Stream documentStream, string fileName, int ano)
         {
-            // Check if iText is available
-            throw new TrilhasException(
-                "Processamento de PDF requer a instalação do pacote itext7. " +
-                "Execute: Install-Package itext7\n\n" +
-                "Após instalar o pacote, descomente o código de processamento PDF no TermoReferenciaService.cs"
-            );
             
-            /* UNCOMMENT THIS CODE AFTER INSTALLING itext7:
+
             
             var termo = new TermoDeReferencia
             {
@@ -119,10 +113,9 @@ namespace Trilhas.Services
                 throw new TrilhasException($"Erro ao processar documento: {ex.Message}", ex);
             }
             
-            */ // END OF COMMENTED CODE
         }
 
-        /* UNCOMMENT THESE METHODS AFTER INSTALLING itext7:
+
         
         /// <summary>
         /// Extract title from PDF
@@ -274,7 +267,6 @@ namespace Trilhas.Services
             return itens;
         }
         
-        */ // END OF COMMENTED PDF METHODS
 
         /// <summary>
         /// Check for courses starting within 15 days that need professionals
