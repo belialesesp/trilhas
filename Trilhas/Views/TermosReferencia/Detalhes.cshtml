@@ -79,10 +79,10 @@
                                 <div class="form-group">
                                     <label>Status</label>
                                     <select class="form-control" id="status">
-                                        <option value="Rascunho" @(termo.Status == "Rascunho" ? "selected" : "")>Rascunho</option>
-                                        <option value="Aprovado" @(termo.Status == "Aprovado" ? "selected" : "")>Aprovado</option>
-                                        <option value="Em Execução" @(termo.Status == "Em Execução" ? "selected" : "")>Em Execução</option>
-                                        <option value="Concluído" @(termo.Status == "Concluído" ? "selected" : "")>Concluído</option>
+                                        <option value="Rascunho">Rascunho</option>
+                                        <option value="Aprovado">Aprovado</option>
+                                        <option value="Em Execução">Em Execução</option>
+                                        <option value="Concluído">Concluído</option>
                                     </select>
                                 </div>
                             </div>
@@ -262,8 +262,12 @@
 <script>
     let itensData = [];
     const termoId = @termo.Id;
+    const termoStatus = '@termo.Status';
 
     $(document).ready(function() {
+        // Set initial status value
+        $('#status').val(termoStatus);
+        
         carregarDados();
         carregarAlertas();
     });

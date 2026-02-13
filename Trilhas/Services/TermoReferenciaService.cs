@@ -1,8 +1,5 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas.Parser;
-using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,6 +10,13 @@ using System.Text.RegularExpressions;
 using Trilhas.Data;
 using Trilhas.Data.Model.Exceptions;
 using Trilhas.Data.Model.TermosReferencia;
+
+// NOTE: To use PDF processing, install the iText7 NuGet package:
+// Install-Package itext7
+// Then uncomment the using statements below:
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 
 namespace Trilhas.Services
 {
@@ -34,9 +38,19 @@ namespace Trilhas.Services
 
         /// <summary>
         /// Processes an uploaded PDF document and extracts Termo de Referência data
+        /// NOTE: Requires itext7 NuGet package to be installed
         /// </summary>
         public TermoDeReferencia ProcessarDocumentoPDF(string userId, Stream documentStream, string fileName, int ano)
         {
+            // Check if iText is available
+            throw new TrilhasException(
+                "Processamento de PDF requer a instalação do pacote itext7. " +
+                "Execute: Install-Package itext7\n\n" +
+                "Após instalar o pacote, descomente o código de processamento PDF no TermoReferenciaService.cs"
+            );
+            
+            /* UNCOMMENT THIS CODE AFTER INSTALLING itext7:
+            
             var termo = new TermoDeReferencia
             {
                 Titulo = ExtrairTituloDocumento(documentStream),
@@ -104,8 +118,12 @@ namespace Trilhas.Services
             {
                 throw new TrilhasException($"Erro ao processar documento: {ex.Message}", ex);
             }
+            
+            */ // END OF COMMENTED CODE
         }
 
+        /* UNCOMMENT THESE METHODS AFTER INSTALLING itext7:
+        
         /// <summary>
         /// Extract title from PDF
         /// </summary>
@@ -210,7 +228,6 @@ namespace Trilhas.Services
             string tabelaTexto = anexoMatch.Value;
             
             // Pattern to match table rows
-            // Example: DIDÁTICA E ORATÓRIA PARA INSTRUTORES DO CBMES  DOCENTE  2  40  MARÇO  19/03/2026
             var linhaPattern = @"([A-ZÇÃÕÁÉÍÓÚÂÊÎÔÛ\s\-]+?)\s+(DOCENTE|MODERADOR|DOCENTE\s*CONTEUDISTA)\s+(\d+)\s+(\d+)\s+([A-ZÇÃÕÁÉÍÓÚ]+)\s+([\d\/]+)";
             var matches = Regex.Matches(tabelaTexto, linhaPattern, RegexOptions.Multiline);
 
@@ -256,6 +273,8 @@ namespace Trilhas.Services
 
             return itens;
         }
+        
+        */ // END OF COMMENTED PDF METHODS
 
         /// <summary>
         /// Check for courses starting within 15 days that need professionals
@@ -315,10 +334,13 @@ namespace Trilhas.Services
                 return;
             }
 
-            // Get GEDTH users
-            var gedthUsers = _context.Users
-                .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
-                .Join(_context.Roles, x => x.ur.RoleId, r => r.Id, (x, r) => new { x.u, r })
+            // Get GEDTH users - Note: This requires querying the database directly
+            // since ApplicationDbContext doesn't have Users/Roles DbSets
+            var gedthUsers = _context.Set<Microsoft.AspNetCore.Identity.IdentityUser>()
+                .Join(_context.Set<Microsoft.AspNetCore.Identity.IdentityUserRole<string>>(), 
+                      u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
+                .Join(_context.Set<Microsoft.AspNetCore.Identity.IdentityRole>(), 
+                      x => x.ur.RoleId, r => r.Id, (x, r) => new { x.u, r })
                 .Where(x => x.r.Name == "GEDTH")
                 .Select(x => x.u)
                 .ToList();
@@ -366,6 +388,16 @@ namespace Trilhas.Services
             }
 
             return query.FirstOrDefault();
+        }
+
+        public TermoReferenciaItem RecuperarItem(long id)
+        {
+            return _context.TermoReferenciaItens.Find(id);
+        }
+
+        public void SalvarAlteracoes()
+        {
+            _context.SaveChanges();
         }
 
         public List<TermoDeReferencia> BuscarTermos(int? ano, string status, bool incluirExcluidos, int start, int count)

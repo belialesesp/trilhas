@@ -7,6 +7,7 @@ using Trilhas.Data.Model.Trilhas;
 using Trilhas.Data.Seed;
 using Trilhas.SqlDto;
 using Trilhas.Data.Model.TermosReferencia;
+using Trilhas.Data.Model.Notifications;
 
 namespace Trilhas.Data
 {
