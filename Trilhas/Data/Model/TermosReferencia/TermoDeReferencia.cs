@@ -27,6 +27,29 @@ namespace Trilhas.Data.Model.TermosReferencia
         [StringLength(2000)]
         public string Descricao { get; set; }
 
+        /// <summary>
+        /// Órgão/Entidade demandante (CEPDEC, SETOP, etc.)
+        /// </summary>
+        [StringLength(200)]
+        public string Demandante { get; set; }
+
+        /// <summary>
+        /// Data de início do projeto (ex: "FEVEREIRO/2026")
+        /// </summary>
+        [StringLength(50)]
+        public string DataInicio { get; set; }
+
+        /// <summary>
+        /// Data de término do projeto (ex: "NOVEMBRO/2026")
+        /// </summary>
+        [StringLength(50)]
+        public string DataTermino { get; set; }
+
+        /// <summary>
+        /// Duração total em meses
+        /// </summary>
+        public int Duracao { get; set; }
+
         public DateTime DataCriacao { get; set; }
 
         public DateTime? DataAprovacao { get; set; }
@@ -56,7 +79,7 @@ namespace Trilhas.Data.Model.TermosReferencia
     }
 
     /// <summary>
-    /// Represents each row in the planning table (Anexo II)
+    /// Represents each professional requirement row from the planning table (Anexo II)
     /// </summary>
     [Table("TermoReferenciaItens")]
     public class TermoReferenciaItem
@@ -72,15 +95,19 @@ namespace Trilhas.Data.Model.TermosReferencia
 
         [Required]
         [StringLength(100)]
-        public string Profissional { get; set; } // Docente, Conteudista, Assistente
+        public string Profissional { get; set; } // DOCENTE, MODERADOR, DOCENTE_CONTEUDISTA
 
         public int Quantidade { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
         public decimal CargaHoraria { get; set; }
 
         [StringLength(50)]
         public string MesExecucao { get; set; }
 
+        /// <summary>
+        /// Data de oferta do curso (primeira data de oferta)
+        /// </summary>
         public DateTime? DataOferta { get; set; }
 
         [StringLength(50)]
@@ -98,6 +125,11 @@ namespace Trilhas.Data.Model.TermosReferencia
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal ValorTotal { get; set; }
+
+        /// <summary>
+        /// Number of professionals already hired for this course/category
+        /// </summary>
+        public int Contratados { get; set; }
 
         // Audit fields
         public string CreatorUserId { get; set; }

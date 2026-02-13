@@ -21,6 +21,16 @@
                                     <h5 class="mb-0"><i class="fas fa-upload"></i> Upload de Novo Termo</h5>
                                 </div>
                                 <div class="card-body">
+                                    <div class="alert alert-info">
+                                        <strong><i class="fas fa-info-circle"></i> Instruções:</strong>
+                                        <ul class="mb-0 mt-2">
+                                            <li>Faça upload do documento PDF do Termo de Referência</li>
+                                            <li>O sistema irá extrair automaticamente as informações do demandante, cursos e profissionais necessários</li>
+                                            <li>Após o processamento, você poderá editar todos os campos extraídos</li>
+                                            <li>O sistema monitorará automaticamente cursos que iniciam em até 15 dias e ainda precisam de contratações</li>
+                                        </ul>
+                                    </div>
+
                                     <form id="uploadForm" enctype="multipart/form-data">
                                         <div class="row">
                                             <div class="col-md-4">
@@ -33,32 +43,33 @@
                                                            min="2020" 
                                                            max="2050" 
                                                            value="@DateTime.Now.Year" 
-                                                           required>
+                                                           required />
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="fileUpload">Documento (.docx) *</label>
+                                                    <label for="arquivoTermo">Arquivo PDF *</label>
                                                     <input type="file" 
                                                            class="form-control-file" 
-                                                           id="fileUpload" 
+                                                           id="arquivoTermo" 
                                                            name="file" 
-                                                           accept=".docx" 
-                                                           required>
+                                                           accept=".pdf"
+                                                           required />
                                                     <small class="form-text text-muted">
-                                                        Apenas arquivos .docx do Microsoft Word são aceitos
+                                                        Formato aceito: PDF (até 10MB)
                                                     </small>
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
                                                 <label>&nbsp;</label>
-                                                <button type="submit" class="btn btn-success btn-block">
-                                                    <i class="fas fa-cloud-upload-alt"></i> Processar
+                                                <button type="submit" class="btn btn-primary btn-block">
+                                                    <i class="fas fa-upload"></i> Upload
                                                 </button>
                                             </div>
                                         </div>
                                     </form>
-                                    <div id="uploadProgress" class="mt-3" style="display: none;">
+
+                                    <div id="uploadProgress" style="display:none;" class="mt-3">
                                         <div class="progress">
                                             <div class="progress-bar progress-bar-striped progress-bar-animated" 
                                                  role="progressbar" 
@@ -75,48 +86,54 @@
                     <!-- Filters -->
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <label for="filtroAno">Ano</label>
-                            <select class="form-control" id="filtroAno">
-                                <option value="">Todos</option>
-                                @for (int year = DateTime.Now.Year; year >= 2020; year--)
-                                {
-                                    <option value="@year">@year</option>
-                                }
-                            </select>
+                            <div class="form-group">
+                                <label for="filtroAno">Ano</label>
+                                <select class="form-control" id="filtroAno" onchange="buscarTermos()">
+                                    <option value="">Todos</option>
+                                    @for (int i = DateTime.Now.Year; i >= 2020; i--)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-3">
-                            <label for="filtroStatus">Status</label>
-                            <select class="form-control" id="filtroStatus">
-                                <option value="">Todos</option>
-                                <option value="Rascunho">Rascunho</option>
-                                <option value="Aprovado">Aprovado</option>
-                                <option value="Em Execução">Em Execução</option>
-                                <option value="Concluído">Concluído</option>
-                            </select>
+                            <div class="form-group">
+                                <label for="filtroStatus">Status</label>
+                                <select class="form-control" id="filtroStatus" onchange="buscarTermos()">
+                                    <option value="">Todos</option>
+                                    <option value="Rascunho">Rascunho</option>
+                                    <option value="Aprovado">Aprovado</option>
+                                    <option value="Em Execução">Em Execução</option>
+                                    <option value="Concluído">Concluído</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-3">
-                            <label for="filtroExcluidos">Mostrar Excluídos</label>
-                            <select class="form-control" id="filtroExcluidos">
-                                <option value="false">Não</option>
-                                <option value="true">Sim</option>
-                            </select>
+                            <div class="form-group">
+                                <label for="filtroExcluidos">Exibir</label>
+                                <select class="form-control" id="filtroExcluidos" onchange="buscarTermos()">
+                                    <option value="false">Ativos</option>
+                                    <option value="true">Excluídos</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <label>&nbsp;</label>
-                            <button type="button" class="btn btn-primary btn-block" onclick="buscarTermos()">
-                                <i class="fas fa-search"></i> Buscar
+                            <button class="btn btn-secondary btn-block" onclick="limparFiltros()">
+                                <i class="fas fa-eraser"></i> Limpar Filtros
                             </button>
                         </div>
                     </div>
 
-                    <!-- Results Table -->
+                    <!-- Table -->
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover" id="tabelaTermos">
+                        <table class="table table-striped table-hover">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>Ano</th>
                                     <th>Título</th>
-                                    <th>Nº Documento</th>
+                                    <th>Demandante</th>
+                                    <th>Ano</th>
                                     <th>Status</th>
                                     <th>Data Criação</th>
                                     <th>Itens</th>
@@ -127,7 +144,7 @@
                             <tbody id="corpoTabela">
                                 <tr>
                                     <td colspan="8" class="text-center">
-                                        <em>Nenhum termo encontrado. Use os filtros acima ou faça upload de um novo documento.</em>
+                                        <em>Carregando...</em>
                                     </td>
                                 </tr>
                             </tbody>
@@ -228,60 +245,55 @@
             tbody.append(`
                 <tr>
                     <td colspan="8" class="text-center">
-                        <em>Nenhum termo encontrado com os filtros selecionados.</em>
+                        <em>Nenhum termo encontrado. Use os filtros acima ou faça upload de um novo documento.</em>
                     </td>
                 </tr>
             `);
             return;
         }
-        
-        termos.forEach(function(termo) {
+
+        termos.forEach(termo => {
             const statusBadge = getStatusBadge(termo.status);
-            const valorFormatado = formatarMoeda(termo.valorTotal);
-            
-            const row = `
+            const tr = $(`
                 <tr>
-                    <td>${termo.ano}</td>
                     <td>${termo.titulo}</td>
-                    <td>${termo.numeroDocumento || '-'}</td>
+                    <td>${termo.demandante || '-'}</td>
+                    <td>${termo.ano}</td>
                     <td>${statusBadge}</td>
                     <td>${termo.dataCriacao}</td>
-                    <td class="text-center">${termo.totalItens}</td>
-                    <td class="text-right">${valorFormatado}</td>
+                    <td><span class="badge badge-info">${termo.numeroItens}</span></td>
+                    <td>R$ ${termo.valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
                     <td>
-                        <button class="btn btn-sm btn-info" onclick="verDetalhes(${termo.id})" title="Ver Detalhes">
+                        <a href="/TermosReferencia/Detalhes/${termo.id}" 
+                           class="btn btn-sm btn-primary" 
+                           title="Ver Detalhes">
                             <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="excluirTermo(${termo.id})" title="Excluir">
+                        </a>
+                        <button class="btn btn-sm btn-danger" 
+                                onclick="excluirTermo(${termo.id})" 
+                                title="Excluir">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 </tr>
-            `;
-            tbody.append(row);
+            `);
+            
+            tbody.append(tr);
         });
     }
 
     function getStatusBadge(status) {
         const badges = {
-            'Rascunho': 'badge-secondary',
-            'Aprovado': 'badge-success',
-            'Em Execução': 'badge-primary',
-            'Concluído': 'badge-info'
+            'Rascunho': '<span class="badge badge-secondary">Rascunho</span>',
+            'Aprovado': '<span class="badge badge-success">Aprovado</span>',
+            'Em Execução': '<span class="badge badge-primary">Em Execução</span>',
+            'Concluído': '<span class="badge badge-dark">Concluído</span>'
         };
-        const badgeClass = badges[status] || 'badge-secondary';
-        return `<span class="badge ${badgeClass}">${status}</span>`;
-    }
-
-    function formatarMoeda(valor) {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        }).format(valor);
+        return badges[status] || '<span class="badge badge-secondary">' + status + '</span>';
     }
 
     function atualizarPaginacao() {
-        // Simplified pagination - you can enhance this based on total count
+        // Simplified pagination - you can enhance this
         const paginacao = $('#paginacao');
         paginacao.empty();
         
@@ -307,24 +319,30 @@
     }
 
     function mudarPagina(novaPagina) {
+        if (novaPagina < 0) return;
         paginaAtual = novaPagina;
         buscarTermos();
     }
 
-    function verDetalhes(id) {
-        window.location.href = '/TermosReferencia/Detalhes/' + id;
+    function limparFiltros() {
+        $('#filtroAno').val('');
+        $('#filtroStatus').val('');
+        $('#filtroExcluidos').val('false');
+        paginaAtual = 0;
+        buscarTermos();
     }
 
     function excluirTermo(id) {
-        if (!confirm('Tem certeza que deseja excluir este Termo de Referência?')) {
+        if (!confirm('Tem certeza que deseja excluir este termo de referência?')) {
             return;
         }
-        
+
         $.ajax({
-            url: '/TermosReferencia/Excluir?id=' + id,
+            url: '/TermosReferencia/Excluir',
             type: 'DELETE',
-            success: function(response) {
-                toastr.success(response.message);
+            data: { id: id },
+            success: function() {
+                toastr.success('Termo excluído com sucesso!');
                 buscarTermos();
             },
             error: function(xhr) {

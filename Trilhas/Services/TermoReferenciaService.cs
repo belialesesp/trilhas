@@ -1,5 +1,8 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,21 +20,26 @@ namespace Trilhas.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly MinioService _minioService;
+        private readonly NotificationService _notificationService;
 
-        public TermoReferenciaService(ApplicationDbContext context, MinioService minioService)
+        public TermoReferenciaService(
+            ApplicationDbContext context, 
+            MinioService minioService,
+            NotificationService notificationService)
         {
             _context = context;
             _minioService = minioService;
+            _notificationService = notificationService;
         }
 
         /// <summary>
-        /// Processes an uploaded Word document and extracts Termo de Referência data
+        /// Processes an uploaded PDF document and extracts Termo de Referência data
         /// </summary>
-        public TermoDeReferencia ProcessarDocumento(string userId, Stream documentStream, string fileName, int ano)
+        public TermoDeReferencia ProcessarDocumentoPDF(string userId, Stream documentStream, string fileName, int ano)
         {
             var termo = new TermoDeReferencia
             {
-                Titulo = Path.GetFileNameWithoutExtension(fileName),
+                Titulo = ExtrairTituloDocumento(documentStream),
                 Ano = ano,
                 Status = "Rascunho",
                 CreatorUserId = userId,
@@ -40,20 +48,28 @@ namespace Trilhas.Services
 
             try
             {
-                // Extract data from the document
-                var itens = ExtrairItensDoDocumento(documentStream);
-                
-                if (itens == null || !itens.Any())
-                {
-                    throw new TrilhasException("Não foi possível extrair os itens do documento. Verifique se o formato está correto.");
-                }
+                // Reset stream position
+                documentStream.Position = 0;
 
-                termo.Itens = itens;
+                // Extract data from PDF
+                var dadosExtraidos = ExtrairDadosDoPDF(documentStream);
+                
+                termo.NumeroDocumento = dadosExtraidos.NumeroDocumento;
+                termo.Descricao = dadosExtraidos.Descricao;
+                termo.Demandante = dadosExtraidos.Demandante;
+                termo.DataInicio = dadosExtraidos.DataInicio;
+                termo.DataTermino = dadosExtraidos.DataTermino;
+                termo.Duracao = dadosExtraidos.Duracao;
+                termo.Itens = dadosExtraidos.Itens;
+
+                if (termo.Itens == null || !termo.Itens.Any())
+                {
+                    throw new TrilhasException("Não foi possível extrair os profissionais necessários do documento. Verifique se o formato está correto.");
+                }
 
                 // Upload original document to storage
                 documentStream.Position = 0;
                 
-                // Convert Stream to MemoryStream if needed
                 MemoryStream memoryStream;
                 if (documentStream is MemoryStream ms)
                 {
@@ -71,337 +87,349 @@ namespace Trilhas.Services
                     Nome = $"termos-referencia/{ano}/{fileName}",
                     ArquivoStream = memoryStream
                 };
-                _minioService.SalvarImagemEixo(arquivo); // Using existing MinIO method
+                _minioService.SalvarImagemEixo(arquivo);
                 termo.CaminhoArquivoOriginal = arquivo.Nome;
 
-                // Save to database (EF will handle transaction automatically with EnableRetryOnFailure)
+                // Save to database
                 _context.TermosDeReferencia.Add(termo);
                 _context.SaveChanges();
 
                 return termo;
             }
+            catch (TrilhasException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                // Log the inner exception but only throw with the message
-                Console.WriteLine($"Error processing document: {ex.Message}");
-                throw new TrilhasException($"Erro ao processar o documento: {ex.Message}");
+                throw new TrilhasException($"Erro ao processar documento: {ex.Message}", ex);
             }
         }
 
         /// <summary>
-        /// Extracts planning table data from Word document using OpenXML
+        /// Extract title from PDF
         /// </summary>
-        private List<TermoReferenciaItem> ExtrairItensDoDocumento(Stream documentStream)
+        private string ExtrairTituloDocumento(Stream pdfStream)
+        {
+            try
+            {
+                using (var pdfReader = new PdfReader(pdfStream))
+                using (var pdfDocument = new PdfDocument(pdfReader))
+                {
+                    var page = pdfDocument.GetFirstPage();
+                    var strategy = new SimpleTextExtractionStrategy();
+                    string text = PdfTextExtractor.GetTextFromPage(page, strategy);
+
+                    // Look for title pattern
+                    var match = Regex.Match(text, @"2\.1\.\s*Título do Projeto\s*[:\-]?\s*([^\n]+)", RegexOptions.IgnoreCase);
+                    if (match.Success)
+                    {
+                        return match.Groups[1].Value.Trim();
+                    }
+
+                    return "Termo de Referência";
+                }
+            }
+            catch
+            {
+                return "Termo de Referência";
+            }
+        }
+
+        /// <summary>
+        /// Extract all data from PDF document
+        /// </summary>
+        private DadosExtraidosPDF ExtrairDadosDoPDF(Stream pdfStream)
+        {
+            var dados = new DadosExtraidosPDF
+            {
+                Itens = new List<TermoReferenciaItem>()
+            };
+
+            using (var pdfReader = new PdfReader(pdfStream))
+            using (var pdfDocument = new PdfDocument(pdfReader))
+            {
+                string fullText = "";
+                
+                // Extract text from all pages
+                for (int i = 1; i <= pdfDocument.GetNumberOfPages(); i++)
+                {
+                    var page = pdfDocument.GetPage(i);
+                    var strategy = new SimpleTextExtractionStrategy();
+                    string pageText = PdfTextExtractor.GetTextFromPage(page, strategy);
+                    fullText += pageText + "\n";
+                }
+
+                // Extract demandante (from first page)
+                var demandanteMatch = Regex.Match(fullText, @"Nome:\s*([^\n]+)", RegexOptions.IgnoreCase);
+                if (demandanteMatch.Success)
+                {
+                    dados.Demandante = demandanteMatch.Groups[1].Value.Trim();
+                }
+
+                // Extract dates and duration
+                var inicioMatch = Regex.Match(fullText, @"Início:\s*([^\n]+)", RegexOptions.IgnoreCase);
+                if (inicioMatch.Success)
+                {
+                    dados.DataInicio = inicioMatch.Groups[1].Value.Trim();
+                }
+
+                var terminoMatch = Regex.Match(fullText, @"Término:\s*([^\n]+)", RegexOptions.IgnoreCase);
+                if (terminoMatch.Success)
+                {
+                    dados.DataTermino = terminoMatch.Groups[1].Value.Trim();
+                }
+
+                var duracaoMatch = Regex.Match(fullText, @"Duração Total:\s*(\d+)", RegexOptions.IgnoreCase);
+                if (duracaoMatch.Success)
+                {
+                    dados.Duracao = int.Parse(duracaoMatch.Groups[1].Value);
+                }
+
+                // Extract items from Anexo II table
+                dados.Itens = ExtrairItensDaTabela(fullText);
+            }
+
+            return dados;
+        }
+
+        /// <summary>
+        /// Extract professional requirements from the table in Anexo II
+        /// </summary>
+        private List<TermoReferenciaItem> ExtrairItensDaTabela(string texto)
         {
             var itens = new List<TermoReferenciaItem>();
 
-            try
+            // Find the Anexo II section
+            var anexoMatch = Regex.Match(texto, @"Anexo II[^\n]*PLANILHA RESUMO DO PROJETO[^]*?(?=Observação:|$)", RegexOptions.Singleline);
+            if (!anexoMatch.Success)
             {
-                using (var wordDoc = WordprocessingDocument.Open(documentStream, false))
-                {
-                    var body = wordDoc.MainDocumentPart.Document.Body;
-                    var tables = body.Descendants<Table>().ToList();
-
-                    Console.WriteLine($"Total tables found: {tables.Count}");
-
-                    // Find the table with headers matching our structure
-                    Table targetTable = null;
-                    foreach (var table in tables)
-                    {
-                        var firstRow = table.Elements<TableRow>().FirstOrDefault();
-                        if (firstRow != null)
-                        {
-                            var cellTexts = firstRow.Elements<TableCell>()
-                                .Select(c => GetCellText(c))
-                                .ToList();
-
-                            // Check if this is our planning table
-                            if (cellTexts.Any(t => t.Contains("Curso")) && 
-                                cellTexts.Any(t => t.Contains("Profissional")))
-                            {
-                                targetTable = table;
-                                Console.WriteLine($"Found planning table with {table.Elements<TableRow>().Count()} rows");
-                                break;
-                            }
-                        }
-                    }
-
-                    if (targetTable == null)
-                    {
-                        Console.WriteLine("Planning table not found!");
-                        throw new TrilhasException("Tabela de planejamento não encontrada no documento.");
-                    }
-
-                    // Process data rows (skip header and "TOTAL" row)
-                    var rows = targetTable.Elements<TableRow>().Skip(1).ToList();
-                    
-                    Console.WriteLine($"Processing {rows.Count} data rows");
-                    
-                    foreach (var row in rows)
-                    {
-                        var cells = row.Elements<TableCell>().Select(c => GetCellText(c)).ToList();
-                        
-                        // Skip empty rows or TOTAL row
-                        if (cells.Count < 12)
-                        {
-                            Console.WriteLine($"Skipping row with only {cells.Count} cells");
-                            continue;
-                        }
-                        
-                        if (cells[0].Contains("TOTAL"))
-                        {
-                            Console.WriteLine("Skipping TOTAL row");
-                            continue;
-                        }
-
-                        try
-                        {
-                        var item = new TermoReferenciaItem
-                        {
-                            Curso = cells.Count > 0 ? cells[0].Trim() : "",
-                            Profissional = cells.Count > 1 ? cells[1].Trim() : "",
-                            Quantidade = cells.Count > 2 ? ParseInt(cells[2]) : 0,
-                            CargaHoraria = cells.Count > 3 ? ParseDecimal(cells[3]) : 0,
-                            MesExecucao = cells.Count > 4 ? cells[4].Trim() : "",
-                            DataOferta = cells.Count > 5 ? ParseDate(cells[5]) : null,
-                            Modalidade = cells.Count > 6 ? cells[6].Trim() : "",
-                            QuantidadeTurmas = cells.Count > 7 ? ParseInt(cells[7]) : 0,
-                            AlunosPorTurma = cells.Count > 8 ? ParseInt(cells[8]) : 0,
-                            ValorHora = cells.Count > 9 ? ParseDecimal(cells[9]) : 0,
-                            EncargosPercentual = cells.Count > 10 ? ParseDecimal(cells[10]) : 0,
-                            ValorTotal = cells.Count > 11 ? ParseDecimal(cells[11]) : 0,
-                            CreationTime = DateTime.Now
-                        };
-
-                        // Calculate total if not provided
-                        if (item.ValorTotal == 0 && item.Quantidade > 0)
-                        {
-                            item.ValorTotal = item.Quantidade * item.CargaHoraria * item.QuantidadeTurmas * 
-                                             item.ValorHora * (1 + item.EncargosPercentual / 100);
-                        }
-
-                        // Only add if it has meaningful data (at least Profissional must be filled)
-                        if (!string.IsNullOrWhiteSpace(item.Profissional) && 
-                            item.Profissional.ToUpper() != "TOTAL")
-                        {
-                            // If Curso is empty, use a default name
-                            if (string.IsNullOrWhiteSpace(item.Curso))
-                            {
-                                item.Curso = "Curso não especificado";
-                            }
-                            
-                            itens.Add(item);
-                        }
-                        }
-                        catch (Exception ex)
-                        {
-                            // Log but continue processing other rows
-                            Console.WriteLine($"Erro ao processar linha: {ex.Message}");
-                        }
-                    }
-                
-                Console.WriteLine($"Successfully extracted {itens.Count} items from document");
-                }
+                return itens;
             }
-            catch (Exception ex)
+
+            string tabelaTexto = anexoMatch.Value;
+            
+            // Pattern to match table rows
+            // Example: DIDÁTICA E ORATÓRIA PARA INSTRUTORES DO CBMES  DOCENTE  2  40  MARÇO  19/03/2026
+            var linhaPattern = @"([A-ZÇÃÕÁÉÍÓÚÂÊÎÔÛ\s\-]+?)\s+(DOCENTE|MODERADOR|DOCENTE\s*CONTEUDISTA)\s+(\d+)\s+(\d+)\s+([A-ZÇÃÕÁÉÍÓÚ]+)\s+([\d\/]+)";
+            var matches = Regex.Matches(tabelaTexto, linhaPattern, RegexOptions.Multiline);
+
+            string cursoAtual = "";
+
+            foreach (Match match in matches)
             {
-                Console.WriteLine($"Error extracting items from document: {ex.Message}");
-                throw new TrilhasException($"Erro ao extrair itens do documento: {ex.Message}");
+                string cursoTexto = match.Groups[1].Value.Trim();
+                string categoria = match.Groups[2].Value.Trim().Replace(" ", "_");
+                int quantidade = int.Parse(match.Groups[3].Value);
+                decimal cargaHoraria = decimal.Parse(match.Groups[4].Value);
+                string mes = match.Groups[5].Value.Trim();
+                string dataOferta = match.Groups[6].Value.Trim();
+
+                // If curso is substantial, update current course
+                if (cursoTexto.Length > 5 && !cursoTexto.StartsWith("DOCENTE"))
+                {
+                    cursoAtual = cursoTexto;
+                }
+
+                // Parse date (DD/MM/YYYY)
+                DateTime? dataOfertaParsed = null;
+                if (DateTime.TryParseExact(dataOferta, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                {
+                    dataOfertaParsed = parsedDate;
+                }
+
+                var item = new TermoReferenciaItem
+                {
+                    Curso = cursoAtual,
+                    Profissional = categoria,
+                    Quantidade = quantidade,
+                    CargaHoraria = cargaHoraria,
+                    MesExecucao = mes,
+                    DataOferta = dataOfertaParsed,
+                    Contratados = 0,
+                    CreatorUserId = "",
+                    CreationTime = DateTime.Now
+                };
+
+                itens.Add(item);
             }
 
             return itens;
         }
-        
 
-        private string GetCellText(TableCell cell)
+        /// <summary>
+        /// Check for courses starting within 15 days that need professionals
+        /// </summary>
+        public List<AlertaContratacao> VerificarCursosProximos()
         {
-            return cell.InnerText.Trim();
-        }
+            var alertas = new List<AlertaContratacao>();
+            var dataAtual = DateTime.Now;
+            var dataLimite = dataAtual.AddDays(15);
 
-        private int ParseInt(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return 0;
-            value = Regex.Replace(value, @"[^\d]", "");
-            return int.TryParse(value, out int result) ? result : 0;
-        }
-
-        private decimal ParseDecimal(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return 0;
-            
-            // Remove currency symbols and clean up
-            value = value.Replace("R$", "").Replace("$", "").Trim();
-            
-            // Handle both comma and dot as decimal separator
-            value = value.Replace(".", "").Replace(",", ".");
-            
-            return decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal result) ? result : 0;
-        }
-
-        private DateTime? ParseDate(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return null;
-
-            var formats = new[] { "dd/MM/yyyy", "dd/MM/yy", "yyyy-MM-dd" };
-            
-            if (DateTime.TryParseExact(value, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
-            {
-                return result;
-            }
-
-            return null;
-        }
-
-        // CRUD Operations
-
-        public List<TermoDeReferencia> PesquisarTermos(int? ano, string status, bool excluidos, int start = -1, int count = -1)
-        {
-            var query = _context.TermosDeReferencia
+            var termosAtivos = _context.TermosDeReferencia
                 .Include(t => t.Itens)
-                .Where(t => (!excluidos && !t.DeletionTime.HasValue) || (excluidos && t.DeletionTime.HasValue));
+                .Where(t => t.DeletionTime == null && 
+                           (t.Status == "Aprovado" || t.Status == "Em Execução"))
+                .ToList();
 
-            if (ano.HasValue)
+            foreach (var termo in termosAtivos)
             {
-                query = query.Where(t => t.Ano == ano.Value);
+                foreach (var item in termo.Itens.Where(i => i.DeletionTime == null))
+                {
+                    // Check if there are unfilled positions
+                    if (item.Contratados < item.Quantidade && item.DataOferta.HasValue)
+                    {
+                        // Check if course starts within 15 days
+                        if (item.DataOferta.Value > dataAtual && item.DataOferta.Value <= dataLimite)
+                        {
+                            var vagas = item.Quantidade - item.Contratados;
+                            
+                            alertas.Add(new AlertaContratacao
+                            {
+                                TermoId = termo.Id,
+                                TermoTitulo = termo.Titulo,
+                                Demandante = termo.Demandante,
+                                Curso = item.Curso,
+                                Categoria = item.Profissional,
+                                VagasRestantes = vagas,
+                                DataOferta = item.DataOferta.Value,
+                                DiasRestantes = (item.DataOferta.Value - dataAtual).Days
+                            });
+                        }
+                    }
+                }
             }
 
-            if (!string.IsNullOrEmpty(status))
-            {
-                query = query.Where(t => t.Status == status);
-            }
-
-            query = query.OrderByDescending(t => t.Ano).ThenByDescending(t => t.CreationTime);
-
-            if (start >= 0 && count > 0)
-            {
-                query = query.Skip(start).Take(count);
-            }
-
-            return query.ToList();
+            return alertas.OrderBy(a => a.DataOferta).ToList();
         }
 
-        public int QuantidadeDeTermos(int? ano, string status, bool excluidos)
+        /// <summary>
+        /// Send notifications to GEDTH users about upcoming courses
+        /// </summary>
+        public void EnviarNotificacoesContratacao()
         {
-            var query = _context.TermosDeReferencia
-                .Where(t => (!excluidos && !t.DeletionTime.HasValue) || (excluidos && t.DeletionTime.HasValue));
-
-            if (ano.HasValue)
+            var alertas = VerificarCursosProximos();
+            
+            if (!alertas.Any())
             {
-                query = query.Where(t => t.Ano == ano.Value);
+                return;
             }
 
-            if (!string.IsNullOrEmpty(status))
+            // Get GEDTH users
+            var gedthUsers = _context.Users
+                .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
+                .Join(_context.Roles, x => x.ur.RoleId, r => r.Id, (x, r) => new { x.u, r })
+                .Where(x => x.r.Name == "GEDTH")
+                .Select(x => x.u)
+                .ToList();
+
+            foreach (var user in gedthUsers)
             {
-                query = query.Where(t => t.Status == status);
+                // Send email
+                _notificationService.EnviarEmailAlertaContratacao(user.Email, user.UserName, alertas);
+
+                // Create in-app notification
+                _notificationService.CriarNotificacaoInterna(user.Id, alertas);
+            }
+        }
+
+        /// <summary>
+        /// Update item's hired count
+        /// </summary>
+        public void AtualizarContratados(long itemId, int novoValor)
+        {
+            var item = _context.TermoReferenciaItens.Find(itemId);
+            if (item == null)
+            {
+                throw new TrilhasException("Item não encontrado.");
             }
 
-            return query.Count();
+            if (novoValor < 0 || novoValor > item.Quantidade)
+            {
+                throw new TrilhasException($"Valor inválido. Deve estar entre 0 e {item.Quantidade}.");
+            }
+
+            item.Contratados = novoValor;
+            item.LastModificationTime = DateTime.Now;
+            _context.SaveChanges();
         }
 
         public TermoDeReferencia RecuperarTermo(long id, bool incluirExcluidos)
         {
             var query = _context.TermosDeReferencia
-                .Include(t => t.Itens.Where(i => !i.DeletionTime.HasValue))
+                .Include(t => t.Itens)
                 .Where(t => t.Id == id);
 
             if (!incluirExcluidos)
             {
-                query = query.Where(t => !t.DeletionTime.HasValue);
+                query = query.Where(t => t.DeletionTime == null);
             }
 
             return query.FirstOrDefault();
         }
 
-        public TermoDeReferencia SalvarTermo(string userId, TermoDeReferencia termo)
+        public List<TermoDeReferencia> BuscarTermos(int? ano, string status, bool incluirExcluidos, int start, int count)
         {
-            if (termo.Id > 0)
-            {
-                var existing = RecuperarTermo(termo.Id, true);
-                if (existing == null)
-                {
-                    throw new RecordNotFoundException("Termo de Referência não encontrado.");
-                }
+            var query = _context.TermosDeReferencia
+                .Include(t => t.Itens)
+                .AsQueryable();
 
-                existing.Titulo = termo.Titulo;
-                existing.Descricao = termo.Descricao;
-                existing.Status = termo.Status;
-                existing.DataAprovacao = termo.DataAprovacao;
-                existing.LastModifierUserId = userId;
-                existing.LastModificationTime = DateTime.Now;
-            }
-            else
+            if (ano.HasValue)
             {
-                termo.CreatorUserId = userId;
-                termo.CreationTime = DateTime.Now;
-                _context.TermosDeReferencia.Add(termo);
+                query = query.Where(t => t.Ano == ano.Value);
             }
 
-            _context.SaveChanges();
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(t => t.Status == status);
+            }
 
-            return termo;
+            if (!incluirExcluidos)
+            {
+                query = query.Where(t => t.DeletionTime == null);
+            }
+
+            return query
+                .OrderByDescending(t => t.CreationTime)
+                .Skip(start)
+                .Take(count)
+                .ToList();
         }
 
-        public void SalvarItem(string userId, TermoReferenciaItem item)
+        public void ExcluirTermo(long id, string userId)
         {
-            if (item.Id > 0)
-            {
-                var existing = _context.TermoReferenciaItens.Find(item.Id);
-                if (existing != null)
-                {
-                    existing.Curso = item.Curso;
-                    existing.Profissional = item.Profissional;
-                    existing.Quantidade = item.Quantidade;
-                    existing.CargaHoraria = item.CargaHoraria;
-                    existing.MesExecucao = item.MesExecucao;
-                    existing.DataOferta = item.DataOferta;
-                    existing.Modalidade = item.Modalidade;
-                    existing.QuantidadeTurmas = item.QuantidadeTurmas;
-                    existing.AlunosPorTurma = item.AlunosPorTurma;
-                    existing.ValorHora = item.ValorHora;
-                    existing.EncargosPercentual = item.EncargosPercentual;
-                    existing.ValorTotal = item.ValorTotal;
-                    existing.LastModifierUserId = userId;
-                    existing.LastModificationTime = DateTime.Now;
-                }
-            }
-            else
-            {
-                item.CreatorUserId = userId;
-                item.CreationTime = DateTime.Now;
-                _context.TermoReferenciaItens.Add(item);
-            }
-
-            _context.SaveChanges();
-        }
-
-        public void ExcluirTermo(string userId, long id)
-        {
-            var termo = RecuperarTermo(id, false);
-            
+            var termo = _context.TermosDeReferencia.Find(id);
             if (termo == null)
             {
-                throw new RecordNotFoundException("Termo de Referência não encontrado.");
+                throw new TrilhasException("Termo não encontrado.");
             }
 
-            termo.DeletionUserId = userId;
             termo.DeletionTime = DateTime.Now;
-
+            termo.DeletionUserId = userId;
             _context.SaveChanges();
         }
+    }
 
-        public void ExcluirItem(string userId, long itemId)
-        {
-            var item = _context.TermoReferenciaItens.Find(itemId);
-            
-            if (item == null || item.DeletionTime.HasValue)
-            {
-                throw new RecordNotFoundException("Item não encontrado.");
-            }
+    public class DadosExtraidosPDF
+    {
+        public string NumeroDocumento { get; set; }
+        public string Descricao { get; set; }
+        public string Demandante { get; set; }
+        public string DataInicio { get; set; }
+        public string DataTermino { get; set; }
+        public int Duracao { get; set; }
+        public List<TermoReferenciaItem> Itens { get; set; }
+    }
 
-            item.DeletionUserId = userId;
-            item.DeletionTime = DateTime.Now;
-
-            _context.SaveChanges();
-        }
+    public class AlertaContratacao
+    {
+        public long TermoId { get; set; }
+        public string TermoTitulo { get; set; }
+        public string Demandante { get; set; }
+        public string Curso { get; set; }
+        public string Categoria { get; set; }
+        public int VagasRestantes { get; set; }
+        public DateTime DataOferta { get; set; }
+        public int DiasRestantes { get; set; }
     }
 }

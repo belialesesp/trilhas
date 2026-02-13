@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Trilhas.Models.TermosReferencia
@@ -7,11 +8,10 @@ namespace Trilhas.Models.TermosReferencia
         public long Id { get; set; }
 
         [Required(ErrorMessage = "O título é obrigatório")]
-        [StringLength(500, ErrorMessage = "O título deve ter no máximo 500 caracteres")]
+        [StringLength(500)]
         public string Titulo { get; set; }
 
         [Required(ErrorMessage = "O ano é obrigatório")]
-        [Range(2020, 2050, ErrorMessage = "Ano inválido")]
         public int Ano { get; set; }
 
         [StringLength(100)]
@@ -20,10 +20,20 @@ namespace Trilhas.Models.TermosReferencia
         [StringLength(2000)]
         public string Descricao { get; set; }
 
-        [Required(ErrorMessage = "O status é obrigatório")]
-        public string Status { get; set; }
+        [StringLength(200)]
+        public string Demandante { get; set; }
 
-        public string DataAprovacao { get; set; }
+        [StringLength(50)]
+        public string DataInicio { get; set; }
+
+        [StringLength(50)]
+        public string DataTermino { get; set; }
+
+        public int Duracao { get; set; }
+
+        [Required(ErrorMessage = "O status é obrigatório")]
+        [StringLength(50)]
+        public string Status { get; set; }
     }
 
     public class TermoReferenciaItemViewModel
@@ -36,14 +46,15 @@ namespace Trilhas.Models.TermosReferencia
         [StringLength(200)]
         public string Curso { get; set; }
 
-        [Required(ErrorMessage = "O tipo de profissional é obrigatório")]
+        [Required(ErrorMessage = "O profissional é obrigatório")]
         [StringLength(100)]
         public string Profissional { get; set; }
 
-        [Range(0, 9999, ErrorMessage = "Quantidade inválida")]
+        [Required(ErrorMessage = "A quantidade é obrigatória")]
+        [Range(1, 100, ErrorMessage = "A quantidade deve estar entre 1 e 100")]
         public int Quantidade { get; set; }
 
-        [Range(0, 9999.99, ErrorMessage = "Carga horária inválida")]
+        [Required(ErrorMessage = "A carga horária é obrigatória")]
         public decimal CargaHoraria { get; set; }
 
         [StringLength(50)]
@@ -54,18 +65,16 @@ namespace Trilhas.Models.TermosReferencia
         [StringLength(50)]
         public string Modalidade { get; set; }
 
-        [Range(0, 9999, ErrorMessage = "Quantidade de turmas inválida")]
         public int QuantidadeTurmas { get; set; }
 
-        [Range(0, 9999, ErrorMessage = "Quantidade de alunos inválida")]
         public int AlunosPorTurma { get; set; }
 
-        [Range(0, 999999.99, ErrorMessage = "Valor por hora inválido")]
         public decimal ValorHora { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Percentual de encargos deve estar entre 0 e 100")]
         public decimal EncargosPercentual { get; set; }
 
         public decimal ValorTotal { get; set; }
+
+        public int Contratados { get; set; }
     }
 }

@@ -101,6 +101,7 @@ namespace Trilhas.Data
         public DbSet<CertificadoEmitido> CertificadosEmitidos { get; set; }
         public DbSet<TermoDeReferencia> TermosDeReferencia { get; set; }
         public DbSet<TermoReferenciaItem> TermoReferenciaItens { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         #region Dto retorno query sql
         public DbSet<GridDocenteDto> GridDocenteDto { get; set; }
