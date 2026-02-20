@@ -13,6 +13,9 @@ using System;
 using Trilhas.Configurations;
 using Trilhas.Data;
 using Trilhas.Services;
+using Trilhas.Middleware;
+using Hangfire;
+using Hangfire.SqlServer;
 
 namespace Trilhas
 {
@@ -78,6 +81,11 @@ namespace Trilhas
 
             services.AddScoped<TermoReferenciaService>();
             services.AddScoped<NotificationService>();
+
+            // Add Hangfire services - CORRECT LOCATION (in ConfigureServices)
+            services.AddHangfire(config => 
+                config.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -101,11 +109,23 @@ namespace Trilhas
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-
+            
+            // Add user sync middleware AFTER authentication
+            app.UseMiddleware<UserSyncMiddleware>();
+            
             app.UseMvc(routes => {
                 routes.MapRoute("admin", "admin/{*index}", defaults: new { controller = "Admin", action = "Index" });
                 routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
+
+            // Configure Hangfire dashboard - CORRECT LOCATION (in Configure)
+            app.UseHangfireDashboard("/hangfire");
+
+            // Schedule the recurring job
+            RecurringJob.AddOrUpdate<TermoReferenciaService>(
+                "check-upcoming-courses",
+                service => service.EnviarNotificacoesContratacao(),
+                Cron.Daily(8)); // Run at 8 AM daily
         }
     }
 }

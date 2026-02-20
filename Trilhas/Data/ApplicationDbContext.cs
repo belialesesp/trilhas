@@ -8,6 +8,7 @@ using Trilhas.Data.Seed;
 using Trilhas.SqlDto;
 using Trilhas.Data.Model.TermosReferencia;
 using Trilhas.Data.Model.Notifications;
+using Trilhas.Data.Model.Users;
 
 namespace Trilhas.Data
 {
@@ -103,6 +104,7 @@ namespace Trilhas.Data
         public DbSet<TermoDeReferencia> TermosDeReferencia { get; set; }
         public DbSet<TermoReferenciaItem> TermoReferenciaItens { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
 
         #region Dto retorno query sql
         public DbSet<GridDocenteDto> GridDocenteDto { get; set; }
