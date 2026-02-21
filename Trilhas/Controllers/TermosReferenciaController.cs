@@ -27,7 +27,13 @@ namespace Trilhas.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            var termos = _context.TermosDeReferencia
+        .Where(t => t.DeletionTime == null)
+        .OrderByDescending(t => t.Ano)
+        .ThenByDescending(t => t.CreationTime)
+        .ToList();
+
+            return View(termos);
         }
 
         /// <summary>
@@ -37,7 +43,7 @@ namespace Trilhas.Controllers
         public IActionResult Detalhes(long id)
         {
             var termo = _service.RecuperarTermo(id, false);
-            
+
             if (termo == null)
             {
                 return NotFound();
@@ -80,9 +86,9 @@ namespace Trilhas.Controllers
                     if (extension == ".pdf")
                     {
                         termo = _service.ProcessarDocumentoPDF(
-                            RecuperarUsuarioId(), 
-                            stream, 
-                            file.FileName, 
+                            RecuperarUsuarioId(),
+                            stream,
+                            file.FileName,
                             ano
                         );
                     }
@@ -93,9 +99,9 @@ namespace Trilhas.Controllers
                     }
                 }
 
-                return Ok(new 
-                { 
-                    message = "Documento processado com sucesso!", 
+                return Ok(new
+                {
+                    message = "Documento processado com sucesso!",
                     termoId = termo.Id,
                     itensExtraidos = termo.Itens.Count
                 });
@@ -150,7 +156,7 @@ namespace Trilhas.Controllers
             try
             {
                 var termo = _service.RecuperarTermo(id, false);
-                
+
                 if (termo == null)
                 {
                     return NotFound(new { message = "Termo de Referência não encontrado." });
@@ -208,7 +214,7 @@ namespace Trilhas.Controllers
             try
             {
                 var termo = _service.RecuperarTermo(vm.Id, false);
-                
+
                 if (termo == null)
                 {
                     return NotFound(new { message = "Termo de Referência não encontrado." });
@@ -244,7 +250,7 @@ namespace Trilhas.Controllers
             try
             {
                 var item = _service.RecuperarItem(vm.Id);
-                
+
                 if (item == null)
                 {
                     return NotFound(new { message = "Item não encontrado." });
@@ -255,7 +261,7 @@ namespace Trilhas.Controllers
                 item.Quantidade = vm.Quantidade;
                 item.CargaHoraria = vm.CargaHoraria;
                 item.MesExecucao = vm.MesExecucao;
-                
+
                 if (!string.IsNullOrEmpty(vm.DataOferta))
                 {
                     item.DataOferta = DateTime.ParseExact(vm.DataOferta, "dd/MM/yyyy", null);
@@ -371,15 +377,15 @@ namespace Trilhas.Controllers
         }
         private readonly ApplicationDbContext _context;
 
-public TermosReferenciaController(
-    UserManager<IdentityUser> userManager,
-    TermoReferenciaService service,
-    ApplicationDbContext context) : base(userManager)  // <-- ADD context parameter
-{
-    _service = service;
-    _context = context;  // <-- STORE IT
-}
-/// <summary>
+        public TermosReferenciaController(
+            UserManager<IdentityUser> userManager,
+            TermoReferenciaService service,
+            ApplicationDbContext context) : base(userManager)  // <-- ADD context parameter
+        {
+            _service = service;
+            _context = context;  // <-- STORE IT
+        }
+        /// <summary>
         /// Save contractor slot information
         /// ADD THIS TO TermosReferenciaController.cs
         /// </summary>
@@ -389,27 +395,27 @@ public TermosReferenciaController(
             try
             {
                 var slot = _context.ContratadoSlots.Find(slotId);
-                
+
                 if (slot == null)
                 {
                     return Json(new { success = false, message = "Slot não encontrado." });
                 }
 
                 var userId = _userManager.GetUserId(User);
-                
+
                 slot.NomeContratado = nomeContratado;
                 slot.Ateste = ateste;
                 slot.LastModificationTime = DateTime.Now;
-                
+
                 // If filling the contractor name for the first time, record it
                 if (!string.IsNullOrWhiteSpace(nomeContratado) && !slot.DataContratacao.HasValue)
                 {
                     slot.DataContratacao = DateTime.Now;
                     slot.PreenchidoPorUserId = userId;
                 }
-                
+
                 _context.SaveChanges();
-                
+
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -437,7 +443,7 @@ public TermosReferenciaController(
             try
             {
                 var userId = _userManager.GetUserId(User);
-                
+
                 var termo = new TermoDeReferencia
                 {
                     Titulo = titulo,
@@ -468,7 +474,7 @@ public TermosReferenciaController(
         public IActionResult Editar(long id)
         {
             var termo = _service.RecuperarTermo(id, false);
-            
+
             if (termo == null)
             {
                 return NotFound();
@@ -481,13 +487,13 @@ public TermosReferenciaController(
         /// POST: Update Termo basic info
         /// </summary>
         [HttpPost]
-        public IActionResult AtualizarTermo(long id, string titulo, string demandante, int ano, 
+        public IActionResult AtualizarTermo(long id, string titulo, string demandante, int ano,
             string dataInicio, string dataTermino, string status)
         {
             try
             {
                 var termo = _context.TermosDeReferencia.Find(id);
-                
+
                 if (termo == null)
                 {
                     return Json(new { success = false, message = "Termo não encontrado." });
@@ -515,13 +521,13 @@ public TermosReferenciaController(
         /// POST: Add new course item to Termo
         /// </summary>
         [HttpPost]
-        public IActionResult AdicionarItem(long termoId, string curso, string profissional, 
+        public IActionResult AdicionarItem(long termoId, string curso, string profissional,
             int quantidade, decimal cargaHoraria, string mesExecucao, string dataOferta)
         {
             try
             {
                 var termo = _context.TermosDeReferencia.Find(termoId);
-                
+
                 if (termo == null)
                 {
                     return Json(new { success = false, message = "Termo não encontrado." });
@@ -530,8 +536,8 @@ public TermosReferenciaController(
                 DateTime? dataOfertaParsed = null;
                 if (!string.IsNullOrWhiteSpace(dataOferta))
                 {
-                    DateTime.TryParseExact(dataOferta, "yyyy-MM-dd", 
-                        System.Globalization.CultureInfo.InvariantCulture, 
+                    DateTime.TryParseExact(dataOferta, "yyyy-MM-dd",
+                        System.Globalization.CultureInfo.InvariantCulture,
                         System.Globalization.DateTimeStyles.None, out var parsed);
                     dataOfertaParsed = parsed;
                 }
@@ -577,7 +583,7 @@ public TermosReferenciaController(
         /// POST: Update existing item
         /// </summary>
         [HttpPost]
-        public IActionResult AtualizarItem(long itemId, string curso, string profissional, 
+        public IActionResult AtualizarItem(long itemId, string curso, string profissional,
             int quantidade, decimal cargaHoraria, string mesExecucao, string dataOferta)
         {
             try
@@ -585,7 +591,7 @@ public TermosReferenciaController(
                 var item = _context.TermoReferenciaItens
                     .Include(i => i.Slots)
                     .FirstOrDefault(i => i.Id == itemId);
-                
+
                 if (item == null)
                 {
                     return Json(new { success = false, message = "Item não encontrado." });
@@ -595,18 +601,18 @@ public TermosReferenciaController(
                 item.Profissional = profissional;
                 item.CargaHoraria = cargaHoraria;
                 item.MesExecucao = mesExecucao;
-                
+
                 if (!string.IsNullOrWhiteSpace(dataOferta))
                 {
-                    DateTime.TryParseExact(dataOferta, "yyyy-MM-dd", 
-                        System.Globalization.CultureInfo.InvariantCulture, 
+                    DateTime.TryParseExact(dataOferta, "yyyy-MM-dd",
+                        System.Globalization.CultureInfo.InvariantCulture,
                         System.Globalization.DateTimeStyles.None, out var parsed);
                     item.DataOferta = parsed;
                 }
 
                 // Adjust slots if quantity changed
                 int currentSlots = item.Slots.Count;
-                
+
                 if (quantidade > currentSlots)
                 {
                     // Add more slots
@@ -629,7 +635,7 @@ public TermosReferenciaController(
                         .Take(currentSlots - quantidade)
                         .Where(s => string.IsNullOrWhiteSpace(s.NomeContratado))
                         .ToList();
-                    
+
                     foreach (var slot in slotsToRemove)
                     {
                         _context.ContratadoSlots.Remove(slot);
@@ -658,7 +664,7 @@ public TermosReferenciaController(
             try
             {
                 var item = _context.TermoReferenciaItens.Find(itemId);
-                
+
                 if (item == null)
                 {
                     return Json(new { success = false, message = "Item não encontrado." });
@@ -667,7 +673,7 @@ public TermosReferenciaController(
                 // Soft delete
                 item.DeletionTime = DateTime.Now;
                 item.DeletionUserId = _userManager.GetUserId(User);
-                
+
                 _context.SaveChanges();
 
                 return Json(new { success = true });
@@ -678,6 +684,6 @@ public TermosReferenciaController(
             }
         }
     }
-    
-    
+
+
 }

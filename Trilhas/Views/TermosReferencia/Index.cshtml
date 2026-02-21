@@ -1,5 +1,9 @@
-<!-- Replace the Index.cshtml content with this -->
-<!-- This creates an accordion-style interface with Upload and Create sections -->
+
+@model List<Trilhas.Data.Model.TermosReferencia.TermoDeReferencia>
+    @{
+    ViewData["Title"] = "Gerenciar Termos de Referência";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <div class="container-fluid">
     <div class="page-header bg-primary text-white p-4 mb-4">
@@ -99,7 +103,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Data loaded via JavaScript/server-side -->
+                     @foreach (var termo in Model)
+                    {
+                        <tr>
+                            <td>@termo.Ano</td>
+                            <td>@termo.Titulo</td>
+                            <td>@termo.Demandante</td>
+                            <td>
+                                <span class="badge badge-info">@termo.Status</span>
+                            </td>
+                            <td>
+                                <a href="/TermosReferencia/Detalhes/@termo.Id" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> Ver
+                                </a>
+                                <a href="/TermosReferencia/Editar/@termo.Id" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <button class="btn btn-sm btn-danger btn-deletar-termo" data-termo-id="@termo.Id">
+                                    <i class="fas fa-trash"></i> Excluir
+                                </button>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -191,7 +216,9 @@
         transform: rotate(180deg);
     }
 </style>
-
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
 $(document).ready(function() {
     // Custom file input label
@@ -301,6 +328,34 @@ $(document).ready(function() {
                 $('#btnSalvarNovoTermo').prop('disabled', false).html('<i class="fas fa-save"></i> Criar Termo');
             }
         });
+    });
+});
+// Delete termo
+$(document).on('click', '.btn-deletar-termo', function() {
+    if (!confirm('Tem certeza que deseja excluir este termo de referência?')) {
+        return;
+    }
+
+    var termoId = $(this).data('termo-id');
+    var $row = $(this).closest('tr');
+    
+    $.ajax({
+        url: '/TermosReferencia/Deletar',
+        method: 'POST',
+        data: { id: termoId },
+        success: function(response) {
+            if (response.success) {
+                toastr.success('Termo excluído com sucesso!');
+                $row.fadeOut(function() {
+                    $(this).remove();
+                });
+            } else {
+                toastr.error(response.message || 'Erro ao excluir');
+            }
+        },
+        error: function() {
+            toastr.error('Erro ao comunicar com o servidor');
+        }
     });
 });
 </script>
