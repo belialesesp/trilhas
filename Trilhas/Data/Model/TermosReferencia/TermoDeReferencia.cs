@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Trilhas.Data.Model.TermosReferencia
 {
@@ -142,5 +143,27 @@ namespace Trilhas.Data.Model.TermosReferencia
         // Navigation property
         [ForeignKey("TermoDeReferenciaId")]
         public virtual TermoDeReferencia TermoDeReferencia { get; set; }
+        public virtual ICollection<ContratadoSlot> Slots { get; set; } = new List<ContratadoSlot>();
+
+/// <summary>
+/// Helper property: Count of filled slots
+/// </summary>
+[NotMapped]
+public int ContratadosCount 
+{ 
+    get 
+    { 
+        return Slots?.Where(s => !string.IsNullOrWhiteSpace(s.NomeContratado)).Count() ?? 0;
+    } 
+}
+
+[NotMapped]
+public int AtesteCount 
+{ 
+    get 
+    { 
+        return Slots?.Where(s => s.Ateste).Count() ?? 0;
+    } 
+}
     }
 }

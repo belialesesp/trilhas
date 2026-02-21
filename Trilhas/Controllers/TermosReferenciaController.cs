@@ -6,10 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Trilhas.Data;
 using Trilhas.Data.Model.Exceptions;
 using Trilhas.Data.Model.TermosReferencia;
 using Trilhas.Models.TermosReferencia;
 using Trilhas.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Trilhas.Controllers
 {
@@ -18,12 +20,6 @@ namespace Trilhas.Controllers
     {
         private readonly TermoReferenciaService _service;
 
-        public TermosReferenciaController(
-            UserManager<IdentityUser> userManager,
-            TermoReferenciaService service) : base(userManager)
-        {
-            _service = service;
-        }
 
         /// <summary>
         /// Main view for managing Termos de Referência
@@ -373,5 +369,315 @@ namespace Trilhas.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+        private readonly ApplicationDbContext _context;
+
+public TermosReferenciaController(
+    UserManager<IdentityUser> userManager,
+    TermoReferenciaService service,
+    ApplicationDbContext context) : base(userManager)  // <-- ADD context parameter
+{
+    _service = service;
+    _context = context;  // <-- STORE IT
+}
+/// <summary>
+        /// Save contractor slot information
+        /// ADD THIS TO TermosReferenciaController.cs
+        /// </summary>
+        [HttpPost]
+        public IActionResult SalvarSlot(long slotId, string nomeContratado, bool ateste)
+        {
+            try
+            {
+                var slot = _context.ContratadoSlots.Find(slotId);
+                
+                if (slot == null)
+                {
+                    return Json(new { success = false, message = "Slot não encontrado." });
+                }
+
+                var userId = _userManager.GetUserId(User);
+                
+                slot.NomeContratado = nomeContratado;
+                slot.Ateste = ateste;
+                slot.LastModificationTime = DateTime.Now;
+                
+                // If filling the contractor name for the first time, record it
+                if (!string.IsNullOrWhiteSpace(nomeContratado) && !slot.DataContratacao.HasValue)
+                {
+                    slot.DataContratacao = DateTime.Now;
+                    slot.PreenchidoPorUserId = userId;
+                }
+                
+                _context.SaveChanges();
+                
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        /// <summary>
+        /// GET: Create new Termo manually
+        /// ADD THESE TO TermosReferenciaController.cs
+        /// </summary>
+        [HttpGet]
+        public IActionResult Criar()
+        {
+            ViewBag.AnoAtual = DateTime.Now.Year;
+            return View();
+        }
+
+        /// <summary>
+        /// POST: Save manually created Termo
+        /// </summary>
+        [HttpPost]
+        public IActionResult Criar(string titulo, string demandante, int ano, string dataInicio, string dataTermino)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                
+                var termo = new TermoDeReferencia
+                {
+                    Titulo = titulo,
+                    Demandante = demandante,
+                    Ano = ano,
+                    DataInicio = dataInicio,
+                    DataTermino = dataTermino,
+                    Status = "Rascunho",
+                    CreatorUserId = userId,
+                    CreationTime = DateTime.Now
+                };
+
+                _context.TermosDeReferencia.Add(termo);
+                _context.SaveChanges();
+
+                return Json(new { success = true, termoId = termo.Id });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// GET: Edit Termo basic info
+        /// </summary>
+        [HttpGet]
+        public IActionResult Editar(long id)
+        {
+            var termo = _service.RecuperarTermo(id, false);
+            
+            if (termo == null)
+            {
+                return NotFound();
+            }
+
+            return View(termo);
+        }
+
+        /// <summary>
+        /// POST: Update Termo basic info
+        /// </summary>
+        [HttpPost]
+        public IActionResult AtualizarTermo(long id, string titulo, string demandante, int ano, 
+            string dataInicio, string dataTermino, string status)
+        {
+            try
+            {
+                var termo = _context.TermosDeReferencia.Find(id);
+                
+                if (termo == null)
+                {
+                    return Json(new { success = false, message = "Termo não encontrado." });
+                }
+
+                termo.Titulo = titulo;
+                termo.Demandante = demandante;
+                termo.Ano = ano;
+                termo.DataInicio = dataInicio;
+                termo.DataTermino = dataTermino;
+                termo.Status = status;
+                termo.LastModificationTime = DateTime.Now;
+
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// POST: Add new course item to Termo
+        /// </summary>
+        [HttpPost]
+        public IActionResult AdicionarItem(long termoId, string curso, string profissional, 
+            int quantidade, decimal cargaHoraria, string mesExecucao, string dataOferta)
+        {
+            try
+            {
+                var termo = _context.TermosDeReferencia.Find(termoId);
+                
+                if (termo == null)
+                {
+                    return Json(new { success = false, message = "Termo não encontrado." });
+                }
+
+                DateTime? dataOfertaParsed = null;
+                if (!string.IsNullOrWhiteSpace(dataOferta))
+                {
+                    DateTime.TryParseExact(dataOferta, "yyyy-MM-dd", 
+                        System.Globalization.CultureInfo.InvariantCulture, 
+                        System.Globalization.DateTimeStyles.None, out var parsed);
+                    dataOfertaParsed = parsed;
+                }
+
+                var item = new TermoReferenciaItem
+                {
+                    TermoDeReferenciaId = termoId,
+                    Curso = curso,
+                    Profissional = profissional,
+                    Quantidade = quantidade,
+                    CargaHoraria = cargaHoraria,
+                    MesExecucao = mesExecucao,
+                    DataOferta = dataOfertaParsed,
+                    Contratados = 0,
+                    CreatorUserId = _userManager.GetUserId(User),
+                    CreationTime = DateTime.Now
+                };
+
+                // Create slots for this item
+                for (int i = 1; i <= quantidade; i++)
+                {
+                    item.Slots.Add(new ContratadoSlot
+                    {
+                        NumeroSlot = i,
+                        NomeContratado = null,
+                        Ateste = false,
+                        CreationTime = DateTime.Now
+                    });
+                }
+
+                _context.TermoReferenciaItens.Add(item);
+                _context.SaveChanges();
+
+                return Json(new { success = true, itemId = item.Id });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// POST: Update existing item
+        /// </summary>
+        [HttpPost]
+        public IActionResult AtualizarItem(long itemId, string curso, string profissional, 
+            int quantidade, decimal cargaHoraria, string mesExecucao, string dataOferta)
+        {
+            try
+            {
+                var item = _context.TermoReferenciaItens
+                    .Include(i => i.Slots)
+                    .FirstOrDefault(i => i.Id == itemId);
+                
+                if (item == null)
+                {
+                    return Json(new { success = false, message = "Item não encontrado." });
+                }
+
+                item.Curso = curso;
+                item.Profissional = profissional;
+                item.CargaHoraria = cargaHoraria;
+                item.MesExecucao = mesExecucao;
+                
+                if (!string.IsNullOrWhiteSpace(dataOferta))
+                {
+                    DateTime.TryParseExact(dataOferta, "yyyy-MM-dd", 
+                        System.Globalization.CultureInfo.InvariantCulture, 
+                        System.Globalization.DateTimeStyles.None, out var parsed);
+                    item.DataOferta = parsed;
+                }
+
+                // Adjust slots if quantity changed
+                int currentSlots = item.Slots.Count;
+                
+                if (quantidade > currentSlots)
+                {
+                    // Add more slots
+                    for (int i = currentSlots + 1; i <= quantidade; i++)
+                    {
+                        item.Slots.Add(new ContratadoSlot
+                        {
+                            NumeroSlot = i,
+                            NomeContratado = null,
+                            Ateste = false,
+                            CreationTime = DateTime.Now
+                        });
+                    }
+                }
+                else if (quantidade < currentSlots)
+                {
+                    // Remove excess slots (from the end, keep filled ones)
+                    var slotsToRemove = item.Slots
+                        .OrderByDescending(s => s.NumeroSlot)
+                        .Take(currentSlots - quantidade)
+                        .Where(s => string.IsNullOrWhiteSpace(s.NomeContratado))
+                        .ToList();
+                    
+                    foreach (var slot in slotsToRemove)
+                    {
+                        _context.ContratadoSlots.Remove(slot);
+                    }
+                }
+
+                item.Quantidade = quantidade;
+                item.LastModificationTime = DateTime.Now;
+
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// POST: Delete item
+        /// </summary>
+        [HttpPost]
+        public IActionResult DeletarItem(long itemId)
+        {
+            try
+            {
+                var item = _context.TermoReferenciaItens.Find(itemId);
+                
+                if (item == null)
+                {
+                    return Json(new { success = false, message = "Item não encontrado." });
+                }
+
+                // Soft delete
+                item.DeletionTime = DateTime.Now;
+                item.DeletionUserId = _userManager.GetUserId(User);
+                
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
+    
+    
 }

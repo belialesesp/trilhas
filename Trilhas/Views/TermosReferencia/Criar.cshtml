@@ -1,0 +1,122 @@
+@{
+    ViewData["Title"] = "Criar Termo de Referência";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <a href="/TermosReferencia/Index" class="btn btn-secondary mb-3">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+            
+            <h2>Criar Novo Termo de Referência</h2>
+            <p class="text-muted">Preencha os dados do termo manualmente</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-alt"></i> Informações Básicas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="formCriarTermo">
+                        <div class="form-group">
+                            <label for="titulo">Título *</label>
+                            <input type="text" class="form-control" id="titulo" name="titulo" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="demandante">Demandante *</label>
+                            <input type="text" class="form-control" id="demandante" name="demandante" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="ano">Ano *</label>
+                                    <input type="number" class="form-control" id="ano" name="ano" 
+                                           value="@ViewBag.AnoAtual" min="2020" max="2050" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="dataInicio">Data Início</label>
+                                    <input type="text" class="form-control" id="dataInicio" name="dataInicio" 
+                                           placeholder="Ex: FEVEREIRO/2026">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="dataTermino">Data Término</label>
+                                    <input type="text" class="form-control" id="dataTermino" name="dataTermino" 
+                                           placeholder="Ex: NOVEMBRO/2026">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save"></i> Criar Termo
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i> 
+                <strong>Próximos passos:</strong> Após criar o termo, você poderá adicionar cursos e profissionais necessários.
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5><i class="fas fa-question-circle"></i> Instruções</h5>
+                    <ul class="mb-0">
+                        <li>Preencha as informações básicas do termo</li>
+                        <li>O termo será criado com status "Rascunho"</li>
+                        <li>Após criar, você poderá adicionar cursos e definir as contratações necessárias</li>
+                        <li>Você pode editar todas as informações posteriormente</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#formCriarTermo').submit(function(e) {
+        e.preventDefault();
+        
+        var formData = {
+            titulo: $('#titulo').val(),
+            demandante: $('#demandante').val(),
+            ano: $('#ano').val(),
+            dataInicio: $('#dataInicio').val(),
+            dataTermino: $('#dataTermino').val()
+        };
+
+        $.ajax({
+            url: '/TermosReferencia/Criar',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    toastr.success('Termo criado com sucesso!');
+                    // Redirect to edit page to add courses
+                    window.location.href = '/TermosReferencia/Editar/' + response.termoId;
+                } else {
+                    toastr.error(response.message || 'Erro ao criar termo');
+                }
+            },
+            error: function() {
+                toastr.error('Erro ao comunicar com o servidor');
+            }
+        });
+    });
+});
+</script>

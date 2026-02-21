@@ -1,131 +1,173 @@
 @using Trilhas.Data.Model.TermosReferencia
 @{
-    ViewData["Title"] = "Detalhes do Termo de Referência";
-    Layout = "~/Views/Shared/_Layout.cshtml";
     var termo = ViewBag.Termo as TermoDeReferencia;
+    ViewData["Title"] = "Detalhes - " + termo?.Titulo;
 }
 
 <div class="container-fluid mt-4">
-    <div class="row">
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-0">@termo.Titulo</h2>
+                <p class="text-muted mb-0">
+                    <strong>Demandante:</strong> @termo.Demandante | 
+                    <strong>Ano:</strong> @termo.Ano | 
+                    <strong>Status:</strong> <span class="badge badge-info">@termo.Status</span>
+                </p>
+            </div>
+            <div>
+                <a href="/TermosReferencia/Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
         <div class="col-12">
-            <!-- Header -->
-            <div class="card mb-3">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">
-                        <i class="fas fa-file-contract"></i> @termo.Titulo
-                    </h4>
-                    <div>
-                        <span class="badge badge-light">@termo.Status</span>
-                        <a href="/TermosReferencia/Index" class="btn btn-sm btn-light ml-2">
-                            <i class="fas fa-arrow-left"></i> Voltar
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- General Info - Editable -->
-            <div class="card mb-3">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Informações Gerais</h5>
-                </div>
-                <div class="card-body">
-                    <form id="formGeralInfo">
-                        <input type="hidden" id="termoId" value="@termo.Id" />
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Demandante *</label>
-                                    <input type="text" class="form-control" id="demandante" value="@termo.Demandante" required />
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Título do Projeto *</label>
-                                    <input type="text" class="form-control" id="titulo" value="@termo.Titulo" required />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Data Início</label>
-                                    <input type="text" class="form-control" id="dataInicio" value="@termo.DataInicio" />
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Data Término</label>
-                                    <input type="text" class="form-control" id="dataTermino" value="@termo.DataTermino" />
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Duração (meses)</label>
-                                    <input type="number" class="form-control" id="duracao" value="@termo.Duracao" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Número do Documento</label>
-                                    <input type="text" class="form-control" id="numeroDocumento" value="@termo.NumeroDocumento" />
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Status</label>
-                                    <select class="form-control" id="status">
-                                        <option value="Rascunho">Rascunho</option>
-                                        <option value="Aprovado">Aprovado</option>
-                                        <option value="Em Execução">Em Execução</option>
-                                        <option value="Concluído">Concluído</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Descrição</label>
-                            <textarea class="form-control" id="descricao" rows="3">@termo.Descricao</textarea>
-                        </div>
-
-                        <button type="button" class="btn btn-primary" onclick="salvarInformacoesGerais()">
-                            <i class="fas fa-save"></i> Salvar Alterações
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Alerts for Upcoming Courses -->
-            <div id="alertasContainer"></div>
-
-            <!-- Professional Requirements Table -->
             <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-users"></i> Profissionais Necessários</h5>
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users"></i> Contratações por Curso
+                    </h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover" id="tabelaItens">
+                        <table class="table table-hover mb-0" id="cursosTable">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>Curso</th>
-                                    <th>Categoria</th>
-                                    <th>Quantidade</th>
-                                    <th>Contratados</th>
-                                    <th>Vagas Restantes</th>
-                                    <th>Carga Horária</th>
-                                    <th>Data Oferta</th>
-                                    <th>Mês</th>
-                                    <th>Ações</th>
+                                    <th width="5%"></th>
+                                    <th width="40%">Curso</th>
+                                    <th width="15%">Total Necessário</th>
+                                    <th width="15%">Contratados</th>
+                                    <th width="15%">Atestados</th>
+                                    <th width="10%">Data Oferta</th>
                                 </tr>
                             </thead>
-                            <tbody id="corpoTabelaItens">
-                                <!-- Will be populated by JavaScript -->
+                            <tbody>
+                                @{
+                                    // Group items by course
+                                    var cursos = termo.Itens
+                                        .Where(i => i.DeletionTime == null)
+                                        .GroupBy(i => i.Curso)
+                                        .OrderBy(g => g.Key);
+                                }
+
+                                @foreach (var curso in cursos)
+                                {
+                                    var cursoId = "curso_" + Math.Abs(curso.Key.GetHashCode());
+                                    var totalNecessario = curso.Sum(i => i.Quantidade);
+                                    var totalContratados = curso.Sum(i => i.ContratadosCount);
+                                    var totalAtestados = curso.Sum(i => i.AtesteCount);
+                                    var firstItem = curso.First();
+                                    
+                                    <tr class="curso-row" data-target="#@cursoId" style="cursor: pointer;">
+                                        <td class="text-center">
+                                            <i class="fas fa-chevron-right expand-icon"></i>
+                                        </td>
+                                        <td><strong>@curso.Key</strong></td>
+                                        <td>
+                                            <span class="badge badge-secondary">@totalNecessario profissionais</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-@(totalContratados == totalNecessario ? "success" : "warning")">
+                                                @totalContratados / @totalNecessario
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-@(totalAtestados == totalNecessario ? "success" : "secondary")">
+                                                @totalAtestados / @totalNecessario
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (firstItem.DataOferta.HasValue)
+                                            {
+                                                @firstItem.DataOferta.Value.ToString("dd/MM/yyyy")
+                                                <br/>
+                                                <small class="text-muted">@firstItem.MesExecucao</small>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Expandable details row -->
+                                    <tr class="collapse-row" id="@cursoId" style="display: none;">
+                                        <td colspan="6" class="p-0">
+                                            <div class="nested-table-container">
+                                                <table class="table table-sm table-bordered mb-0">
+                                                    <thead class="bg-light">
+                                                        <tr>
+                                                            <th width="25%">Categoria</th>
+                                                            <th width="10%">Slot</th>
+                                                            <th width="35%">Contrato</th>
+                                                            <th width="15%">Data Contratação</th>
+                                                            <th width="10%">Ateste</th>
+                                                            <th width="5%">Ações</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in curso)
+                                                        {
+                                                            @foreach (var slot in item.Slots.OrderBy(s => s.NumeroSlot))
+                                                            {
+                                                                <tr class="slot-row" data-slot-id="@slot.Id">
+                                                                    <td>
+                                                                        @if (slot.NumeroSlot == 1)
+                                                                        {
+                                                                            <span class="badge badge-pill badge-@GetCategoryBadgeColor(item.Profissional)">
+                                                                                @item.Profissional.Replace("_", " ")
+                                                                            </span>
+                                                                        }
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <small class="text-muted">#@slot.NumeroSlot</small>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" 
+                                                                               class="form-control form-control-sm contractor-name" 
+                                                                               data-slot-id="@slot.Id"
+                                                                               value="@slot.NomeContratado"
+                                                                               placeholder="Número do processo E-Docs">
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (slot.DataContratacao.HasValue)
+                                                                        {
+                                                                            <small>@slot.DataContratacao.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <small class="text-muted">-</small>
+                                                                        }
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <div class="custom-control custom-checkbox">
+                                                                            <input type="checkbox" 
+                                                                                   class="custom-control-input ateste-checkbox" 
+                                                                                   id="ateste_@slot.Id"
+                                                                                   data-slot-id="@slot.Id"
+                                                                                   @(slot.Ateste ? "checked" : "")>
+                                                                            <label class="custom-control-label" for="ateste_@slot.Id"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <button class="btn btn-sm btn-success save-slot-btn" 
+                                                                                data-slot-id="@slot.Id"
+                                                                                title="Salvar">
+                                                                            <i class="fas fa-save"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -135,345 +177,128 @@
     </div>
 </div>
 
-<!-- Modal for Editing Item -->
-<div class="modal fade" id="modalEditarItem" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">Editar Item</h5>
-                <button type="button" class="close text-white" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="formEditarItem">
-                    <input type="hidden" id="itemId" />
-                    
-                    <div class="form-group">
-                        <label>Curso *</label>
-                        <input type="text" class="form-control" id="itemCurso" required />
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Categoria *</label>
-                                <select class="form-control" id="itemProfissional" required>
-                                    <option value="DOCENTE">Docente</option>
-                                    <option value="MODERADOR">Moderador</option>
-                                    <option value="DOCENTE_CONTEUDISTA">Docente Conteudista</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Quantidade *</label>
-                                <input type="number" class="form-control" id="itemQuantidade" min="1" required />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Contratados *</label>
-                                <input type="number" class="form-control" id="itemContratados" min="0" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Carga Horária *</label>
-                                <input type="number" class="form-control" id="itemCargaHoraria" step="0.5" required />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Mês Execução</label>
-                                <input type="text" class="form-control" id="itemMesExecucao" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Data Oferta</label>
-                                <input type="text" class="form-control" id="itemDataOferta" placeholder="DD/MM/AAAA" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Modalidade</label>
-                                <select class="form-control" id="itemModalidade">
-                                    <option value="">Selecione...</option>
-                                    <option value="Presencial">Presencial</option>
-                                    <option value="EAD">EAD</option>
-                                    <option value="Híbrido">Híbrido</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Quantidade de Turmas</label>
-                                <input type="number" class="form-control" id="itemQuantidadeTurmas" min="0" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Alunos por Turma</label>
-                                <input type="number" class="form-control" id="itemAlunosPorTurma" min="0" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Valor Hora (R$)</label>
-                                <input type="number" class="form-control" id="itemValorHora" step="0.01" min="0" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Encargos (%)</label>
-                                <input type="number" class="form-control" id="itemEncargos" step="0.01" min="0" max="100" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Valor Total (R$)</label>
-                                <input type="number" class="form-control" id="itemValorTotal" step="0.01" min="0" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="salvarItem()">
-                    <i class="fas fa-save"></i> Salvar
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-<script>
-    let itensData = [];
-    const termoId = @termo.Id;
-    const termoStatus = '@termo.Status';
-
-    $(document).ready(function() {
-        // Set initial status value
-        $('#status').val(termoStatus);
-        
-        carregarDados();
-        carregarAlertas();
-    });
-
-    function carregarDados() {
-        $.ajax({
-            url: '/TermosReferencia/Recuperar',
-            type: 'GET',
-            data: { id: termoId },
-            success: function(data) {
-                itensData = data.itens;
-                renderizarTabela();
-            },
-            error: function() {
-                toastr.error('Erro ao carregar dados do termo');
-            }
-        });
-    }
-
-    function carregarAlertas() {
-        $.ajax({
-            url: '/TermosReferencia/ObterAlertas',
-            type: 'GET',
-            success: function(alertas) {
-                renderizarAlertas(alertas);
-            }
-        });
-    }
-
-    function renderizarAlertas(alertas) {
-        const container = $('#alertasContainer');
-        container.empty();
-
-        // Filter alerts for this specific termo
-        const alertasTermo = alertas.filter(a => a.termoId === termoId);
-
-        if (alertasTermo.length === 0) {
-            return;
-        }
-
-        let html = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
-        html += '<h5><i class="fas fa-exclamation-triangle"></i> Alertas de Contratação</h5>';
-        html += '<ul>';
-
-        alertasTermo.forEach(alerta => {
-            html += `<li><strong>${alerta.curso}</strong> (${alerta.categoria}) - `;
-            html += `${alerta.vagasRestantes} vaga(s) restante(s) - `;
-            html += `Inicia em ${alerta.diasRestantes} dia(s) (${alerta.dataOferta})`;
-            if (alerta.diasRestantes <= 5) {
-                html += ' <span class="badge badge-danger">URGENTE</span>';
-            }
-            html += '</li>';
-        });
-
-        html += '</ul>';
-        html += '<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>';
-        html += '</div>';
-
-        container.html(html);
-    }
-
-    function renderizarTabela() {
-        const tbody = $('#corpoTabelaItens');
-        tbody.empty();
-
-        itensData.forEach(item => {
-            const vagasRestantes = item.quantidade - item.contratados;
-            const alertClass = vagasRestantes > 0 && item.dataOferta ? 'table-warning' : '';
-            
-            const tr = $(`
-                <tr class="${alertClass}">
-                    <td>${item.curso}</td>
-                    <td><span class="badge badge-info">${item.profissional}</span></td>
-                    <td>${item.quantidade}</td>
-                    <td>
-                        <input type="number" 
-                               class="form-control form-control-sm" 
-                               value="${item.contratados}" 
-                               min="0" 
-                               max="${item.quantidade}"
-                               onchange="atualizarContratados(${item.id}, this.value)"
-                               style="width: 80px;" />
-                    </td>
-                    <td>
-                        ${vagasRestantes > 0 ? 
-                          `<span class="badge badge-warning">${vagasRestantes}</span>` : 
-                          `<span class="badge badge-success">Completo</span>`}
-                    </td>
-                    <td>${item.cargaHoraria}h</td>
-                    <td>${item.dataOferta || '-'}</td>
-                    <td>${item.mesExecucao || '-'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="editarItem(${item.id})" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </td>
-                </tr>
-            `);
-            
-            tbody.append(tr);
-        });
-    }
-
-    function atualizarContratados(itemId, quantidade) {
-        $.ajax({
-            url: '/TermosReferencia/AtualizarContratados',
-            type: 'POST',
-            data: { itemId, quantidade: parseInt(quantidade) },
-            success: function() {
-                toastr.success('Contratados atualizados!');
-                carregarDados();
-                carregarAlertas();
-            },
-            error: function(xhr) {
-                const error = xhr.responseJSON?.message || 'Erro ao atualizar';
-                toastr.error(error);
-                carregarDados(); // Reload to reset value
-            }
-        });
-    }
-
-    function editarItem(itemId) {
-        const item = itensData.find(i => i.id === itemId);
-        if (!item) return;
-
-        $('#itemId').val(item.id);
-        $('#itemCurso').val(item.curso);
-        $('#itemProfissional').val(item.profissional);
-        $('#itemQuantidade').val(item.quantidade);
-        $('#itemContratados').val(item.contratados);
-        $('#itemCargaHoraria').val(item.cargaHoraria);
-        $('#itemMesExecucao').val(item.mesExecucao);
-        $('#itemDataOferta').val(item.dataOferta);
-        $('#itemModalidade').val(item.modalidade);
-        $('#itemQuantidadeTurmas').val(item.quantidadeTurmas);
-        $('#itemAlunosPorTurma').val(item.alunosPorTurma);
-        $('#itemValorHora').val(item.valorHora);
-        $('#itemEncargos').val(item.encargosPercentual);
-        $('#itemValorTotal').val(item.valorTotal);
-
-        $('#modalEditarItem').modal('show');
-    }
-
-    function salvarItem() {
-        const vm = {
-            id: parseInt($('#itemId').val()),
-            termoDeReferenciaId: termoId,
-            curso: $('#itemCurso').val(),
-            profissional: $('#itemProfissional').val(),
-            quantidade: parseInt($('#itemQuantidade').val()),
-            cargaHoraria: parseFloat($('#itemCargaHoraria').val()),
-            mesExecucao: $('#itemMesExecucao').val(),
-            dataOferta: $('#itemDataOferta').val(),
-            modalidade: $('#itemModalidade').val(),
-            quantidadeTurmas: parseInt($('#itemQuantidadeTurmas').val()) || 0,
-            alunosPorTurma: parseInt($('#itemAlunosPorTurma').val()) || 0,
-            valorHora: parseFloat($('#itemValorHora').val()) || 0,
-            encargosPercentual: parseFloat($('#itemEncargos').val()) || 0,
-            valorTotal: parseFloat($('#itemValorTotal').val()) || 0,
-            contratados: parseInt($('#itemContratados').val()) || 0
+@functions {
+    string GetCategoryBadgeColor(string categoria)
+    {
+        return categoria switch
+        {
+            "DOCENTE" => "primary",
+            "MODERADOR" => "info",
+            "DOCENTE_CONTEUDISTA" => "success",
+            _ => "secondary"
         };
-
-        $.ajax({
-            url: '/TermosReferencia/AtualizarItem',
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(vm),
-            success: function() {
-                toastr.success('Item atualizado com sucesso!');
-                $('#modalEditarItem').modal('hide');
-                carregarDados();
-            },
-            error: function(xhr) {
-                const error = xhr.responseJSON?.message || 'Erro ao salvar item';
-                toastr.error(error);
-            }
-        });
     }
-
-    function salvarInformacoesGerais() {
-        const vm = {
-            id: termoId,
-            titulo: $('#titulo').val(),
-            ano: @termo.Ano,
-            numeroDocumento: $('#numeroDocumento').val(),
-            descricao: $('#descricao').val(),
-            demandante: $('#demandante').val(),
-            dataInicio: $('#dataInicio').val(),
-            dataTermino: $('#dataTermino').val(),
-            duracao: parseInt($('#duracao').val()) || 0,
-            status: $('#status').val()
-        };
-
-        $.ajax({
-            url: '/TermosReferencia/Atualizar',
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(vm),
-            success: function() {
-                toastr.success('Informações atualizadas com sucesso!');
-            },
-            error: function(xhr) {
-                const error = xhr.responseJSON?.message || 'Erro ao atualizar';
-                toastr.error(error);
-            }
-        });
-    }
-</script>
 }
+
+<style>
+    .curso-row:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .expand-icon {
+        transition: transform 0.3s;
+    }
+    
+    .curso-row.expanded .expand-icon {
+        transform: rotate(90deg);
+    }
+    
+    .nested-table-container {
+        background-color: #f8f9fa;
+        padding: 15px;
+    }
+    
+    .slot-row {
+        background-color: white;
+    }
+    
+    .contractor-name:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+</style>
+
+<script>
+$(document).ready(function() {
+    // Expand/collapse course rows
+    $('.curso-row').click(function() {
+        var targetId = $(this).data('target');
+        var $target = $(targetId);
+        
+        if ($target.is(':visible')) {
+            $target.slideUp(200);
+            $(this).removeClass('expanded');
+        } else {
+            $target.slideDown(200);
+            $(this).addClass('expanded');
+        }
+    });
+    
+    // Save slot data
+    $('.save-slot-btn').click(function() {
+        var slotId = $(this).data('slot-id');
+        var $row = $(this).closest('.slot-row');
+        var nome = $row.find('.contractor-name').val();
+        var ateste = $row.find('.ateste-checkbox').is(':checked');
+        
+        $.ajax({
+            url: '/TermosReferencia/SalvarSlot',
+            method: 'POST',
+            data: {
+                slotId: slotId,
+                nomeContratado: nome,
+                ateste: ateste
+            },
+            success: function(response) {
+    if (response.success) {
+        toastr.success('Dados salvos com sucesso!');
+        // Don't reload the page
+    } else {
+        toastr.error(response.message || 'Erro ao salvar');
+    }
+},
+            error: function() {
+                toastr.error('Erro ao comunicar com o servidor');
+            }
+        });
+    });
+    
+    // Auto-save on checkbox change
+$('.ateste-checkbox').change(function(e) {
+    e.preventDefault(); // Prevent default checkbox behavior
+    
+    var slotId = $(this).data('slot-id');
+    var $row = $(this).closest('.slot-row');
+    var nome = $row.find('.contractor-name').val();
+    var ateste = $(this).is(':checked');
+    
+    $.ajax({
+        url: '/TermosReferencia/SalvarSlot',
+        method: 'POST',
+        data: {
+            slotId: slotId,
+            nomeContratado: nome,
+            ateste: ateste
+        },
+        success: function(response) {
+            if (response.success) {
+                toastr.success('Ateste salvo!');
+                // Don't reload - just update the badge counts
+                updateCounts();
+            } else {
+                toastr.error(response.message || 'Erro ao salvar');
+            }
+        },
+        error: function() {
+            toastr.error('Erro ao comunicar com o servidor');
+        }
+    });
+});
+
+// Function to update counts without reloading
+function updateCounts() {
+    // You can add logic here to update the badge counts
+    // For now, we'll just keep it simple
+}
+});
+</script>

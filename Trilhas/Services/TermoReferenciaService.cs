@@ -35,6 +35,10 @@ namespace Trilhas.Services
         /// <summary>
         /// Processes an uploaded PDF document and extracts Termo de Referência data
         /// </summary>
+        /// <summary>
+        /// Processes an uploaded PDF document and extracts Termo de Referência data
+        /// UPDATED: Now creates individual contractor slots
+        /// </summary>
         public TermoDeReferencia ProcessarDocumentoPDF(string userId, Stream documentStream, string fileName, int ano)
         {
             var termo = new TermoDeReferencia
@@ -62,6 +66,22 @@ namespace Trilhas.Services
                 if (termo.Itens == null || !termo.Itens.Any())
                 {
                     throw new TrilhasException("Não foi possível extrair os profissionais necessários do documento.");
+                }
+
+                // CREATE INDIVIDUAL CONTRACTOR SLOTS FOR EACH ITEM
+                foreach (var item in termo.Itens)
+                {
+                    // Create one slot for each quantity needed
+                    for (int i = 1; i <= item.Quantidade; i++)
+                    {
+                        item.Slots.Add(new ContratadoSlot
+                        {
+                            NumeroSlot = i,
+                            NomeContratado = null,
+                            Ateste = false,
+                            CreationTime = DateTime.Now
+                        });
+                    }
                 }
 
                 documentStream.Position = 0;
@@ -98,6 +118,21 @@ namespace Trilhas.Services
             {
                 throw new TrilhasException($"Erro ao processar documento: {ex.Message}");
             }
+            // CREATE INDIVIDUAL CONTRACTOR SLOTS FOR EACH ITEM
+foreach (var item in termo.Itens)
+{
+    // Create one slot for each quantity needed
+    for (int i = 1; i <= item.Quantidade; i++)
+    {
+        item.Slots.Add(new ContratadoSlot
+        {
+            NumeroSlot = i,
+            NomeContratado = null,
+            Ateste = false,
+            CreationTime = DateTime.Now
+        });
+    }
+}
         }
 
         private string ExtrairTituloDocumento(Stream pdfStream)
@@ -191,13 +226,14 @@ namespace Trilhas.Services
         }
 
         /// <summary>
-        /// FOCUSED ONLY ON ANEXO II TABLE
+        /// Extract professional requirements from Anexo II table
+        /// BALANCED: Gets full course names without over-carrying forward
         /// </summary>
         private List<TermoReferenciaItem> ExtrairItensDaTabela(string texto)
         {
             var itens = new List<TermoReferenciaItem>();
 
-            // Find the ACTUAL Anexo II table (not just references to it)
+            // Find the ACTUAL Anexo II table
             int startIdx = texto.IndexOf("Anexo II – PLANILHA", StringComparison.OrdinalIgnoreCase);
             if (startIdx == -1)
             {
@@ -205,7 +241,6 @@ namespace Trilhas.Services
             }
             if (startIdx == -1)
             {
-                // Fallback: find last occurrence of "Anexo II"
                 startIdx = texto.LastIndexOf("Anexo II", StringComparison.OrdinalIgnoreCase);
             }
             if (startIdx == -1)
@@ -221,153 +256,230 @@ namespace Trilhas.Services
             var lines = anexoText.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
             string currentCourse = "";
+            int itemsSinceLastCourse = 0; // Track how many items since we found a course name
             
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();
                 
+                // Skip headers
                 if (string.IsNullOrWhiteSpace(line) || 
-                    line.Contains("Curso Profissional") ||
-                    line.Contains("Carga Horária") ||
+                    line.Contains("Curso") ||
+                    line.Contains("Carga") ||
+                    line.Contains("Horária") ||
                     line.Contains("Modalidade") ||
-                    line.Contains("Alunos p/") ||
-                    line.Contains("Valor Hora") ||
-                    line.Contains("Total (R$)") ||
-                    line.Contains("PÁGINA"))
+                    line.Contains("Alunos") ||
+                    line.Contains("Valor") ||
+                    line.Contains("Total") ||
+                    line.Contains("PÁGINA") ||
+                    line.Contains("Quant") ||
+                    line.Contains("Turm") ||
+                    line.Contains("Encarg"))
                 {
                     continue;
                 }
 
-                if (line.Contains("DOCENTE") || line.Contains("MODERADOR"))
+                // Look for professional category
+                bool hasDocente = line.Contains("DOCENTE");
+                bool hasModerador = line.Contains("MODERADOR");
+                bool hasConteudista = line.Contains("CONTEUDISTA");
+                
+                // Check next line for CONTEUDISTA if current line has DOCENTE
+                int skipLines = 0;
+                if (hasDocente && !hasConteudista && i + 1 < lines.Length)
+                {
+                    string nextLine = lines[i + 1].Trim();
+                    if (nextLine.Contains("CONTEUDISTA") || nextLine == "CONTEUDISTA")
+                    {
+                        hasConteudista = true;
+                        skipLines = 1; // We'll skip this line when collecting data
+                    }
+                }
+
+                if (hasDocente || hasModerador)
                 {
                     // Determine category
                     string categoria = "";
-                    if (line.Contains("DOCENTE") && line.Contains("CONTEUDISTA"))
+                    if (hasDocente && hasConteudista)
                     {
                         categoria = "DOCENTE_CONTEUDISTA";
                     }
-                    else if (line.Contains("MODERADOR"))
+                    else if (hasModerador)
                     {
                         categoria = "MODERADOR";
                     }
-                    else if (line.Contains("DOCENTE"))
+                    else if (hasDocente)
                     {
                         categoria = "DOCENTE";
                     }
 
-                    // Find course name from previous lines - FIXED LOGIC
-                    List<string> courseParts = new List<string>();
-                    bool foundEmptyLine = false;
+                    // Search backward for course name
+                    List<string> courseLines = new List<string>();
+                    bool foundValidCourse = false;
                     
-                    for (int j = i - 1; j >= Math.Max(0, i - 15); j--)
+                    for (int j = i - 1; j >= Math.Max(0, i - 25); j--)
                     {
-                        string prevLine = lines[j].Trim();
+                        string prev = lines[j].Trim();
                         
-                        // STOP CONDITIONS - these indicate we've gone too far back
-                        if (prevLine.Contains("Curso Profissional") ||
-                            prevLine.Contains("Total (R$)") ||
-                            prevLine.Contains("PÁGINA") ||
-                            prevLine.Contains("Governo do Estado") ||
-                            prevLine.Contains("Corpo de Bombeiro") ||
-                            prevLine.Contains("defesacivil@bombeiros"))
+                        // Skip truly empty lines but don't count them as a stop
+                        if (string.IsNullOrWhiteSpace(prev))
+                        {
+                            continue;
+                        }
+                        
+                        // HARD STOPS - these are definite boundaries
+                        if (prev.Contains("Governo do Estado") ||
+                            prev.Contains("Corpo de Bombeiro") ||
+                            prev.Contains("Coordenadoria Estadual") ||
+                            prev.Contains("defesacivil@bombeiros") ||
+                            prev.Contains("PÁGINA") ||
+                            prev.Contains("E-DOCS") ||
+                            prev.Contains("DOCUMENTO ORIGINAL") ||
+                            prev.Contains("Rua:") ||
+                            prev.Contains("CEP:") ||
+                            prev.Contains("Curso Profissional") ||
+                            prev.Contains("Total (R$)") ||
+                            prev.StartsWith("27 ") ||
+                            Regex.IsMatch(prev, @"^\d{4,}$"))
                         {
                             break;
                         }
 
-                        // If we hit an empty line, mark it but continue one more iteration
-                        if (string.IsNullOrWhiteSpace(prevLine))
+                        // DATA lines - these mean we've passed the course name area
+                        // BUT: Only stop if we already have course lines
+                        bool isDataLine = prev.Contains("R$") ||
+                                        prev.Contains("PRESENCIAL") ||
+                                        prev.Contains("EAD") ||
+                                        prev.Contains("SÍNCRONO") ||
+                                        prev.Contains("HÍBRIDO") ||
+                                        Regex.IsMatch(prev, @"^\d+$") ||
+                                        Regex.IsMatch(prev, @"^\d{2}/\d{2}/\d{4}$") ||
+                                        Regex.IsMatch(prev, @"^\d+\s+\d+$");
+                        
+                        if (isDataLine && courseLines.Count > 0)
                         {
-                            if (foundEmptyLine)
-                            {
-                                // Second empty line - definitely stop
-                                break;
-                            }
-                            foundEmptyLine = true;
+                            // We have course lines and hit data - stop here
+                            break;
+                        }
+                        else if (isDataLine)
+                        {
+                            // Data line but no course yet - skip it
                             continue;
                         }
 
-                        // EXCLUDE data lines that shouldn't be in course name
-                        if (prevLine.Contains("R$") ||  // ANY line with R$ is data
-                            prevLine.Contains(":") ||   // Lines with colons are usually data
-                            prevLine.Contains(",") ||   // Lines with commas are usually numbers/data
-                            prevLine.StartsWith("R$") ||
-                            prevLine.Contains("PRESENCIAL") ||
-                            prevLine.Contains("EAD") ||
-                            prevLine.Contains("SÍNCRONO") ||
-                            prevLine.Contains("HÍBRIDO") ||
-                            Regex.IsMatch(prevLine, @"^\d+$") ||  // Just a number
-                            Regex.IsMatch(prevLine, @"^\d{2}/\d{2}/\d{4}$") ||  // Just a date
-                            Regex.IsMatch(prevLine, @"R\$") ||  // Contains R$
-                            Regex.IsMatch(prevLine, @"^\d+\s+\d+$"))  // Two numbers (like "1 40")
+                        // Month names alone are not course names
+                        bool isMonth = Regex.IsMatch(prev, @"^(JANEIRO|FEVEREIRO|MAR[ÇC]O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)$", RegexOptions.IgnoreCase);
+                        
+                        // VALID course name line
+                        if (prev == prev.ToUpper() && 
+                            prev.Length > 2 && 
+                            !isMonth &&
+                            !prev.Contains("DOCENTE") && 
+                            !prev.Contains("MODERADOR") &&
+                            !prev.Contains(":"))  // Keep colon check for data labels
                         {
-                            // This is data, not course name - stop here
-                            break;
-                        }
-
-                        // If it's uppercase and substantial, it's likely part of course name
-                        if (prevLine == prevLine.ToUpper() && prevLine.Length > 2)
-                        {
-                            courseParts.Insert(0, prevLine);
-                        }
-                        else if (courseParts.Count > 0)
-                        {
-                            // We found some course parts, then hit a non-uppercase line - stop
-                            break;
+                            courseLines.Insert(0, prev);
+                            foundValidCourse = true;
                         }
                     }
 
-                    if (courseParts.Count > 0)
+                    // Update current course if we found a valid new one
+                    if (foundValidCourse && courseLines.Count > 0)
                     {
-                        currentCourse = string.Join(" ", courseParts);
+                        string newCourse = string.Join(" ", courseLines);
+                        
+                        // Validate it's not junk
+                        if (newCourse.Length >= 5 && 
+                            !newCourse.Contains("E-DOCS") &&
+                            !newCourse.Contains("PÁGINA"))
+                        {
+                            currentCourse = newCourse;
+                            itemsSinceLastCourse = 0;
+                        }
                     }
-                    // If no course name found, keep the previous one (carry forward)
+                    else
+                    {
+                        // No new course found
+                        itemsSinceLastCourse++;
+                        
+                        // If we've gone too long without finding a course, reset
+                        // This prevents infinite carry-forward
+                        if (itemsSinceLastCourse > 5)
+                        {
+                            currentCourse = "";
+                        }
+                    }
 
+                    // Skip if no valid course
+                    if (string.IsNullOrWhiteSpace(currentCourse))
+                    {
+                        continue;
+                    }
 
-                    string dataLine = line.Replace("DOCENTE CONTEUDISTA", "").Replace("DOCENTE", "").Replace("MODERADOR", "").Trim();
+                    // Get data from this line and next lines
+                    string dataText = line;
                     
-                    for (int j = i + 1; j < Math.Min(lines.Length, i + 5); j++)
+                    // Start collecting from the appropriate line (skip CONTEUDISTA if it was on separate line)
+                    int startJ = i + 1 + skipLines;
+                    
+                    for (int j = startJ; j < Math.Min(lines.Length, startJ + 5); j++)
                     {
-                        string nextLine = lines[j].Trim();
-                        if (nextLine.Contains("DOCENTE") || nextLine.Contains("MODERADOR"))
+                        string next = lines[j].Trim();
+                        if (next.Contains("DOCENTE") || next.Contains("MODERADOR") || next == "CONTEUDISTA")
                             break;
-                        dataLine += " " + nextLine;
+                        dataText += " " + next;
                     }
 
-                    var numbers = Regex.Matches(dataLine, @"\d+");
-                    if (numbers.Count < 2) continue;
+                    // Remove category keywords
+                    dataText = dataText.Replace("DOCENTE CONTEUDISTA", " ")
+                                      .Replace("DOCENTE", " ")
+                                      .Replace("MODERADOR", " ")
+                                      .Trim();
 
-                    int quantidade = int.Parse(numbers[0].Value);
-                    decimal cargaHoraria = decimal.Parse(numbers[1].Value);
+                    // Extract numbers
+                    var nums = Regex.Matches(dataText, @"\d+");
+                    if (nums.Count < 2) continue;
 
-                    var monthMatch = Regex.Match(dataLine, @"(JANEIRO|FEVEREIRO|MAR[ÇC]O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)", RegexOptions.IgnoreCase);
-                    string mes = monthMatch.Success ? monthMatch.Value.ToUpper() : "";
+                    int qtd = int.Parse(nums[0].Value);
+                    decimal ch = decimal.Parse(nums[1].Value);
 
-                    var dateMatch = Regex.Match(dataLine, @"(\d{2}/\d{2}/\d{4})");
-                    DateTime? dataOferta = null;
+                    // Extract month
+                    var mesMatch = Regex.Match(dataText, @"(JANEIRO|FEVEREIRO|MAR[ÇC]O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)", RegexOptions.IgnoreCase);
+                    string mes = mesMatch.Success ? mesMatch.Value.ToUpper() : "";
+
+                    // Extract date
+                    var dateMatch = Regex.Match(dataText, @"(\d{2}/\d{2}/\d{4})");
+                    DateTime? data = null;
                     if (dateMatch.Success)
                     {
-                        DateTime.TryParseExact(dateMatch.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed);
-                        dataOferta = parsed;
+                        DateTime.TryParseExact(dateMatch.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d);
+                        data = d;
                     }
 
                     itens.Add(new TermoReferenciaItem
                     {
                         Curso = currentCourse,
                         Profissional = categoria,
-                        Quantidade = quantidade,
-                        CargaHoraria = cargaHoraria,
+                        Quantidade = qtd,
+                        CargaHoraria = ch,
                         MesExecucao = mes,
-                        DataOferta = dataOferta,
+                        DataOferta = data,
                         Contratados = 0,
                         CreatorUserId = "",
                         CreationTime = DateTime.Now
                     });
+                    
+                    // Skip the CONTEUDISTA line if it was on a separate line
+                    if (skipLines > 0)
+                    {
+                        i += skipLines;
+                    }
                 }
             }
 
             if (itens.Count == 0)
             {
-                throw new TrilhasException("Nenhum item extraído da tabela Anexo II.");
+                throw new TrilhasException("Nenhum item extraído. Verifique se o PDF tem a tabela Anexo II no formato esperado.");
             }
 
             return itens;
@@ -467,18 +579,19 @@ namespace Trilhas.Services
         }
 
         public TermoDeReferencia RecuperarTermo(long id, bool incluirExcluidos)
-        {
-            var query = _context.TermosDeReferencia
-                .Include(t => t.Itens)
-                .Where(t => t.Id == id);
+{
+    var query = _context.TermosDeReferencia
+        .Include(t => t.Itens)
+            .ThenInclude(i => i.Slots)  // <-- ADD THIS
+        .Where(t => t.Id == id);
 
-            if (!incluirExcluidos)
-            {
-                query = query.Where(t => t.DeletionTime == null);
-            }
+    if (!incluirExcluidos)
+    {
+        query = query.Where(t => t.DeletionTime == null);
+    }
 
-            return query.FirstOrDefault();
-        }
+    return query.FirstOrDefault();
+}
 
         public TermoReferenciaItem RecuperarItem(long id)
         {

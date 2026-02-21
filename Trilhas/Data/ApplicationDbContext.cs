@@ -60,7 +60,7 @@ namespace Trilhas.Data
         public DbSet<Habilitacao> Habilitacao { get; set; }
         public DbSet<Formacao> Formacao { get; set; }
         public DbSet<DadosBancarios> DadosBancarios { get; set; }
-
+        public DbSet<ContratadoSlot> ContratadoSlots { get; set; }
 
         public DbSet<Docente> Docentes { get; set; }
         public DbSet<FuncaoDocente> FuncoesDocente { get; set; }
