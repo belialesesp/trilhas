@@ -1,6 +1,7 @@
 
 @model List<Trilhas.Data.Model.TermosReferencia.TermoDeReferencia>
-@{
+    @{
+    ViewData["Title"] = "Gerenciar Termos de Referência";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -339,8 +340,8 @@ $(document).on('click', '.btn-deletar-termo', function() {
     var $row = $(this).closest('tr');
     
     $.ajax({
-        url: '/TermosReferencia/Deletar',
-        method: 'POST',
+        url: '/TermosReferencia/Excluir?id=' + termoId,
+        method: 'DELETE',
         data: { id: termoId },
         success: function(response) {
             if (response.success) {

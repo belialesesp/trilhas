@@ -8,6 +8,7 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,76 +19,76 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
         <style>
-                body {
-                    background-color: #f5f5f5;
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                }
+                                body {
+                                    background-color: #f5f5f5;
+                                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                }
 
-                .page-header {
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    color: white;
-                    padding: 2rem 0;
-                    margin-bottom: 2rem;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                }
+                                .page-header {
+                                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                    color: white;
+                                    padding: 2rem 0;
+                                    margin-bottom: 2rem;
+                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                                }
 
-                .card {
-                    border: none;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                    margin-bottom: 1.5rem;
-                    border-radius: 8px;
-                }
+                                .card {
+                                    border: none;
+                                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                                    margin-bottom: 1.5rem;
+                                    border-radius: 8px;
+                                }
 
-                .card-header {
-                    border-bottom: none;
-                    border-radius: 8px 8px 0 0 !important;
-                    font-weight: 600;
-                }
+                                .card-header {
+                                    border-bottom: none;
+                                    border-radius: 8px 8px 0 0 !important;
+                                    font-weight: 600;
+                                }
 
-                .table thead th {
-                    border-bottom: 2px solid #dee2e6;
-                    font-weight: 600;
-                    text-transform: uppercase;
-                    font-size: 0.85rem;
-                    letter-spacing: 0.5px;
-                }
+                                .table thead th {
+                                    border-bottom: 2px solid #dee2e6;
+                                    font-weight: 600;
+                                    text-transform: uppercase;
+                                    font-size: 0.85rem;
+                                    letter-spacing: 0.5px;
+                                }
 
-                .badge {
-                    padding: 0.4rem 0.8rem;
-                    font-weight: 500;
-                }
+                                .badge {
+                                    padding: 0.4rem 0.8rem;
+                                    font-weight: 500;
+                                }
 
-                .btn {
-                    border-radius: 4px;
-                    padding: 0.5rem 1rem;
-                    font-weight: 500;
-                    transition: all 0.3s;
-                }
+                                .btn {
+                                    border-radius: 4px;
+                                    padding: 0.5rem 1rem;
+                                    font-weight: 500;
+                                    transition: all 0.3s;
+                                }
 
-                .btn:hover {
-                    transform: translateY(-1px);
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-                }
+                                .btn:hover {
+                                    transform: translateY(-1px);
+                                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+                                }
 
-                .form-control,
-                .form-select {
-                    border-radius: 4px;
-                    border: 1px solid #ced4da;
-                }
+                                .form-control,
+                                .form-select {
+                                    border-radius: 4px;
+                                    border: 1px solid #ced4da;
+                                }
 
-                .form-control:focus,
-                .form-select:focus {
-                    border-color: #667eea;
-                    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-                }
+                                .form-control:focus,
+                                .form-select:focus {
+                                    border-color: #667eea;
+                                    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+                                }
 
-                .modal-header {
-                    border-bottom: none;
-                }
+                                .modal-header {
+                                    border-bottom: none;
+                                }
 
-                .modal-footer {
-                    border-top: none;
-                }
+                                .modal-footer {
+                                    border-top: none;
+                                }
         </style>
     </head>
     <body>
@@ -219,7 +220,6 @@
                                                     </span>
                                                 </td>
                                                 <td><strong>@item.Quantidade</strong></td>
-                                                <td>@item.CargaHoraria h</td>
                                                 <td>@item.MesExecucao</td>
                                                 <td>
                                                     @if (item.DataOferta.HasValue)
@@ -276,226 +276,236 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="itemProfissional"><strong>Categoria *</strong></label>
-                                        <select class="form-control" id="itemProfissional" required>
-                                            <option value="">Selecione...</option>
-                                            <option value="DOCENTE">DOCENTE</option>
-                                            <option value="MODERADOR">MODERADOR</option>
-                                            <option value="DOCENTE_CONTEUDISTA">DOCENTE CONTEUDISTA</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="itemQuantidade"><strong>Quantidade *</strong></label>
-                                        <input type="number" class="form-control" id="itemQuantidade" min="1" value="1"
-                                               required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="itemCargaHoraria"><strong>Carga Horária *</strong></label>
-                                        <input type="number" class="form-control" id="itemCargaHoraria" min="1" step="0.5"
-                                               value="8" required>
+                                        <input type="text" class="form-control" id="itemProfissional" required
+                                               list="categoriasList" placeholder="Ex: DOCENTE"
+                                               style="text-transform: uppercase;">
+                                        <datalist id="categoriasList">
+    <option value="DOCENTE"></option>
+    <option value="MODERADOR"></option>
+    <option value="DOCENTE CONTEUDISTA"></option>
+    <option value="DOCENTE ASSISTENTE"></option>
+</datalist>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="itemQuantidade"><strong>Quantidade *</strong></label>
+                                                            <input type="number" class="form-control" id="itemQuantidade" min="1" value="1"
+                                                                   required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="itemCargaHoraria"><strong>Carga Horária *</strong></label>
+                                                            <input type="number" class="form-control" id="itemCargaHoraria" min="1" step="0.5"
+                                                                   value="8" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="itemMes"><strong>Mês de Execução</strong></label>
+                                                            <select class="form-control" id="itemMes">
+                                                                <option value="">Selecione...</option>
+                                                                <option value="JANEIRO">JANEIRO</option>
+                                                                <option value="FEVEREIRO">FEVEREIRO</option>
+                                                                <option value="MARÇO">MARÇO</option>
+                                                                <option value="ABRIL">ABRIL</option>
+                                                                <option value="MAIO">MAIO</option>
+                                                                <option value="JUNHO">JUNHO</option>
+                                                                <option value="JULHO">JULHO</option>
+                                                                <option value="AGOSTO">AGOSTO</option>
+                                                                <option value="SETEMBRO">SETEMBRO</option>
+                                                                <option value="OUTUBRO">OUTUBRO</option>
+                                                                <option value="NOVEMBRO">NOVEMBRO</option>
+                                                                <option value="DEZEMBRO">DEZEMBRO</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="itemDataOferta"><strong>Data da Oferta</strong></label>
+                                                            <input type="date" class="form-control" id="itemDataOferta">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                <i class="fas fa-times"></i> Cancelar
+                                            </button>
+                                            <button type="button" class="btn btn-success" id="btnSalvarItem">
+                                                <i class="fas fa-save"></i> Salvar
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="itemMes"><strong>Mês de Execução</strong></label>
-                                        <select class="form-control" id="itemMes">
-                                            <option value="">Selecione...</option>
-                                            <option value="JANEIRO">JANEIRO</option>
-                                            <option value="FEVEREIRO">FEVEREIRO</option>
-                                            <option value="MARÇO">MARÇO</option>
-                                            <option value="ABRIL">ABRIL</option>
-                                            <option value="MAIO">MAIO</option>
-                                            <option value="JUNHO">JUNHO</option>
-                                            <option value="JULHO">JULHO</option>
-                                            <option value="AGOSTO">AGOSTO</option>
-                                            <option value="SETEMBRO">SETEMBRO</option>
-                                            <option value="OUTUBRO">OUTUBRO</option>
-                                            <option value="NOVEMBRO">NOVEMBRO</option>
-                                            <option value="DEZEMBRO">DEZEMBRO</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="itemDataOferta"><strong>Data da Oferta</strong></label>
-                                        <input type="date" class="form-control" id="itemDataOferta">
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                            <i class="fas fa-times"></i> Cancelar
-                        </button>
-                        <button type="button" class="btn btn-success" id="btnSalvarItem">
-                            <i class="fas fa-save"></i> Salvar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+                            <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+                            <script>
+                                $(document).ready(function () {
+                                var termoId = $('#termoId').val();
+                                var isEditing = false;
 
-        <script>
-            $(document).ready(function () {
-            var termoId = $('#termoId').val();
-            var isEditing = false;
+                                // Set the status dropdown value
+                                var currentStatus = '@Model.Status';
+                                $('#status').val(currentStatus);
 
-            // Set the status dropdown value
-            var currentStatus = '@Model.Status';
-            $('#status').val(currentStatus);
+                                // Save basic info
+                                $('#formEditarTermo').submit(function (e) {
+                                e.preventDefault();
 
-            // Save basic info
-            $('#formEditarTermo').submit(function (e) {
-            e.preventDefault();
+                                $.ajax({
+                                url: '/TermosReferencia/AtualizarTermo',
+                                method: 'POST',
+                                data: {
+                                id: termoId,
+                                titulo: $('#titulo').val(),
+                                demandante: $('#demandante').val(),
+                                ano: $('#ano').val(),
+                                dataInicio: $('#dataInicio').val(),
+                                dataTermino: $('#dataTermino').val(),
+                                status: $('#status').val()
+                                },
+                                success: function (response) {
+                                if (response.success) {
+                                toastr.success('Informações atualizadas com sucesso!');
+                                } else {
+                                toastr.error(response.message || 'Erro ao atualizar');
+                                }
+                                },
+                                error: function () {
+                                toastr.error('Erro ao comunicar com o servidor');
+                                }
+                                });
+                                });
 
-            $.ajax({
-            url: '/TermosReferencia/AtualizarTermo',
-            method: 'POST',
-            data: {
-            id: termoId,
-            titulo: $('#titulo').val(),
-            demandante: $('#demandante').val(),
-            ano: $('#ano').val(),
-            dataInicio: $('#dataInicio').val(),
-            dataTermino: $('#dataTermino').val(),
-            status: $('#status').val()
-            },
-            success: function (response) {
-            if (response.success) {
-            toastr.success('Informações atualizadas com sucesso!');
-            } else {
-            toastr.error(response.message || 'Erro ao atualizar');
-            }
-            },
-            error: function () {
-            toastr.error('Erro ao comunicar com o servidor');
-            }
-            });
-            });
+                                // Open modal to add new item
+                                $('#btnAdicionarItem').click(function () {
+                                isEditing = false;
+                                $('#modalItemTitle').text('Adicionar Item');
+                                $('#formItem')[0].reset();
+                                $('#itemId').val('');
+                                $('#modalItem').modal('show');
+                                });
 
-            // Open modal to add new item
-            $('#btnAdicionarItem').click(function () {
-            isEditing = false;
-            $('#modalItemTitle').text('Adicionar Item');
-            $('#formItem')[0].reset();
-            $('#itemId').val('');
-            $('#modalItem').modal('show');
-            });
+                                // Edit item - FETCH DATA AND POPULATE
+                                $(document).on('click', '.btn-editar', function () {
+                                var itemId = $(this).data('item-id');
+                                var $row = $(this).closest('tr');
 
-            // Edit item - FETCH DATA AND POPULATE
-            $(document).on('click', '.btn-editar', function () {
-            var itemId = $(this).data('item-id');
-            var $row = $(this).closest('tr');
+                                $('#modalItemTitle').text('Editar Item');
+                                $('#itemId').val(itemId);
 
-            $('#modalItemTitle').text('Editar Item');
-            $('#itemId').val(itemId);
+                                // Populate form from row data
+                                $('#itemCurso').val($row.find('td:eq(0)').text().trim());
 
-            // Populate form from row data
-            $('#itemCurso').val($row.find('td:eq(0)').text().trim());
+                                // Get category from badge
+                                var categoria = $row.find('.badge').text().trim().replace(' ', '_');
+                                $('#itemProfissional').val(categoria);
 
-            // Get category from badge
-            var categoria = $row.find('.badge').text().trim().replace(' ', '_');
-            $('#itemProfissional').val(categoria);
+                                // Get quantity
+                                $('#itemQuantidade').val($row.find('td:eq(2)').text().trim());
 
-            // Get quantity
-            $('#itemQuantidade').val($row.find('td:eq(2)').text().trim());
+                                // Get month
+                                $('#itemMes').val($row.find('td:eq(3)').text().trim());
 
-            // Get month
-            $('#itemMes').val($row.find('td:eq(3)').text().trim());
+                                // Get date if exists
+                                var dataText = $row.find('td:eq(4)').text().trim();
+                                if (dataText !== '-') {
+                                // Convert DD/MM/YYYY to YYYY-MM-DD for date input
+                                var parts = dataText.split('/');
+                                if (parts.length === 3) {
+                                $('#itemDataOferta').val(parts[2] + '-' + parts[1] + '-' + parts[0]);
+                                }
+                                }
 
-            // Get date if exists
-            var dataText = $row.find('td:eq(4)').text().trim();
-            if (dataText !== '-') {
-            // Convert DD/MM/YYYY to YYYY-MM-DD for date input
-            var parts = dataText.split('/');
-            if (parts.length === 3) {
-            $('#itemDataOferta').val(parts[2] + '-' + parts[1] + '-' + parts[0]);
-            }
-            }
+                                $('#modalItem').modal('show');
+                                });
 
-            $('#modalItem').modal('show');
-            });
+                                // Save item (add or update)
+                                $('#btnSalvarItem').click(function () {
+                                if (!$('#formItem')[0].checkValidity()) {
+                                $('#formItem')[0].reportValidity();
+                                return;
+                                }
 
-            // Save item (add or update)
-            $('#btnSalvarItem').click(function () {
-            if (!$('#formItem')[0].checkValidity()) {
-            $('#formItem')[0].reportValidity();
-            return;
-            }
+                                var itemId = $('#itemId').val();
+                                var url = itemId ? '/TermosReferencia/AtualizarItem' : '/TermosReferencia/AdicionarItem';
 
-            var itemId = $('#itemId').val();
-            var url = itemId ? '/TermosReferencia/AtualizarItem' : '/TermosReferencia/AdicionarItem';
+                                var data = {
+                                termoId: termoId,
+                                itemId: itemId,
+                                curso: $('#itemCurso').val(),
+                                profissional: $('#itemProfissional').val(),
+                                quantidade: parseInt($('#itemQuantidade').val()),
+                                cargaHoraria: parseFloat($('#itemCargaHoraria').val()),
+                                mesExecucao: $('#itemMes').val(),
+                                dataOferta: $('#itemDataOferta').val()
+                                };
 
-            var data = {
-            termoId: termoId,
-            itemId: itemId,
-            curso: $('#itemCurso').val(),
-            profissional: $('#itemProfissional').val(),
-            quantidade: parseInt($('#itemQuantidade').val()),
-            cargaHoraria: parseFloat($('#itemCargaHoraria').val()),
-            mesExecucao: $('#itemMes').val(),
-            dataOferta: $('#itemDataOferta').val()
-            };
+                                $.ajax({
+                                url: url,
+                                method: 'POST',
+                                data: data,
+                                success: function (response) {
+                                if (response.success) {
+                                toastr.success('Item salvo com sucesso!');
+                                $('#modalItem').modal('hide');
+                                location.reload();
+                                } else {
+                                toastr.error(response.message || 'Erro ao salvar');
+                                }
+                                },
+                                error: function () {
+                                toastr.error('Erro ao comunicar com o servidor');
+                                }
+                                });
+                                });
 
-            $.ajax({
-            url: url,
-            method: 'POST',
-            data: data,
-            success: function (response) {
-            if (response.success) {
-            toastr.success('Item salvo com sucesso!');
-            $('#modalItem').modal('hide');
-            location.reload();
-            } else {
-            toastr.error(response.message || 'Erro ao salvar');
-            }
-            },
-            error: function () {
-            toastr.error('Erro ao comunicar com o servidor');
-            }
-            });
-            });
+                                // Delete item
+                                $(document).on('click', '.btn-deletar', function () {
+                                if (!confirm('Tem certeza que deseja remover este item?')) {
+                                return;
+                                }
 
-            // Delete item
-            $(document).on('click', '.btn-deletar', function () {
-            if (!confirm('Tem certeza que deseja remover este item?')) {
-            return;
-            }
+                                var itemId = $(this).data('item-id');
 
-            var itemId = $(this).data('item-id');
+                                $.ajax({
+                                url: '/TermosReferencia/DeletarItem',
+                                method: 'POST',
+                                data: { itemId: itemId },
+                                // TO:
+                                success: function () {
+                                toastr.success('Termo excluído com sucesso!');
+                                $row.fadeOut(function () {
+                                $(this).remove();
+                                });
+                                },
+                                error: function () {
+                                toastr.error('Erro ao comunicar com o servidor');
+                                }
+                                });
+                                });
+                                // Click row to open details
+$('#tabelaTermos tbody tr').css('cursor', 'pointer').click(function(e) {
+    // Don't navigate if clicking a button or link
+    if ($(e.target).closest('a, button').length) return;
+    
+    var termoId = $(this).find('.btn-deletar-termo').data('termo-id');
+    if (termoId) {
+        window.location.href = '/TermosReferencia/Detalhes/' + termoId;
+    }
+});
+                                });
+                            </script>
+                        </body>
 
-            $.ajax({
-            url: '/TermosReferencia/DeletarItem',
-            method: 'POST',
-            data: { itemId: itemId },
-            success: function (response) {
-            if (response.success) {
-            toastr.success('Item removido com sucesso!');
-            $('tr[data-item-id="' + itemId + '"]').fadeOut(function () {
-            $(this).remove();
-            });
-            } else {
-            toastr.error(response.message || 'Erro ao remover');
-            }
-            },
-            error: function () {
-            toastr.error('Erro ao comunicar com o servidor');
-            }
-            });
-            });
-            });
-        </script>
-    </body>
-
-</html>
+                    </html>

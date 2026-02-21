@@ -5,301 +5,368 @@
     Layout = null;
 }
 
-<div class="container-fluid mt-4">
-    <div class="row mb-3">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <div>
-                <h2 class="mb-0">@termo.Titulo</h2>
-                <p class="text-muted mb-0">
-                    <strong>Demandante:</strong> @termo.Demandante | 
-                    <strong>Ano:</strong> @termo.Ano | 
-                    <strong>Status:</strong> <span class="badge badge-info">@termo.Status</span>
-                </p>
-            </div>
-            <div>
-                <a href="/TermosReferencia/Index" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Voltar
-                </a>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .card-header {
+            border-bottom: none;
+            border-radius: 8px 8px 0 0 !important;
+            font-weight: 600;
+        }
+
+        .table thead th {
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .badge {
+            padding: 0.4rem 0.8rem;
+            font-weight: 500;
+        }
+
+        .btn {
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .curso-row:hover {
+            background-color: #f8f9fa;
+        }
+
+        .expand-icon {
+            transition: transform 0.3s;
+        }
+
+        .curso-row.expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        .nested-table-container {
+            background-color: #f8f9fa;
+            padding: 15px;
+        }
+
+        .slot-row {
+            background-color: white;
+        }
+
+        .contractor-name:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="mb-1"><i class="fas fa-file-alt"></i> @termo.Titulo</h1>
+                    <p class="mb-0" style="opacity: 0.9;">
+                        <strong>Demandante:</strong> @termo.Demandante |
+                        <strong>Ano:</strong> @termo.Ano |
+                        <strong>Status:</strong> <span class="badge badge-light">@termo.Status</span>
+                    </p>
+                </div>
+                <div>
+                    <a href="/TermosReferencia/Editar/@termo.Id" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="/TermosReferencia/Index" class="btn btn-light">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-3">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-users"></i> Contratações por Curso
-                    </h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0" id="cursosTable">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th width="5%"></th>
-                                    <th width="40%">Curso</th>
-                                    <th width="15%">Total Necessário</th>
-                                    <th width="15%">Contratados</th>
-                                    <th width="15%">Atestados</th>
-                                    <th width="10%">Data Oferta</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{
-                                    // Group items by course
-                                    var cursos = termo.Itens
-                                        .Where(i => i.DeletionTime == null)
-                                        .GroupBy(i => i.Curso)
-                                        .OrderBy(g => g.Key);
-                                }
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-users"></i> Contratações por Curso
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="cursosTable">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th width="5%"></th>
+                                        <th width="40%">Curso</th>
+                                        <th width="15%">Total Necessário</th>
+                                        <th width="15%">Contratados</th>
+                                        <th width="15%">Atestados</th>
+                                        <th width="10%">Data Oferta</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var cursos = termo.Itens
+                                            .Where(i => i.DeletionTime == null)
+                                            .GroupBy(i => i.Curso)
+                                            .OrderBy(g => g.Key);
+                                    }
 
-                                @foreach (var curso in cursos)
-                                {
-                                    var cursoId = "curso_" + Math.Abs(curso.Key.GetHashCode());
-                                    var totalNecessario = curso.Sum(i => i.Quantidade);
-                                    var totalContratados = curso.Sum(i => i.ContratadosCount);
-                                    var totalAtestados = curso.Sum(i => i.AtesteCount);
-                                    var firstItem = curso.First();
-                                    
-                                    <tr class="curso-row" data-target="#@cursoId" style="cursor: pointer;">
-                                        <td class="text-center">
-                                            <i class="fas fa-chevron-right expand-icon"></i>
-                                        </td>
-                                        <td><strong>@curso.Key</strong></td>
-                                        <td>
-                                            <span class="badge badge-secondary">@totalNecessario profissionais</span>
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-@(totalContratados == totalNecessario ? "success" : "warning")">
-                                                @totalContratados / @totalNecessario
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-@(totalAtestados == totalNecessario ? "success" : "secondary")">
-                                                @totalAtestados / @totalNecessario
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if (firstItem.DataOferta.HasValue)
-                                            {
-                                                @firstItem.DataOferta.Value.ToString("dd/MM/yyyy")
-                                                <br/>
-                                                <small class="text-muted">@firstItem.MesExecucao</small>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">-</span>
-                                            }
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- Expandable details row -->
-                                    <tr class="collapse-row" id="@cursoId" style="display: none;">
-                                        <td colspan="6" class="p-0">
-                                            <div class="nested-table-container">
-                                                <table class="table table-sm table-bordered mb-0">
-                                                    <thead class="bg-light">
-                                                        <tr>
-                                                            <th width="25%">Categoria</th>
-                                                            <th width="10%">Slot</th>
-                                                            <th width="35%">Contrato</th>
-                                                            <th width="15%">Data Contratação</th>
-                                                            <th width="10%">Ateste</th>
-                                                            <th width="5%">Ações</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach (var item in curso)
-                                                        {
-                                                            @foreach (var slot in item.Slots.OrderBy(s => s.NumeroSlot))
+                                    @foreach (var curso in cursos)
+                                    {
+                                        var cursoId = "curso_" + Math.Abs(curso.Key.GetHashCode());
+                                        var totalNecessario = curso.Sum(i => i.Quantidade);
+                                        var totalContratados = curso.Sum(i => i.ContratadosCount);
+                                        var totalAtestados = curso.Sum(i => i.AtesteCount);
+                                        var firstItem = curso.First();
+
+                                        <tr class="curso-row" data-target="#@cursoId" style="cursor: pointer;">
+                                            <td class="text-center">
+                                                <i class="fas fa-chevron-right expand-icon"></i>
+                                            </td>
+                                            <td><strong>@curso.Key</strong></td>
+                                            <td>
+                                                <span class="badge badge-secondary">@totalNecessario profissionais</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-@(totalContratados == totalNecessario ? "success" : "warning")">
+                                                    @totalContratados / @totalNecessario
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-@(totalAtestados == totalNecessario ? "success" : "secondary")">
+                                                    @totalAtestados / @totalNecessario
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (firstItem.DataOferta.HasValue)
+                                                {
+                                                    @firstItem.DataOferta.Value.ToString("dd/MM/yyyy")
+                                                    <br />
+                                                    <small class="text-muted">@firstItem.MesExecucao</small>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                        </tr>
+
+                                        <!-- Expandable details row -->
+                                        <tr class="collapse-row" id="@cursoId" style="display: none;">
+                                            <td colspan="6" class="p-0">
+                                                <div class="nested-table-container">
+                                                    <table class="table table-sm table-bordered mb-0">
+                                                        <thead class="bg-light">
+                                                            <tr>
+                                                                <th width="25%">Categoria</th>
+                                                                <th width="10%">Slot</th>
+                                                                <th width="35%">Contrato</th>
+                                                                <th width="15%">Data Contratação</th>
+                                                                <th width="10%">Ateste</th>
+                                                                <th width="5%">Ações</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var item in curso)
                                                             {
-                                                                <tr class="slot-row" data-slot-id="@slot.Id">
-                                                                    <td>
-                                                                        @if (slot.NumeroSlot == 1)
-                                                                        {
-                                                                            <span class="badge badge-pill badge-@GetCategoryBadgeColor(item.Profissional)">
-                                                                                @item.Profissional.Replace("_", " ")
-                                                                            </span>
-                                                                        }
-                                                                    </td>
-                                                                    <td class="text-center">
-                                                                        <small class="text-muted">#@slot.NumeroSlot</small>
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="text" 
-                                                                               class="form-control form-control-sm contractor-name" 
-                                                                               data-slot-id="@slot.Id"
-                                                                               value="@slot.NomeContratado"
-                                                                               placeholder="Número do processo E-Docs">
-                                                                    </td>
-                                                                    <td>
-                                                                        @if (slot.DataContratacao.HasValue)
-                                                                        {
-                                                                            <small>@slot.DataContratacao.Value.ToString("dd/MM/yyyy HH:mm")</small>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <small class="text-muted">-</small>
-                                                                        }
-                                                                    </td>
-                                                                    <td class="text-center">
-                                                                        <div class="custom-control custom-checkbox">
-                                                                            <input type="checkbox" 
-                                                                                   class="custom-control-input ateste-checkbox" 
-                                                                                   id="ateste_@slot.Id"
+                                                                @foreach (var slot in item.Slots.OrderBy(s => s.NumeroSlot))
+                                                                {
+                                                                    <tr class="slot-row" data-slot-id="@slot.Id">
+                                                                        <td>
+                                                                            @if (slot.NumeroSlot == 1)
+                                                                            {
+                                                                                <span class="badge badge-pill badge-@GetCategoryBadgeColor(item.Profissional)">
+                                                                                    @item.Profissional.Replace("_", " ")
+                                                                                </span>
+                                                                            }
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <small class="text-muted">#@slot.NumeroSlot</small>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text"
+                                                                                   class="form-control form-control-sm contractor-name"
                                                                                    data-slot-id="@slot.Id"
-                                                                                   @(slot.Ateste ? "checked" : "")>
-                                                                            <label class="custom-control-label" for="ateste_@slot.Id"></label>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="text-center">
-                                                                        <button class="btn btn-sm btn-success save-slot-btn" 
-                                                                                data-slot-id="@slot.Id"
-                                                                                title="Salvar">
-                                                                            <i class="fas fa-save"></i>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
+                                                                                   value="@slot.NomeContratado"
+                                                                                   placeholder="Número do processo E-Docs">
+                                                                        </td>
+                                                                        <td>
+                                                                            @if (slot.DataContratacao.HasValue)
+                                                                            {
+                                                                                <small>@slot.DataContratacao.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <small class="text-muted">-</small>
+                                                                            }
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <div class="custom-control custom-checkbox">
+                                                                                <input type="checkbox"
+                                                                                       class="custom-control-input ateste-checkbox"
+                                                                                       id="ateste_@slot.Id"
+                                                                                       data-slot-id="@slot.Id"
+                                                                                       @(slot.Ateste ? "checked" : "")>
+                                                                                <label class="custom-control-label" for="ateste_@slot.Id"></label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <button class="btn btn-sm btn-success save-slot-btn"
+                                                                                    data-slot-id="@slot.Id"
+                                                                                    title="Salvar">
+                                                                                <i class="fas fa-save"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
                                                             }
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-@functions {
-    string GetCategoryBadgeColor(string categoria)
-    {
-        return categoria switch
+    @functions {
+        string GetCategoryBadgeColor(string categoria)
         {
-            "DOCENTE" => "primary",
-            "MODERADOR" => "info",
-            "DOCENTE_CONTEUDISTA" => "success",
-            _ => "secondary"
-        };
-    }
-}
-
-<style>
-    .curso-row:hover {
-        background-color: #f8f9fa;
-    }
-    
-    .expand-icon {
-        transition: transform 0.3s;
-    }
-    
-    .curso-row.expanded .expand-icon {
-        transform: rotate(90deg);
-    }
-    
-    .nested-table-container {
-        background-color: #f8f9fa;
-        padding: 15px;
-    }
-    
-    .slot-row {
-        background-color: white;
-    }
-    
-    .contractor-name:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-    }
-</style>
-
-<script>
-$(document).ready(function() {
-    // Expand/collapse course rows
-    $('.curso-row').click(function() {
-        var targetId = $(this).data('target');
-        var $target = $(targetId);
-        
-        if ($target.is(':visible')) {
-            $target.slideUp(200);
-            $(this).removeClass('expanded');
-        } else {
-            $target.slideDown(200);
-            $(this).addClass('expanded');
+            return categoria switch
+            {
+                "DOCENTE" => "primary",
+                "MODERADOR" => "info",
+                "DOCENTE_CONTEUDISTA" => "success",
+                _ => "secondary"
+            };
         }
-    });
-    
-    // Save slot data
-    $('.save-slot-btn').click(function() {
-        var slotId = $(this).data('slot-id');
-        var $row = $(this).closest('.slot-row');
-        var nome = $row.find('.contractor-name').val();
-        var ateste = $row.find('.ateste-checkbox').is(':checked');
-        
-        $.ajax({
-            url: '/TermosReferencia/SalvarSlot',
-            method: 'POST',
-            data: {
-                slotId: slotId,
-                nomeContratado: nome,
-                ateste: ateste
-            },
-            success: function(response) {
-    if (response.success) {
-        toastr.success('Dados salvos com sucesso!');
-        // Don't reload the page
-    } else {
-        toastr.error(response.message || 'Erro ao salvar');
     }
-},
-            error: function() {
-                toastr.error('Erro ao comunicar com o servidor');
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        // Expand/collapse course rows
+        $('.curso-row').click(function(e) {
+            // Don't toggle if clicking inside an input/button
+            if ($(e.target).is('input, button, i.fa-save')) return;
+
+            var targetId = $(this).data('target');
+            var $target = $(targetId);
+
+            if ($target.is(':visible')) {
+                $target.slideUp(200);
+                $(this).removeClass('expanded');
+            } else {
+                $target.slideDown(200);
+                $(this).addClass('expanded');
             }
         });
-    });
-    
-    // Auto-save on checkbox change
-$('.ateste-checkbox').change(function(e) {
-    e.preventDefault(); // Prevent default checkbox behavior
-    
-    var slotId = $(this).data('slot-id');
-    var $row = $(this).closest('.slot-row');
-    var nome = $row.find('.contractor-name').val();
-    var ateste = $(this).is(':checked');
-    
-    $.ajax({
-        url: '/TermosReferencia/SalvarSlot',
-        method: 'POST',
-        data: {
-            slotId: slotId,
-            nomeContratado: nome,
-            ateste: ateste
-        },
-        success: function(response) {
-            if (response.success) {
-                toastr.success('Ateste salvo!');
-                // Don't reload - just update the badge counts
-                updateCounts();
-            } else {
-                toastr.error(response.message || 'Erro ao salvar');
-            }
-        },
-        error: function() {
-            toastr.error('Erro ao comunicar com o servidor');
-        }
-    });
-});
 
-// Function to update counts without reloading
-function updateCounts() {
-    // You can add logic here to update the badge counts
-    // For now, we'll just keep it simple
-}
-});
-</script>
+        // Save slot data
+        $('.save-slot-btn').click(function() {
+            var slotId = $(this).data('slot-id');
+            var $row = $(this).closest('.slot-row');
+            var nome = $row.find('.contractor-name').val();
+            var ateste = $row.find('.ateste-checkbox').is(':checked');
+
+            $.ajax({
+                url: '/TermosReferencia/SalvarSlot',
+                method: 'POST',
+                data: {
+                    slotId: slotId,
+                    nomeContratado: nome,
+                    ateste: ateste
+                },
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success('Dados salvos com sucesso!');
+                    } else {
+                        toastr.error(response.message || 'Erro ao salvar');
+                    }
+                },
+                error: function() {
+                    toastr.error('Erro ao comunicar com o servidor');
+                }
+            });
+        });
+
+        // Auto-save on checkbox change
+        $('.ateste-checkbox').change(function(e) {
+            e.preventDefault();
+
+            var slotId = $(this).data('slot-id');
+            var $row = $(this).closest('.slot-row');
+            var nome = $row.find('.contractor-name').val();
+            var ateste = $(this).is(':checked');
+
+            $.ajax({
+                url: '/TermosReferencia/SalvarSlot',
+                method: 'POST',
+                data: {
+                    slotId: slotId,
+                    nomeContratado: nome,
+                    ateste: ateste
+                },
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success('Ateste salvo!');
+                    } else {
+                        toastr.error(response.message || 'Erro ao salvar');
+                    }
+                },
+                error: function() {
+                    toastr.error('Erro ao comunicar com o servidor');
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>
