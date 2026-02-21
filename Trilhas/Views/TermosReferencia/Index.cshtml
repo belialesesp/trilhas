@@ -270,13 +270,9 @@ $(document).ready(function() {
                 $('#btnUploadPDF').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processando...');
             },
             success: function(response) {
-                if (response.success) {
-                    toastr.success('Termo processado com sucesso!');
-                    window.location.href = '/TermosReferencia/Detalhes/' + response.termoId;
-                } else {
-                    toastr.error(response.message || 'Erro ao processar PDF');
-                }
-            },
+    toastr.success('Documento processado com sucesso!');
+    window.location.href = '/TermosReferencia/Detalhes/' + response.termoId;
+},
             error: function(xhr) {
                 var message = 'Erro ao processar PDF';
                 if (xhr.responseJSON && xhr.responseJSON.message) {
@@ -312,15 +308,12 @@ $(document).ready(function() {
             beforeSend: function() {
                 $('#btnSalvarNovoTermo').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Criando...');
             },
-            success: function(response) {
-                if (response.success) {
-                    toastr.success('Termo criado com sucesso!');
-                    // Redirect to edit page to add courses
-                    window.location.href = '/TermosReferencia/Editar/' + response.termoId;
-                } else {
-                    toastr.error(response.message || 'Erro ao criar termo');
-                }
-            },
+            success: function() {
+    toastr.success('Termo excluído com sucesso!');
+    $row.fadeOut(function() {
+        $(this).remove();
+    });
+},
             error: function() {
                 toastr.error('Erro ao comunicar com o servidor');
             },
@@ -357,5 +350,13 @@ $(document).on('click', '.btn-deletar-termo', function() {
             toastr.error('Erro ao comunicar com o servidor');
         }
     });
+    // Click row to open details
+$('#tabelaTermos tbody').on('click', 'tr', function(e) {
+    if ($(e.target).closest('a, button').length) return;
+    var termoId = $(this).find('.btn-deletar-termo').data('termo-id');
+    if (termoId) {
+        window.location.href = '/TermosReferencia/Detalhes/' + termoId;
+    }
+});
 });
 </script>

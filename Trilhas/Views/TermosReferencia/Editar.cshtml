@@ -494,16 +494,6 @@
                                 }
                                 });
                                 });
-                                // Click row to open details
-$('#tabelaTermos tbody tr').css('cursor', 'pointer').click(function(e) {
-    // Don't navigate if clicking a button or link
-    if ($(e.target).closest('a, button').length) return;
-    
-    var termoId = $(this).find('.btn-deletar-termo').data('termo-id');
-    if (termoId) {
-        window.location.href = '/TermosReferencia/Detalhes/' + termoId;
-    }
-});
                                 });
                             </script>
                         </body>
