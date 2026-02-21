@@ -32,7 +32,7 @@ namespace Trilhas.Controllers
         .OrderByDescending(t => t.Ano)
         .ThenByDescending(t => t.CreationTime)
         .ToList();
-
+            ViewBag.Termos = termos;
             return View(termos);
         }
 
