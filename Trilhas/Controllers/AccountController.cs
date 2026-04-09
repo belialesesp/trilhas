@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Trilhas.Controllers
-{
+{//Teste
     public class AccountController : Controller
     {
         private readonly IWebHostEnvironment _env;
