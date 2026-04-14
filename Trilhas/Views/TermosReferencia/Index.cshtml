@@ -1,4 +1,4 @@
-
+@using Trilhas.Data.Model.TermosReferencia
 @model List<Trilhas.Data.Model.TermosReferencia.TermoDeReferencia>
     @{
     ViewData["Title"] = "Gerenciar Termos de Referência";
@@ -91,43 +91,80 @@
             </h5>
         </div>
         <div class="card-body">
-            <!-- Your existing table here -->
-            <table class="table table-hover" id="tabelaTermos">
-                <thead>
-                    <tr>
-                        <th>Ano</th>
-                        <th>Título</th>
-                        <th>Demandante</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                     @foreach (var termo in Model)
-                    {
-                        <tr>
-                            <td>@termo.Ano</td>
-                            <td>@termo.Titulo</td>
-                            <td>@termo.Demandante</td>
-                            <td>
-                                <span class="badge badge-info">@termo.Status</span>
-                            </td>
-                            <td>
-                                <a href="/TermosReferencia/Detalhes/@termo.Id" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-eye"></i> Ver
-                                </a>
-                                <a href="/TermosReferencia/Editar/@termo.Id" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
-                                <button class="btn btn-sm btn-danger btn-deletar-termo" data-termo-id="@termo.Id">
-                                    <i class="fas fa-trash"></i> Excluir
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <!-- Filter buttons -->
+    <div class="mb-3">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-secondary btn-sm filter-btn active" data-filter="todos">
+                <i class="fas fa-list"></i> Todos
+            </button>
+            <button type="button" class="btn btn-outline-warning btn-sm filter-btn" data-filter="falta-contratar">
+                <i class="fas fa-user-plus"></i> Falta Contratar
+            </button>
+            <button type="button" class="btn btn-outline-danger btn-sm filter-btn" data-filter="falta-ateste">
+                <i class="fas fa-clipboard-check"></i> Falta Ateste
+            </button>
         </div>
+    </div>
+
+    <table class="table table-hover" id="tabelaTermos">
+        <thead>
+            <tr>
+                <th>Ano</th>
+                <th>Título</th>
+                <th>Demandante</th>
+                <th>Contratados</th>
+                <th>Atestados</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var termo in Model)
+            {
+                var activeItens = termo.Itens?.Where(i => i.DeletionTime == null) ?? Enumerable.Empty<TermoReferenciaItem>();
+                var totalNeeded = activeItens.Sum(i => i.Quantidade);
+                var totalContratados = activeItens.Sum(i => i.ContratadosCount);
+                var totalAtestados = activeItens.Sum(i => i.AtesteCount);
+                var faltaContratar = totalContratados < totalNeeded;
+                var faltaAteste = activeItens
+    .SelectMany(i => i.Slots)
+    .Any(s => !string.IsNullOrWhiteSpace(s.NomeContratado) && !s.Ateste);
+
+                <tr data-falta-contratar="@faltaContratar.ToString().ToLower()" 
+                    data-falta-ateste="@faltaAteste.ToString().ToLower()"
+                    data-status="@termo.Status">
+                    <td>@termo.Ano</td>
+                    <td>@termo.Titulo</td>
+                    <td>@termo.Demandante</td>
+                    <td>
+                        <span class="badge badge-@(totalContratados == totalNeeded ? "success" : "warning")">
+                            @totalContratados / @totalNeeded
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-@(totalAtestados == totalContratados && totalContratados > 0 ? "success" : totalAtestados > 0 ? "info" : "secondary")">
+                            @totalAtestados / @totalNeeded
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-info">@termo.Status</span>
+                    </td>
+                    <td>
+                        <a href="/TermosReferencia/Detalhes/@termo.Id" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i> Ver
+                        </a>
+                        <a href="/TermosReferencia/Editar/@termo.Id" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <button class="btn btn-sm btn-danger btn-deletar-termo" data-termo-id="@termo.Id">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 
@@ -270,9 +307,9 @@ $(document).ready(function() {
                 $('#btnUploadPDF').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processando...');
             },
             success: function(response) {
-    toastr.success('Documento processado com sucesso!');
-    window.location.href = '/TermosReferencia/Detalhes/' + response.termoId;
-},
+                toastr.success('Documento processado com sucesso!');
+                window.location.href = '/TermosReferencia/Detalhes/' + response.termoId;
+            },
             error: function(xhr) {
                 var message = 'Erro ao processar PDF';
                 if (xhr.responseJSON && xhr.responseJSON.message) {
@@ -308,12 +345,14 @@ $(document).ready(function() {
             beforeSend: function() {
                 $('#btnSalvarNovoTermo').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Criando...');
             },
-            success: function() {
-    toastr.success('Termo excluído com sucesso!');
-    $row.fadeOut(function() {
-        $(this).remove();
-    });
-},
+            success: function(response) {
+                if (response.success) {
+                    toastr.success('Termo criado com sucesso!');
+                    window.location.href = '/TermosReferencia/Editar/' + response.termoId;
+                } else {
+                    toastr.error(response.message || 'Erro ao criar termo');
+                }
+            },
             error: function() {
                 toastr.error('Erro ao comunicar com o servidor');
             },
@@ -322,9 +361,44 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Click row to open details
+    $('#tabelaTermos tbody').on('click', 'tr', function(e) {
+        if ($(e.target).closest('a, button').length) return;
+        var termoId = $(this).find('.btn-deletar-termo').data('termo-id');
+        if (termoId) {
+            window.location.href = '/TermosReferencia/Detalhes/' + termoId;
+        }
+    });
+// Filter buttons
+$('.filter-btn').click(function() {
+    $('.filter-btn').removeClass('active');
+    $(this).addClass('active');
+    
+    var filter = $(this).data('filter');
+    
+    $('#tabelaTermos tbody tr').each(function() {
+        var show = true;
+        
+        if (filter === 'falta-contratar') {
+            var status = $(this).data('status');
+            show = $(this).data('falta-contratar') === true && 
+                   (status === 'Aprovado' || status === 'Em Execução');
+        } else if (filter === 'falta-ateste') {
+            var status = $(this).data('status');
+            show = $(this).data('falta-ateste') === true && 
+                   (status === 'Aprovado' || status === 'Em Execução');
+        }
+        
+        $(this).toggle(show);
+    });
 });
-// Delete termo
-$(document).on('click', '.btn-deletar-termo', function() {
+}); // END of $(document).ready
+
+// Delete termo (outside document.ready, using event delegation)
+$(document).on('click', '.btn-deletar-termo', function(e) {
+    e.stopPropagation(); // Prevent row click from firing
+
     if (!confirm('Tem certeza que deseja excluir este termo de referência?')) {
         return;
     }
@@ -335,28 +409,15 @@ $(document).on('click', '.btn-deletar-termo', function() {
     $.ajax({
         url: '/TermosReferencia/Excluir?id=' + termoId,
         method: 'DELETE',
-        data: { id: termoId },
-        success: function(response) {
-            if (response.success) {
-                toastr.success('Termo excluído com sucesso!');
-                $row.fadeOut(function() {
-                    $(this).remove();
-                });
-            } else {
-                toastr.error(response.message || 'Erro ao excluir');
-            }
+        success: function() {
+            toastr.success('Termo excluído com sucesso!');
+            $row.fadeOut(function() {
+                $(this).remove();
+            });
         },
         error: function() {
             toastr.error('Erro ao comunicar com o servidor');
         }
     });
-    // Click row to open details
-$('#tabelaTermos tbody').on('click', 'tr', function(e) {
-    if ($(e.target).closest('a, button').length) return;
-    var termoId = $(this).find('.btn-deletar-termo').data('termo-id');
-    if (termoId) {
-        window.location.href = '/TermosReferencia/Detalhes/' + termoId;
-    }
-});
 });
 </script>

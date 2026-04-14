@@ -4,16 +4,14 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "BYPASS_AUTH": "true"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "Trilhas": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "BYPASS_AUTH": "true"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "https://localhost:5001"
     },
@@ -24,17 +22,8 @@
       "publishAllPorts": true,
       "useSSL": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production",
-        "BYPASS_AUTH": "false"
+        "ASPNETCORE_ENVIRONMENT": "Production"
       }
-    }
-  },
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:44322",
-      "sslPort": 44322
     }
   }
 }

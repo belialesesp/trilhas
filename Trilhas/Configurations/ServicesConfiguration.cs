@@ -34,33 +34,7 @@ namespace Trilhas.Configurations
         // New overload with environment parameter
         public static void AddAuthentication(this IServiceCollection services, OpenIdService settings, IWebHostEnvironment environment)
         {
-            // Check if we should bypass authentication
-            bool bypassAuth = environment?.IsDevelopment() == true || 
-                            Environment.GetEnvironmentVariable("BYPASS_AUTH") == "true";
-
-            if (bypassAuth)
-            {
-                // Simplified authentication for local development
-                services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/Account/LocalLogin";
-                    options.LogoutPath = "/Account/Logout";
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                    options.Cookie.Name = "TrilhasDevCookie";
-                    options.AccessDeniedPath = "/Error/AccessDenied";
-                });
-
-                Console.WriteLine("🔓 Authentication: Using LOCAL development mode (Acesso Cidadão BYPASSED)");
-            }
-            else
-            {
-                // Production authentication with Acesso Cidadão
+                
                 services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -150,7 +124,7 @@ namespace Trilhas.Configurations
 
                 Console.WriteLine("🔐 Authentication: Using PRODUCTION mode (Acesso Cidadão ENABLED)");
             }
-        }
+        
 
         public static void AddHttpClients(this IServiceCollection services)
         {

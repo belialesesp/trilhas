@@ -27,11 +27,14 @@ namespace Trilhas.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var termos = _context.TermosDeReferencia
-        .Where(t => t.DeletionTime == null)
-        .OrderByDescending(t => t.Ano)
-        .ThenByDescending(t => t.CreationTime)
-        .ToList();
+ 
+var termos = _context.TermosDeReferencia
+    .Include(t => t.Itens)
+        .ThenInclude(i => i.Slots)
+    .Where(t => t.DeletionTime == null)
+    .OrderByDescending(t => t.Ano)
+    .ThenByDescending(t => t.CreationTime)
+    .ToList();
             ViewBag.Termos = termos;
             return View(termos);
         }

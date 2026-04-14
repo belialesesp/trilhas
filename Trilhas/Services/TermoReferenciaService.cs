@@ -142,15 +142,37 @@ foreach (var item in termo.Itens)
                 using (var pdfReader = new PdfReader(pdfStream))
                 using (var pdfDocument = new PdfDocument(pdfReader))
                 {
-                    var page = pdfDocument.GetFirstPage();
-                    var strategy = new SimpleTextExtractionStrategy();
-                    string text = PdfTextExtractor.GetTextFromPage(page, strategy);
-
-                    var match = Regex.Match(text, @"2\.1\.\s*Título do Projeto\s*[:\-]?\s*([^\n]+)", RegexOptions.IgnoreCase);
-                    if (match.Success)
+                    // Read first 3 pages to find title
+                    string text = "";
+                    int pagesToRead = Math.Min(3, pdfDocument.GetNumberOfPages());
+                    for (int i = 1; i <= pagesToRead; i++)
                     {
-                        return match.Groups[1].Value.Trim();
+                        var page = pdfDocument.GetPage(i);
+                        var strategy = new SimpleTextExtractionStrategy();
+                        text += PdfTextExtractor.GetTextFromPage(page, strategy) + "\n";
                     }
+
+                    // Try multiple common title patterns (most specific first)
+                    string[] titlePatterns = new[]
+                    {
+                        @"T[ií]tulo\s+do\s+Projeto\s*[:\-–]?\s*([^\n]+)",
+                        @"OBJETO\s*[:\-–]\s*([^\n]+)",
+                        @"Objeto\s*[:\-–]\s*([^\n]+)",
+                        @"TERMO\s+DE\s+REFER[ÊE]NCIA\s*[:\-–]\s*([^\n]+)",
+                    };
+
+                    foreach (var pattern in titlePatterns)
+                    {
+                        var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
+                        if (match.Success)
+                        {
+                            var title = match.Groups[1].Value.Trim();
+                            // Sanity check: title should be reasonable length
+                            if (title.Length >= 5 && title.Length <= 300)
+                                return title;
+                        }
+                    }
+
                     return "Termo de Referência";
                 }
             }
@@ -171,7 +193,7 @@ foreach (var item in termo.Itens)
             using (var pdfDocument = new PdfDocument(pdfReader))
             {
                 string fullText = "";
-                
+
                 for (int i = 1; i <= pdfDocument.GetNumberOfPages(); i++)
                 {
                     var page = pdfDocument.GetPage(i);
@@ -180,6 +202,7 @@ foreach (var item in termo.Itens)
                     fullText += pageText + "\n";
                 }
 
+                // Log extracted text for debugging
                 try
                 {
                     string logPath = Path.Combine(Path.GetTempPath(), "pdf_extracted_text.txt");
@@ -187,30 +210,85 @@ foreach (var item in termo.Itens)
                 }
                 catch { }
 
-                var demandanteMatch = Regex.Match(fullText, @"Nome:\s*([^\n]+)", RegexOptions.IgnoreCase);
-                if (demandanteMatch.Success)
+                // --- DEMANDANTE ---
+                // Try multiple patterns for the requesting entity
+                string[] demandantePatterns = new[]
                 {
-                    dados.Demandante = demandanteMatch.Groups[1].Value.Trim();
+                    @"[Óó]rg[aã]o\s*(?:Demandante|Requisitante)\s*[:\-–]\s*([^\n]+)",
+                    @"Demandante\s*[:\-–]\s*([^\n]+)",
+                    @"Entidade\s*[:\-–]\s*([^\n]+)",
+                    @"Nome\s*[:\-–]\s*([^\n]+)",
+                    @"CONTRATANTE\s*[:\-–]\s*([^\n]+)",
+                };
+
+                foreach (var pattern in demandantePatterns)
+                {
+                    var match = Regex.Match(fullText, pattern, RegexOptions.IgnoreCase);
+                    if (match.Success)
+                    {
+                        var value = match.Groups[1].Value.Trim();
+                        // Filter out values that are clearly not an entity name
+                        if (value.Length >= 3 && !Regex.IsMatch(value, @"^\d+$"))
+                        {
+                            dados.Demandante = value;
+                            break;
+                        }
+                    }
                 }
 
-                var inicioMatch = Regex.Match(fullText, @"Início:\s*([^\n]+)", RegexOptions.IgnoreCase);
-                if (inicioMatch.Success)
+                // --- DATES ---
+                string[] inicioPatterns = new[]
                 {
-                    dados.DataInicio = inicioMatch.Groups[1].Value.Trim();
+                    @"In[ií]cio\s*[:\-–]\s*([^\n]+)",
+                    @"Data\s+de\s+In[ií]cio\s*[:\-–]\s*([^\n]+)",
+                    @"Per[ií]odo\s*[:\-–]\s*([^\n]+?)(?:\s+a\s+|\s*[-–]\s*)",
+                };
+
+                foreach (var pattern in inicioPatterns)
+                {
+                    var match = Regex.Match(fullText, pattern, RegexOptions.IgnoreCase);
+                    if (match.Success)
+                    {
+                        dados.DataInicio = match.Groups[1].Value.Trim();
+                        break;
+                    }
                 }
 
-                var terminoMatch = Regex.Match(fullText, @"Término:\s*([^\n]+)", RegexOptions.IgnoreCase);
-                if (terminoMatch.Success)
+                string[] terminoPatterns = new[]
                 {
-                    dados.DataTermino = terminoMatch.Groups[1].Value.Trim();
+                    @"T[ée]rmino\s*[:\-–]\s*([^\n]+)",
+                    @"Data\s+de\s+T[ée]rmino\s*[:\-–]\s*([^\n]+)",
+                    @"(?:a|até|[-–])\s*((?:JANEIRO|FEVEREIRO|MAR[ÇC]O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)\s*/?\s*\d{4})",
+                };
+
+                foreach (var pattern in terminoPatterns)
+                {
+                    var match = Regex.Match(fullText, pattern, RegexOptions.IgnoreCase);
+                    if (match.Success)
+                    {
+                        dados.DataTermino = match.Groups[1].Value.Trim();
+                        break;
+                    }
                 }
 
-                var duracaoMatch = Regex.Match(fullText, @"Duração Total:\s*(\d+)", RegexOptions.IgnoreCase);
-                if (duracaoMatch.Success)
+                // --- DURATION ---
+                var duracaoPatterns = new[]
                 {
-                    dados.Duracao = int.Parse(duracaoMatch.Groups[1].Value);
+                    @"Dura[çc][aã]o\s*(?:Total)?\s*[:\-–]\s*(\d+)",
+                    @"(\d+)\s*meses",
+                };
+
+                foreach (var pattern in duracaoPatterns)
+                {
+                    var match = Regex.Match(fullText, pattern, RegexOptions.IgnoreCase);
+                    if (match.Success)
+                    {
+                        dados.Duracao = int.Parse(match.Groups[1].Value);
+                        break;
+                    }
                 }
 
+                // --- ITEMS FROM ANEXO II ---
                 try
                 {
                     dados.Itens = ExtrairItensDaTabela(fullText);
@@ -233,58 +311,102 @@ foreach (var item in termo.Itens)
         {
             var itens = new List<TermoReferenciaItem>();
 
-            // Find the ACTUAL Anexo II table
-            int startIdx = texto.IndexOf("Anexo II – PLANILHA", StringComparison.OrdinalIgnoreCase);
-            if (startIdx == -1)
+            // ---- FIND ANEXO II SECTION ----
+            int startIdx = -1;
+            string[] anexoMarkers = new[]
             {
-                startIdx = texto.IndexOf("Anexo II - PLANILHA", StringComparison.OrdinalIgnoreCase);
-            }
-            if (startIdx == -1)
+                "Anexo II – PLANILHA",
+                "Anexo II - PLANILHA",
+                "ANEXO II – PLANILHA",
+                "ANEXO II - PLANILHA",
+                "Anexo II",
+                "ANEXO II"
+            };
+
+            foreach (var marker in anexoMarkers)
             {
-                startIdx = texto.LastIndexOf("Anexo II", StringComparison.OrdinalIgnoreCase);
-            }
-            if (startIdx == -1)
-            {
-                throw new TrilhasException("Seção 'Anexo II' não encontrada no PDF.");
+                startIdx = texto.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
+                if (startIdx != -1) break;
             }
 
-            int endIdx = texto.IndexOf("Anexo III", startIdx, StringComparison.OrdinalIgnoreCase);
-            if (endIdx == -1) endIdx = texto.IndexOf("Observação:", startIdx, StringComparison.OrdinalIgnoreCase);
-            if (endIdx == -1) endIdx = texto.Length;
+            if (startIdx == -1)
+            {
+                throw new TrilhasException("Seção 'Anexo II' não encontrada no PDF. Certifique-se de que o documento contém a planilha de profissionais.");
+            }
+
+            // ---- FIND END OF SECTION ----
+            // Look for Anexo III or other common section endings
+            int endIdx = texto.Length;
+            string[] endMarkers = new[]
+            {
+                "Anexo III", "ANEXO III",
+                "Anexo IV", "ANEXO IV",
+                "Observação:", "OBSERVAÇÃO:",
+                "Observações:", "OBSERVAÇÕES:",
+                "VALOR GLOBAL", "Valor Global"
+            };
+
+            foreach (var marker in endMarkers)
+            {
+                int idx = texto.IndexOf(marker, startIdx + 10, StringComparison.OrdinalIgnoreCase);
+                if (idx != -1 && idx < endIdx)
+                {
+                    endIdx = idx;
+                }
+            }
 
             string anexoText = texto.Substring(startIdx, endIdx - startIdx);
             var lines = anexoText.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
             string currentCourse = "";
-            int itemsSinceLastCourse = 0; // Track how many items since we found a course name
-            
+            int itemsSinceLastCourse = 0;
+
+            // ---- GENERIC HEADER/NOISE DETECTION ----
+            // Instead of hardcoding specific headers, detect them by pattern
+            Regex headerPattern = new Regex(
+                @"^(Curso|Carga|Hor[áa]ria|Modalidade|Alunos|Valor|Total|Quant|Turm|Encarg|Profissional|Tipo|Mês|Data|Nr\.|Item)",
+                RegexOptions.IgnoreCase);
+
+            // Generic noise: lines that are clearly not course names or professional data
+            // Detects page headers, footers, addresses, emails, URLs, document IDs
+            Regex noisePattern = new Regex(
+                @"(^PÁGINA\s|" +
+                @"E-DOCS|" +
+                @"DOCUMENTO ORIGINAL|" +
+                @"@\w+\.\w+|" +                     // emails
+                @"^https?://|" +                      // URLs
+                @"^www\.|" +                          // URLs
+                @"CEP\s*[:\-]|" +                     // postal code
+                @"^Rua\s|^Av\.\s|^Avenida\s|" +      // addresses
+                @"^Tel[\.:]|^Fone[\.:]|" +            // phone
+                @"CNPJ|CPF|" +                        // IDs
+                @"^\d{2}\.\d{3}\.\d{3}|" +            // CNPJ format
+                @"Governo\s+d[oe]|" +                 // government headers
+                @"^Secretaria\s+d[eao]|" +            // government department
+                @"Fls\.\s*\d|" +                      // page numbering
+                @"^Processo\s*n|" +                    // process number
+                @"^\d{4}\.\d+|" +                     // document numbers like 2024.12345
+                @"^_{3,}|^-{3,}|^\*{3,})",            // divider lines
+                RegexOptions.IgnoreCase);
+
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();
-                
-                // Skip headers
-                if (string.IsNullOrWhiteSpace(line) || 
-                    line.Contains("Curso") ||
-                    line.Contains("Carga") ||
-                    line.Contains("Horária") ||
-                    line.Contains("Modalidade") ||
-                    line.Contains("Alunos") ||
-                    line.Contains("Valor") ||
-                    line.Contains("Total") ||
-                    line.Contains("PÁGINA") ||
-                    line.Contains("Quant") ||
-                    line.Contains("Turm") ||
-                    line.Contains("Encarg"))
+
+                // Skip empty, header, or noise lines
+                if (string.IsNullOrWhiteSpace(line) ||
+                    headerPattern.IsMatch(line) ||
+                    noisePattern.IsMatch(line))
                 {
                     continue;
                 }
 
-                // Look for professional category
+                // ---- LOOK FOR PROFESSIONAL CATEGORY ----
                 bool hasDocente = line.Contains("DOCENTE");
                 bool hasModerador = line.Contains("MODERADOR");
                 bool hasConteudista = line.Contains("CONTEUDISTA");
-                
-                // Check next line for CONTEUDISTA if current line has DOCENTE
+
+                // Check next line for CONTEUDISTA (sometimes on separate line)
                 int skipLines = 0;
                 if (hasDocente && !hasConteudista && i + 1 < lines.Length)
                 {
@@ -292,7 +414,7 @@ foreach (var item in termo.Itens)
                     if (nextLine.Contains("CONTEUDISTA") || nextLine == "CONTEUDISTA")
                     {
                         hasConteudista = true;
-                        skipLines = 1; // We'll skip this line when collecting data
+                        skipLines = 1;
                     }
                 }
 
@@ -301,82 +423,55 @@ foreach (var item in termo.Itens)
                     // Determine category
                     string categoria = "";
                     if (hasDocente && hasConteudista)
-                    {
                         categoria = "DOCENTE_CONTEUDISTA";
-                    }
                     else if (hasModerador)
-                    {
                         categoria = "MODERADOR";
-                    }
                     else if (hasDocente)
-                    {
                         categoria = "DOCENTE";
-                    }
 
-                    // Search backward for course name
+                    // ---- SEARCH BACKWARD FOR COURSE NAME ----
                     List<string> courseLines = new List<string>();
                     bool foundValidCourse = false;
-                    
+
                     for (int j = i - 1; j >= Math.Max(0, i - 25); j--)
                     {
                         string prev = lines[j].Trim();
-                        
-                        // Skip truly empty lines but don't count them as a stop
-                        if (string.IsNullOrWhiteSpace(prev))
-                        {
-                            continue;
-                        }
-                        
-                        // HARD STOPS - these are definite boundaries
-                        if (prev.Contains("Governo do Estado") ||
-                            prev.Contains("Corpo de Bombeiro") ||
-                            prev.Contains("Coordenadoria Estadual") ||
-                            prev.Contains("defesacivil@bombeiros") ||
-                            prev.Contains("PÁGINA") ||
-                            prev.Contains("E-DOCS") ||
-                            prev.Contains("DOCUMENTO ORIGINAL") ||
-                            prev.Contains("Rua:") ||
-                            prev.Contains("CEP:") ||
-                            prev.Contains("Curso Profissional") ||
-                            prev.Contains("Total (R$)") ||
-                            prev.StartsWith("27 ") ||
-                            Regex.IsMatch(prev, @"^\d{4,}$"))
-                        {
-                            break;
-                        }
 
-                        // DATA lines - these mean we've passed the course name area
-                        // BUT: Only stop if we already have course lines
-                        bool isDataLine = prev.Contains("R$") ||
-                                        prev.Contains("PRESENCIAL") ||
-                                        prev.Contains("EAD") ||
-                                        prev.Contains("SÍNCRONO") ||
-                                        prev.Contains("HÍBRIDO") ||
-                                        Regex.IsMatch(prev, @"^\d+$") ||
-                                        Regex.IsMatch(prev, @"^\d{2}/\d{2}/\d{4}$") ||
-                                        Regex.IsMatch(prev, @"^\d+\s+\d+$");
-                        
-                        if (isDataLine && courseLines.Count > 0)
-                        {
-                            // We have course lines and hit data - stop here
-                            break;
-                        }
-                        else if (isDataLine)
-                        {
-                            // Data line but no course yet - skip it
+                        if (string.IsNullOrWhiteSpace(prev))
                             continue;
-                        }
+
+                        // Stop at noise/headers
+                        if (noisePattern.IsMatch(prev) || headerPattern.IsMatch(prev))
+                            break;
+
+                        // Stop at another professional category line (means we've gone too far back)
+                        if (prev.Contains("DOCENTE") || prev.Contains("MODERADOR"))
+                            break;
+
+                        // Data lines = stop if we already have course lines
+                        bool isDataLine = prev.Contains("R$") ||
+                                          Regex.IsMatch(prev, @"^(PRESENCIAL|EAD|EAD SÍNCRONO|SÍNCRONO|HÍBRIDO|SEMIPRESENCIAL)$", RegexOptions.IgnoreCase) ||
+                                          Regex.IsMatch(prev, @"^\d+$") ||
+                                          Regex.IsMatch(prev, @"^\d{2}/\d{2}/\d{4}$") ||
+                                          Regex.IsMatch(prev, @"^\d+\s+\d+$");
+
+                        if (isDataLine && courseLines.Count > 0)
+                            break;
+                        else if (isDataLine)
+                            continue;
 
                         // Month names alone are not course names
-                        bool isMonth = Regex.IsMatch(prev, @"^(JANEIRO|FEVEREIRO|MAR[ÇC]O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)$", RegexOptions.IgnoreCase);
-                        
-                        // VALID course name line
-                        if (prev == prev.ToUpper() && 
-                            prev.Length > 2 && 
+                        bool isMonth = Regex.IsMatch(prev,
+                            @"^(JANEIRO|FEVEREIRO|MAR[ÇC]O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)$",
+                            RegexOptions.IgnoreCase);
+
+                        // Valid course name: uppercase, reasonable length, not a keyword
+                        if (prev == prev.ToUpper() &&
+                            prev.Length > 2 &&
                             !isMonth &&
-                            !prev.Contains("DOCENTE") && 
+                            !prev.Contains("DOCENTE") &&
                             !prev.Contains("MODERADOR") &&
-                            !prev.Contains(":"))  // Keep colon check for data labels
+                            !prev.Contains(":"))
                         {
                             courseLines.Insert(0, prev);
                             foundValidCourse = true;
@@ -387,11 +482,9 @@ foreach (var item in termo.Itens)
                     if (foundValidCourse && courseLines.Count > 0)
                     {
                         string newCourse = string.Join(" ", courseLines);
-                        
-                        // Validate it's not junk
-                        if (newCourse.Length >= 5 && 
-                            !newCourse.Contains("E-DOCS") &&
-                            !newCourse.Contains("PÁGINA"))
+
+                        if (newCourse.Length >= 5 &&
+                            !noisePattern.IsMatch(newCourse))
                         {
                             currentCourse = newCourse;
                             itemsSinceLastCourse = 0;
@@ -399,29 +492,20 @@ foreach (var item in termo.Itens)
                     }
                     else
                     {
-                        // No new course found
                         itemsSinceLastCourse++;
-                        
-                        // If we've gone too long without finding a course, reset
-                        // This prevents infinite carry-forward
                         if (itemsSinceLastCourse > 5)
                         {
                             currentCourse = "";
                         }
                     }
 
-                    // Skip if no valid course
                     if (string.IsNullOrWhiteSpace(currentCourse))
-                    {
                         continue;
-                    }
 
-                    // Get data from this line and next lines
+                    // ---- COLLECT DATA FROM CURRENT + FOLLOWING LINES ----
                     string dataText = line;
-                    
-                    // Start collecting from the appropriate line (skip CONTEUDISTA if it was on separate line)
                     int startJ = i + 1 + skipLines;
-                    
+
                     for (int j = startJ; j < Math.Min(lines.Length, startJ + 5); j++)
                     {
                         string next = lines[j].Trim();
@@ -430,30 +514,36 @@ foreach (var item in termo.Itens)
                         dataText += " " + next;
                     }
 
-                    // Remove category keywords
-                    dataText = dataText.Replace("DOCENTE CONTEUDISTA", " ")
-                                      .Replace("DOCENTE", " ")
-                                      .Replace("MODERADOR", " ")
-                                      .Trim();
+                    // Remove category keywords to isolate numeric data
+                    dataText = dataText
+                        .Replace("DOCENTE CONTEUDISTA", " ")
+                        .Replace("DOCENTE", " ")
+                        .Replace("MODERADOR", " ")
+                        .Trim();
 
-                    // Extract numbers
+                    // ---- EXTRACT NUMBERS ----
                     var nums = Regex.Matches(dataText, @"\d+");
-                    if (nums.Count < 2) continue;
+                    if (nums.Count < 1) continue;
 
                     int qtd = int.Parse(nums[0].Value);
-                    decimal ch = decimal.Parse(nums[1].Value);
+                    if (qtd <= 0 || qtd > 200) continue; // sanity check
 
-                    // Extract month
-                    var mesMatch = Regex.Match(dataText, @"(JANEIRO|FEVEREIRO|MAR[ÇC]O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)", RegexOptions.IgnoreCase);
+                    decimal ch = nums.Count >= 2 ? decimal.Parse(nums[1].Value) : 0;
+
+                    // ---- EXTRACT MONTH ----
+                    var mesMatch = Regex.Match(dataText,
+                        @"(JANEIRO|FEVEREIRO|MAR[ÇC]O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)",
+                        RegexOptions.IgnoreCase);
                     string mes = mesMatch.Success ? mesMatch.Value.ToUpper() : "";
 
-                    // Extract date
+                    // ---- EXTRACT DATE ----
                     var dateMatch = Regex.Match(dataText, @"(\d{2}/\d{2}/\d{4})");
                     DateTime? data = null;
                     if (dateMatch.Success)
                     {
-                        DateTime.TryParseExact(dateMatch.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d);
-                        data = d;
+                        DateTime.TryParseExact(dateMatch.Value, "dd/MM/yyyy",
+                            CultureInfo.InvariantCulture, DateTimeStyles.None, out var d);
+                        if (d != default) data = d;
                     }
 
                     itens.Add(new TermoReferenciaItem
@@ -468,8 +558,7 @@ foreach (var item in termo.Itens)
                         CreatorUserId = "",
                         CreationTime = DateTime.Now
                     });
-                    
-                    // Skip the CONTEUDISTA line if it was on a separate line
+
                     if (skipLines > 0)
                     {
                         i += skipLines;
@@ -479,7 +568,7 @@ foreach (var item in termo.Itens)
 
             if (itens.Count == 0)
             {
-                throw new TrilhasException("Nenhum item extraído. Verifique se o PDF tem a tabela Anexo II no formato esperado.");
+                throw new TrilhasException("Nenhum item extraído do Anexo II. Verifique se o PDF contém a tabela com DOCENTE/MODERADOR e os cursos no formato esperado.");
             }
 
             return itens;
@@ -492,8 +581,9 @@ foreach (var item in termo.Itens)
             var dataLimite = dataAtual.AddDays(15);
 
             var termosAtivos = _context.TermosDeReferencia
-                .Include(t => t.Itens)
-                .Where(t => t.DeletionTime == null && 
+    .Include(t => t.Itens)
+        .ThenInclude(i => i.Slots)
+    .Where(t => t.DeletionTime == null &&
                            (t.Status == "Aprovado" || t.Status == "Em Execução"))
                 .ToList();
 
@@ -501,11 +591,11 @@ foreach (var item in termo.Itens)
             {
                 foreach (var item in termo.Itens.Where(i => i.DeletionTime == null))
                 {
-                    if (item.Contratados < item.Quantidade && item.DataOferta.HasValue)
+                    if (item.ContratadosCount < item.Quantidade && item.DataOferta.HasValue)
                     {
                         if (item.DataOferta.Value > dataAtual && item.DataOferta.Value <= dataLimite)
                         {
-                            var vagas = item.Quantidade - item.Contratados;
+                            var vagas = item.Quantidade - item.ContratadosCount;
                             
                             alertas.Add(new AlertaContratacao
                             {
